@@ -1,0 +1,99 @@
+#include "Plantel.h"
+
+Plantel::Plantel() : identificador('-'), filas(0), columnas(0), estacionamiento(nullptr) {}
+
+Plantel::Plantel(char id, int f, int c) : identificador(id), filas(f), columnas(c) {
+	estacionamiento = new Carro**[filas];
+	for (int i = 0; i < filas; ++i) {
+		estacionamiento[i] = new Carro*[columnas];
+		for (int j = 0; j < columnas; ++j) {
+			estacionamiento[i][j] = nullptr;
+		}
+	}
+}
+
+Plantel::~Plantel() {
+	for (int i = 0; i < filas; ++i) {
+		for (int j = 0; j < columnas; ++j) {
+			delete estacionamiento[i][j];
+		}
+		delete[] estacionamiento[i];
+	}
+	delete[] estacionamiento;
+}
+
+char Plantel::getIdentificador() {
+	return identificador;
+}
+int Plantel::getFilas() {
+	return filas;
+}
+int Plantel::getColumnas() {
+	return columnas;
+}
+
+Carro* Plantel::getCarroxPos(int f, int c) {
+	if (f >= 0 && f < filas && c >= 0 && c < columnas) {
+		return estacionamiento[f][c];
+	}
+	return nullptr;
+}
+
+string Plantel::getEspacioEstacionamiento(int f, int c) {
+	stringstream s;
+
+	s << identificador << f << c;
+	return s.str();
+}
+
+void Plantel::setIdentificador(char id) {
+	identificador = id;
+}
+void Plantel::setFilas(int f) {
+	filas = f;
+}
+void Plantel::setColumnas(int c) {
+	columnas = c;
+}
+bool Plantel::agregarCarro(Carro* carro, int f, int c) {
+	if (f < 0 || f >= filas || c < 0 || c >= columnas) return false;
+	if (estacionamiento[f][c]) return false; // Ya hay un carro
+	estacionamiento[f][c] = carro;
+	carro->setUbicacion(getEspacioEstacionamiento(f, c));
+	return true;
+}
+
+bool Plantel::eliminarCarro(int f, int c) {
+	if (f < 0 || f >= filas || c < 0 || c >= columnas) return false;
+	if (!estacionamiento[f][c]) return false; // No hay carro para eliminar
+	delete estacionamiento[f][c];
+	estacionamiento[f][c] = nullptr;
+	return true;
+}
+
+// ver =0: Informacion completa del plantel, ver=1: solo espacios del estacionamiento
+string Plantel::mostrarEstacionamiento(int ver) {
+	stringstream ss;
+	if (ver == 0) {
+		ss << "Plantel " << identificador << " (" << filas << "x" << columnas << "):\n";
+	}
+	for (int i = 0; i < filas * 14 - 1; i++) ss << "-";
+	ss << "\n";
+	for (int i = 0; i < filas; ++i) {
+		for (int j = 0; j < columnas; j++) {
+			ss << "|---"<< getEspacioEstacionamiento(i,j) << "---| ";
+		}
+		ss << "\n";
+		for (int j = 0; j < columnas; ++j) {
+			if (estacionamiento[i][j]) {
+				ss << "| " << estacionamiento[i][j]->getPlaca() << " | "; // Mostrar placa del carro
+			} else {
+				ss << "|  Libre  | "; // Espacio libre
+			}
+		}
+		ss << "\n";
+		for (int i = 0; i < filas * 14 - 1; i++) ss << "-";
+		ss << "\n";
+	}
+	return ss.str();
+}
