@@ -39,6 +39,24 @@ Carro* Plantel::getCarroxPos(int f, int c) {
 	return nullptr;
 }
 
+int Plantel::getCanTotal()
+{
+	return filas * columnas;
+}
+
+int Plantel::getCanDisponibles()
+{
+	int disponibles = 0;
+	for (int i = 0; i < filas; ++i) {
+		for (int j = 0; j < columnas; ++j) {
+			if (estacionamiento[i][j] == nullptr) {
+				disponibles++;
+			}
+		}
+	}
+	return disponibles;
+}
+
 string Plantel::getEspacioEstacionamiento(int f, int c) {
 	stringstream s;
 
@@ -55,7 +73,13 @@ void Plantel::setFilas(int f) {
 void Plantel::setColumnas(int c) {
 	columnas = c;
 }
-bool Plantel::agregarCarro(Carro* carro, int f, int c) {
+bool Plantel::agregarCarro(Carro* carro, int pos) {
+
+	int f = pos / 10;
+	int c = pos % 10;
+
+	if (f < 0 || f >= filas || c < 0 || c >= columnas) return false;
+
 	if (f < 0 || f >= filas || c < 0 || c >= columnas) return false;
 	if (estacionamiento[f][c]) return false; // Ya hay un carro
 	estacionamiento[f][c] = carro;
@@ -75,7 +99,10 @@ bool Plantel::eliminarCarro(int f, int c) {
 string Plantel::mostrarEstacionamiento(int ver) {
 	stringstream ss;
 	if (ver == 0) {
-		ss << "Plantel " << identificador << " (" << filas << "x" << columnas << "):\n";
+		ss << "Plantel " << identificador << " (" << filas << "x" << columnas << "):\n"
+			<< "Total de espacios: " << getCanTotal() << "\n"
+			<< "Espacios disponibles: " << getCanDisponibles() << "\n\n";
+
 	}
 	for (int i = 0; i < filas * 14 - 1; i++) ss << "-";
 	ss << "\n";

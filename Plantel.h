@@ -1,5 +1,6 @@
 #pragma once
 #include "Carro.h"
+#include <iostream>
 #include <string>
 #include <sstream>
 using namespace std;
@@ -22,13 +23,15 @@ public:
 	int getColumnas();
 	string getEspacioEstacionamiento(int f, int c);
 	Carro* getCarroxPos(int f, int c);
+	int getCanTotal();
+	int getCanDisponibles();
 	
 	// Setters
 	void setIdentificador(char id);
 	void setFilas(int f);
 	void setColumnas(int c);
 	// Métodos adicionales
-	bool agregarCarro(Carro* carro, int fila, int columna);
+	bool agregarCarro(Carro* carro, int pos);
 	bool eliminarCarro(int f, int c);
 	string mostrarEstacionamiento(int ver);
 };

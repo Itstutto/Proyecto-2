@@ -124,11 +124,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Carro.cpp" />
+    <ClCompile Include="ListaEstados.cpp" />
+    <ClCompile Include="ListaPlantel.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NodoEstadoCarro.cpp" />
+    <ClCompile Include="NodoPl.cpp" />
     <ClCompile Include="Plantel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Carro.h" />
+    <ClInclude Include="ListaEstados.h" />
+    <ClInclude Include="ListaPlantel.h" />
+    <ClInclude Include="NodoEstadoCarro.h" />
+    <ClInclude Include="NodoPl.h" />
     <ClInclude Include="Plantel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
