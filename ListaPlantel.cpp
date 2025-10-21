@@ -8,8 +8,8 @@ ListaPlantel::ListaPlantel() {
 ListaPlantel::~ListaPlantel() {
 	NodoPl* actual = primero;
 	while (actual != nullptr) {
-		NodoPl* siguiente = actual->sig;
-		delete actual->dato;
+		NodoPl* siguiente = actual->getSig();
+		delete actual->getDato();
 		delete actual;
 		actual = siguiente;
 	}
@@ -27,7 +27,7 @@ NodoPl* ListaPlantel::buscarPlantel(int pos)
 	if (pos < 0 || pos >= tam) return nullptr;
 	NodoPl* actual = primero;
 	for (int i = 0; i < pos; i++) {
-		actual = actual->sig;
+		actual = actual->getSig();
 	}
 	return actual;
 }
@@ -43,7 +43,7 @@ bool ListaPlantel::insertarFinal(Plantel* p) {
 		primero = nuevo;
 		ultimo = nuevo;
 	} else {
-		ultimo->sig = nuevo;
+		ultimo->setSig(nuevo);
 		ultimo = nuevo;
 	}
 	tam++;
@@ -54,19 +54,19 @@ bool ListaPlantel::eliminarPlantel(char id) {
 	if (primero == nullptr) return false;
 	NodoPl* actual = primero;
 	NodoPl* anterior = nullptr;
-	while (actual && actual->dato->getIdentificador() != id) {
+	while (actual && actual->getDato()->getIdentificador() != id) {
 		anterior = actual;
-		actual = actual->sig;
+		actual = actual->getSig();
 	}
 	if (actual == nullptr) return false; // No encontrado
 	if (anterior == nullptr) { // Eliminar el primero
-		primero = actual->sig;
+		primero = actual->getSig();
 		if (primero == nullptr) ultimo = nullptr; // Lista vacía
 	} else {
-		anterior->sig = actual->sig;
+		anterior->setSig(actual->getSig());
 		if (actual == ultimo) ultimo = anterior; // Eliminar el último
 	}
-	delete actual->dato;
+	delete actual->getDato();
 	delete actual;
 	tam--;
 	return true;
@@ -74,10 +74,10 @@ bool ListaPlantel::eliminarPlantel(char id) {
 Plantel* ListaPlantel::buscarPlantel(char id) {
 	NodoPl* actual = primero;
 	while (actual) {
-		if (actual->dato->getIdentificador() == id) {
-			return actual->dato;
+		if (actual->getDato()->getIdentificador() == id) {
+			return actual->getDato();
 		}
-		actual = actual->sig;
+		actual = actual->getSig();
 	}
 	return nullptr; // No encontrado
 }
@@ -87,10 +87,10 @@ string ListaPlantel::mostrarPlanteles() {
 	s << "Lista de Planteles:\n";
 	NodoPl* actual = primero;
 	while (actual) {
-		s << "Plantel " << actual->dato->getIdentificador() << ": "
-		  << actual->dato->getCanDisponibles() << " disponibles de "
-		  << actual->dato->getCanTotal() << " totales.\n";
-		actual = actual->sig;
+		s << "Plantel " << actual->getDato()->getIdentificador() << ": "
+		  << actual->getDato()->getCanDisponibles() << " disponibles de "
+		  << actual->getDato()->getCanTotal() << " totales.\n";
+		actual = actual->getSig();
 	}
 	return s.str();
 }
@@ -101,8 +101,8 @@ string ListaPlantel::mostrarListaPlanteles()
 	NodoPl* actual = primero;
 	int numPlantel = 1;
 	while (actual != nullptr) {
-		ss << numPlantel<<". "<< "Plantel: "<< actual->dato->getIdentificador() << ") : \n";
-		actual = actual->sig;
+		ss << numPlantel<<". "<< "Plantel: "<< actual->getDato()->getIdentificador() << ") : \n";
+		actual = actual->getSig();
 		numPlantel++;
 	}
 	return ss.str();

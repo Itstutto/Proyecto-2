@@ -7,7 +7,7 @@ ListaEstados::ListaEstados() {
 ListaEstados::~ListaEstados() {
 	NodoEstadoCarro* actual = primero;
 	while (actual != nullptr) {
-		NodoEstadoCarro* siguiente = actual->sig;
+		NodoEstadoCarro* siguiente = actual->getSig();
 		delete actual;
 		actual = siguiente;
 	}
@@ -29,7 +29,7 @@ bool ListaEstados::insertarInicio(string e) {
 		ultimo = nuevo;
 	}
 	else {
-		nuevo->sig = primero;
+		nuevo->setSig(primero);
 		primero = nuevo;
 	}
 	tam++;
@@ -38,10 +38,10 @@ bool ListaEstados::insertarInicio(string e) {
 NodoEstadoCarro* ListaEstados::buscarEstado(string e) {
 	NodoEstadoCarro* actual = primero;
 	while (actual != nullptr) {
-		if (actual->estado == e) {
+		if (actual->getEstado() == e) {
 			return actual;
 		}
-		actual = actual->sig;
+		actual = actual->getSig();
 	}
 	return nullptr; // No encontrado
 }
@@ -49,12 +49,12 @@ string ListaEstados::mostrarEstados() {
 	stringstream ss;
 	NodoEstadoCarro* actual = primero;
 
-	ss << "Actual estado del carro: " << actual->estado<<endl;
-	actual = actual->sig;
+	ss << "Actual estado del carro: " << actual->getEstado()<<endl;
+	actual = actual->getSig();
 	ss << "Bitacora de estados (Del ultimo estado al primer estado):" << endl;
 	while (actual != nullptr) {
-		ss << "- " << actual->estado << endl;
-		actual = actual->sig;
+		ss << "- " << actual->getEstado() << endl;
+		actual = actual->getSig();
 	}
 
 	return ss.str();

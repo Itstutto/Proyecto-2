@@ -47,7 +47,7 @@ char Carro::getCategoria() {
 
 string Carro::getEstadoCarro()
 {
-	return estadosCarro->getPrimero()->estado;
+	return estadosCarro->getPrimero()->getEstado();
 }
 
 string Carro::getHistorialEstados()
