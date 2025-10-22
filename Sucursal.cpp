@@ -2,8 +2,8 @@
 
 Sucursal::Sucursal(int numero) : numeroSucursal(numero) {
 	planteles = new ListaPlantel();
-	clientes = new ListaClientes();
-	colaboradores = new ListaColaboradores();
+	clientes = new ListaClientes1();
+	colaboradores = new ListaColaboradores1();
 }
 
 Sucursal::~Sucursal() {
@@ -16,5 +16,5 @@ int Sucursal::getNumeroSucursal() const { return numeroSucursal; }
 void Sucursal::setNumeroSucursal(int numero) { numeroSucursal = numero; }
 
 ListaPlantel* Sucursal::getPlanteles() { return planteles; }
-ListaClientes* Sucursal::getClientes() { return clientes; }
-ListaColaboradores* Sucursal::getColaboradores() { return colaboradores; }
+ListaClientes1* Sucursal::getClientes() { return clientes; }
+ListaColaboradores1* Sucursal::getColaboradores() { return colaboradores; }

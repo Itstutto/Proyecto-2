@@ -1,14 +1,14 @@
 #pragma once
 #include "ListaPlantel.h"
-#include "ListaClientes.h"
-#include "ListaColaboradores.h"
+#include "ListaColaboradores1.h"
+#include "ListaClientes1.h"
 
 class Sucursal {
 private:
 	int numeroSucursal;
 	ListaPlantel* planteles;
-	ListaClientes* clientes;
-	ListaColaboradores* colaboradores;
+	ListaClientes1* clientes;
+	ListaColaboradores1* colaboradores;
 public:
 	Sucursal(int numero);
 	~Sucursal();
@@ -17,6 +17,6 @@ public:
 	void setNumeroSucursal(int numero);
 
 	ListaPlantel* getPlanteles();
-	ListaClientes* getClientes();
-	ListaColaboradores* getColaboradores();
+	ListaClientes1* getClientes();
+	ListaColaboradores1* getColaboradores();
 };

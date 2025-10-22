@@ -3,11 +3,11 @@ ListaColaboradores1::ListaColaboradores1() : ListaPersonas() {}
 ListaColaboradores1::~ListaColaboradores1() {}
 string ListaColaboradores1::mostrarPersonas() {
 	stringstream ss;
-	NodoP* actual = getPrimero();
-	while (actual != nullptr) {
-		ss << "Colaborador - Nombre: " << actual->getDato()->getNombre()
-		   << ", ID: " << actual->getDato()->getId() << "\n";
-		actual = actual->getSiguiente();
+	ss << "Lista de Colaboradores:\n";
+	NodoP* actual = primero;
+	while (actual) {
+		ss << "- " << actual->getDato()->toString() << "\n";
+		actual = actual->getSig();
 	}
 	return ss.str();
 }

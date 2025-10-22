@@ -9,7 +9,7 @@ ListaPersonas::~ListaPersonas()
 {
 	NodoP* actual = primero;
 	while (actual != nullptr) {
-		NodoP* siguiente = actual->getSiguiente();
+		NodoP* siguiente = actual->getSig();
 		delete actual->getDato();
 		delete actual;
 		actual = siguiente;
@@ -31,7 +31,7 @@ bool ListaPersonas::insertarFinal(Persona* p)
 		primero = nuevo;
 		ultimo = nuevo;
 	} else {
-		ultimo->setSiguiente(nuevo);
+		ultimo->setSig(nuevo);
 		ultimo = nuevo;
 	}
 	tam++;
@@ -45,14 +45,14 @@ bool ListaPersonas::eliminarPersona(string id)
 	NodoP* anterior = nullptr;
 	while (actual != nullptr && actual->getDato()->getId() != id) {
 		anterior = actual;
-		actual = actual->getSiguiente();
+		actual = actual->getSig();
 	}
 	if (actual == nullptr) return false; // No encontrado
 	if (anterior == nullptr) { // Eliminar el primero
-		primero = actual->getSiguiente();
+		primero = actual->getSig();
 		if (primero == nullptr) ultimo = nullptr; // Lista queda vacia
 	} else {
-		anterior->setSiguiente(actual->getSiguiente());
+		anterior->setSig(actual->getSig());
 		if (actual == ultimo) ultimo = anterior; // Eliminar el ultimo
 	}
 	delete actual->getDato();
@@ -67,7 +67,7 @@ Persona* ListaPersonas::buscarPersona(string id)
 		if (actual->getDato()->getId() == id) {
 			return actual->getDato();
 		}
-		actual = actual->getSiguiente();
+		actual = actual->getSig();
 	}
 	return nullptr; // No encontrado
 }

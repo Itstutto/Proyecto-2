@@ -128,8 +128,7 @@
     <ClCompile Include="ClienteFisico.cpp" />
     <ClCompile Include="ClienteJuridico.cpp" />
     <ClCompile Include="Colaborador.cpp" />
-    <ClCompile Include="ListaClientes.cpp" />
-    <ClCompile Include="ListaColaboradores.cpp" />
+    <ClCompile Include="ListaClientes1.cpp" />
     <ClCompile Include="ListaColaboradores1.cpp" />
     <ClCompile Include="ListaEstados.cpp" />
     <ClCompile Include="ListaPersonas.cpp" />
@@ -151,8 +150,7 @@
     <ClInclude Include="ClienteFisico.h" />
     <ClInclude Include="ClienteJuridico.h" />
     <ClInclude Include="Colaborador.h" />
-    <ClInclude Include="ListaClientes.h" />
-    <ClInclude Include="ListaColaboradores.h" />
+    <ClInclude Include="ListaClientes1.h" />
     <ClInclude Include="ListaColaboradores1.h" />
     <ClInclude Include="ListaEstados.h" />
     <ClInclude Include="ListaPersonas.h" />

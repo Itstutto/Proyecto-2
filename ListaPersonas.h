@@ -5,7 +5,7 @@
 using namespace std;
 class ListaPersonas
 {
-private:
+protected:
 	NodoP* primero;
 	NodoP* ultimo;
 	int tam;

@@ -11,7 +11,7 @@ NodoP::NodoP(Persona* p)
 }
 NodoP::~NodoP() {}
 Persona* NodoP::getDato() { return dato; }
-NodoP* NodoP::getSiguiente() { return sig; }
+NodoP* NodoP::getSig() { return sig; }
 void NodoP::setDato(Persona* p) { dato = p; }
-void NodoP::setSiguiente(NodoP* s) { sig = s; }
+void NodoP::setSig(NodoP* s) { sig = s; }
 

@@ -5,8 +5,6 @@
 #include "ClienteFisico.h"
 #include "ClienteJuridico.h"
 #include "Colaborador.h"
-#include "ListaClientes.h"
-#include "ListaColaboradores.h"
 #include "ListaPlantel.h"
 
 using namespace std;
@@ -79,9 +77,6 @@ void Menu::inicializarDatos() {
 	Colaborador* co1_dup = new Colaborador("Maria Lopez", "C1", string("01/01/2024"));
 	Colaborador* co2 = new Colaborador("Carlos Soto", "C2", string("15/05/2023"));
 
-	Persona* co1 = new Colaborador("Maria Lopez", "C1", string("01/01/2024"));
-	Persona* co1_dup = new Colaborador("Maria Lopez", "C1", string("01/01/2024"));
-	Persona* co2 = new Colaborador("Carlos Soto", "C2", string("15/05/2023"));
 
 	sucursalActual->getColaboradores()->insertarFinal(co1);
 	sucursalActual->getColaboradores()->insertarFinal(co1_dup);
@@ -146,30 +141,30 @@ void Menu::submenuPersonas() {
 
 		switch (opcion) {
 		case 1:
-			cout << sucursalActual->getClientes()->mostrarClientes() << endl;
+			cout << sucursalActual->getClientes()->mostrarPersonas() << endl;
 			break;
 		case 2:
-			cout << sucursalActual->getColaboradores()->mostrarColaboradores() << endl;
+			cout << sucursalActual->getColaboradores()->mostrarPersonas() << endl;
 			break;
 		case 3: {
 			string id;
 			cout << "ID del cliente: ";
 			cin >> id;
-			if (auto c = sucursalActual->getClientes()->buscarCliente(id)) cout << c->toString() << endl; else cout << "No encontrado.\n";
+			if (auto c = sucursalActual->getClientes()->buscarPersona(id)) cout << c->toString() << endl; else cout << "No encontrado.\n";
 			break;
 		}
 		case 4: {
 			string id;
 			cout << "ID del colaborador: ";
 			cin >> id;
-			if (auto c = sucursalActual->getColaboradores()->buscarColaborador(id)) cout << c->toString() << endl; else cout << "No encontrado.\n";
+			if (auto c = sucursalActual->getColaboradores()->buscarPersona(id)) cout << c->toString() << endl; else cout << "No encontrado.\n";
 			break;
 		}
 		case 5: {
 			string id;
 			cout << "ID del cliente a eliminar: ";
 			cin >> id;
-			bool ok = sucursalActual->getClientes()->eliminarCliente(id);
+			bool ok = sucursalActual->getClientes()->eliminarPersona(id);
 			cout << (ok ? "Eliminado.\n" : "No se encontro.\n");
 			break;
 		}
