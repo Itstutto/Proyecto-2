@@ -14,6 +14,7 @@ public:
 	string getId() const;
 	void setNombre(string nombre);
 	void setId(string id);
+	virtual string toString() const = 0;
 
 };
 

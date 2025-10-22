@@ -17,11 +17,11 @@ public:
 	Colaborador(string nombre, string id, string fechaIngreso);
 	~Colaborador();
 
-	string getFechaContratacion();
+	string getFechaContratacion() const;
 	void setFechaContratacion(int fecha);
 
 	string getFechaIngreso();
 	void setFechaIngreso(string fecha);
-	string toString();
+	string toString() const override;
 };
 

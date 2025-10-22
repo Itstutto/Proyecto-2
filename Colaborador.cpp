@@ -33,7 +33,7 @@ Colaborador::Colaborador(string nombre, string id, string fechaIngreso)
 
 Colaborador::~Colaborador() {}
 
-string Colaborador::getFechaContratacion()
+string Colaborador::getFechaContratacion() const
 {
 	stringstream fecha;
 	fecha << (this->fechaContratacion.tm_mday < 10 ? "0" : "") << this->fechaContratacion.tm_mday << "/";
@@ -62,7 +62,7 @@ string Colaborador::getFechaIngreso() { return fechaIngreso; }
 
 void Colaborador::setFechaIngreso(string fecha) { this->fechaIngreso = fecha; }
 
-string Colaborador::toString() {
+string Colaborador::toString() const {
 	stringstream ss;
 	ss << "Colaborador - Nombre: " << getNombre()
 	   << ", ID: " << getId()

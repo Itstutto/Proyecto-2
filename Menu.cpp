@@ -42,6 +42,7 @@ void Menu::inicializarDatos() {
 	sucursalActual->getPlanteles()->insertarFinal(plantel);
 
 	// Bucle de ejemplo para cambiar estado de carro1
+	/*
 	int estado = 0;
 	do {
 		cout << "Seleccione el estado del carro (estado actual: " << carro1->getEstadoCarro() << "):\n";
@@ -61,7 +62,7 @@ void Menu::inicializarDatos() {
 			else cout << "Opcion invalida.\n";
 		}
 	} while (estado != 6);
-
+	*/
 	// Clientes
 	ClienteFisico* cf1 = new ClienteFisico("Juan Perez", "111", "Costa Rica");
 	ClienteJuridico* cj1 = new ClienteJuridico("TechSolutions S.A.", "222", "Panama", "Software", 10.5);
@@ -77,6 +78,10 @@ void Menu::inicializarDatos() {
 	Colaborador* co1 = new Colaborador("Maria Lopez", "C1", string("01/01/2024"));
 	Colaborador* co1_dup = new Colaborador("Maria Lopez", "C1", string("01/01/2024"));
 	Colaborador* co2 = new Colaborador("Carlos Soto", "C2", string("15/05/2023"));
+
+	Persona* co1 = new Colaborador("Maria Lopez", "C1", string("01/01/2024"));
+	Persona* co1_dup = new Colaborador("Maria Lopez", "C1", string("01/01/2024"));
+	Persona* co2 = new Colaborador("Carlos Soto", "C2", string("15/05/2023"));
 
 	sucursalActual->getColaboradores()->insertarFinal(co1);
 	sucursalActual->getColaboradores()->insertarFinal(co1_dup);

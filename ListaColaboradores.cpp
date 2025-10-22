@@ -19,6 +19,9 @@ int ListaColaboradores::getTam() { return tam; }
 bool ListaColaboradores::insertarFinal(Colaborador* co) {
 	if (!co) return false;
 	NodoCol* nuevo = new NodoCol(co);
+
+	if (buscarColaborador(co->getId())) return false; // Evitar duplicados
+
 	if (!primero) {
 		primero = ultimo = nuevo;
 	} else {
@@ -52,6 +55,7 @@ bool ListaColaboradores::eliminarColaborador(string id) {
 }
 
 Colaborador* ListaColaboradores::buscarColaborador(string id) {
+	if (!primero) return nullptr;
 	NodoCol* actual = primero;
 	while (actual) {
 		if (actual->getDato()->getId() == id) return actual->getDato();
