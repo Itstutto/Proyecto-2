@@ -1,13 +1,16 @@
 #include "Colaborador.h"
+#include <sstream>
+
 Colaborador::Colaborador() : Persona()
 {
 	time_t actual = time(0);
 	localtime_s(&this->fechaContratacion, &actual);
+	fechaIngreso = "";
 }
-Colaborador::Colaborador(string nombre, string id, int fechaContratacion) : Persona(nombre, id)
+
+Colaborador::Colaborador(string nombre, string id, int fechaContratacion)
+	: Persona(nombre, id)
 {
-	//Si el usuario digita "0" usa la fecha actual, si no , usa la fecha digitada (06102006 == 06/10/2006) 
-	// se divide la fecha primero
 	if (fechaContratacion == 0) {
 		time_t actual = time(0);
 		localtime_s(&this->fechaContratacion, &actual);
@@ -16,11 +19,20 @@ Colaborador::Colaborador(string nombre, string id, int fechaContratacion) : Pers
 		this->fechaContratacion.tm_year = (fechaContratacion % 10000) - 1900;
 		this->fechaContratacion.tm_mon = ((fechaContratacion / 10000) % 100) - 1;
 		this->fechaContratacion.tm_mday = (fechaContratacion / 1000000);
+		mktime(&this->fechaContratacion);
 	}
+	fechaIngreso = "";
 }
-Colaborador::~Colaborador()
+
+Colaborador::Colaborador(string nombre, string id, string fechaIngreso)
+	: Persona(nombre, id), fechaIngreso(fechaIngreso)
 {
+	time_t actual = time(0);
+	localtime_s(&this->fechaContratacion, &actual);
 }
+
+Colaborador::~Colaborador() {}
+
 string Colaborador::getFechaContratacion()
 {
 	stringstream fecha;
@@ -28,8 +40,8 @@ string Colaborador::getFechaContratacion()
 	fecha << ((this->fechaContratacion.tm_mon + 1) < 10 ? "0" : "") << (this->fechaContratacion.tm_mon + 1) << "/";
 	fecha << (this->fechaContratacion.tm_year + 1900);
 	return fecha.str();
-
 }
+
 void Colaborador::setFechaContratacion(int fecha)
 {
 	//Si el usuario digita "0" usa la fecha actual, si no , usa la fecha digitada (06102006 == 06/10/2006) 
@@ -44,5 +56,18 @@ void Colaborador::setFechaContratacion(int fecha)
 		this->fechaContratacion.tm_mday = (fecha / 1000000);
 		mktime(&this->fechaContratacion); // normalizar la estructura tm
 	}
+}
+
+string Colaborador::getFechaIngreso() { return fechaIngreso; }
+
+void Colaborador::setFechaIngreso(string fecha) { this->fechaIngreso = fecha; }
+
+string Colaborador::toString() {
+	stringstream ss;
+	ss << "Colaborador - Nombre: " << getNombre()
+	   << ", ID: " << getId()
+	   << ", Fecha de contratacion: " << getFechaContratacion()
+	   << ", Fecha de ingreso: " << fechaIngreso;
+	return ss.str();
 }
 

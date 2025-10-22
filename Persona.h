@@ -10,8 +10,8 @@ public:
 	Persona();
 	Persona(string nombre, string id);
 	virtual ~Persona();
-	string getNombre();
-	string getId();
+	string getNombre() const;
+	string getId() const;
 	void setNombre(string nombre);
 	void setId(string id);
 

@@ -49,8 +49,8 @@ string ListaEstados::mostrarEstados() {
 	stringstream ss;
 	NodoEstadoCarro* actual = primero;
 
-	ss << "Actual estado del carro: " << actual->getEstado()<<endl;
-	actual = actual->getSig();
+	ss << "Actual estado del carro: " << (actual ? actual->getEstado() : string("N/A")) << endl;
+	if (actual) actual = actual->getSig();
 	ss << "Bitacora de estados (Del ultimo estado al primer estado):" << endl;
 	while (actual != nullptr) {
 		ss << "- " << actual->getEstado() << endl;

@@ -82,40 +82,40 @@ void Carro::setCategoria(char c) {
 
 int Carro::setEstadosCarro(int estado)
 {
-	// Disponible, Alquilado, Devuelto, Revisión, Lavado
+	// Disponible, Alquilado, Devuelto, Revision, Lavado
 
 	string estadoStr;
 	switch (estado) {
 	case 1:
 		if (getEstadoCarro() == "Devuelto" ||
-			getEstadoCarro() == "Revision") return -1; //error -1, no puede ir de Devuelto o Revisión a Disponible
-		if (getEstadoCarro() == "Disponible") return -2; //error -2, ya está en Disponible
+			getEstadoCarro() == "Revision") return -1; //error -1, no puede ir de Devuelto o Revision a Disponible
+		if (getEstadoCarro() == "Disponible") return -2; //error -2, ya esta en Disponible
 		estadoStr = "Disponible";
 		break;
 	case 2:
 		if (getEstadoCarro() == "Devuelto" || 
 			getEstadoCarro() == "Revision" ||
-			getEstadoCarro() == "Lavado") return -1; //error -1, no puede ir de Devuelto, Revisión o Lavado a Alquilado
-		if (getEstadoCarro() == "Alquilado") return -2; //error -2, ya está en Alquilado
+			getEstadoCarro() == "Lavado") return -1; //error -1, no puede ir de Devuelto, Revision o Lavado a Alquilado
+		if (getEstadoCarro() == "Alquilado") return -2; //error -2, ya esta en Alquilado
 		estadoStr = "Alquilado";
 		break;
 	case 3:
 		if (getEstadoCarro() != "Alquilado") return -1; //error -1, solo puede ir de Alquilado a Devuelto
-		if (getEstadoCarro() == "Devuelto") return -2; //error -2, ya está en Devuelto
+		if (getEstadoCarro() == "Devuelto") return -2; //error -2, ya esta en Devuelto
 		estadoStr = "Devuelto";
 		break;
 	case 4:
-		if (getEstadoCarro() == "Alquilado") return -1; //error -1, no puede ir de Alquilado a Revisión
-		if (getEstadoCarro() == "Revision") return -2; //error -2, ya está en Revisión
-		estadoStr = "Revisión";
+		if (getEstadoCarro() == "Alquilado") return -1; //error -1, no puede ir de Alquilado a Revision
+		if (getEstadoCarro() == "Revision") return -2; //error -2, ya esta en Revision
+		estadoStr = "Revision";
 		break;
 	case 5:
 		if (getEstadoCarro() == "Alquilado") return -1; //error -1, no puede ir de Alquilado a Lavado
-		if (getEstadoCarro() == "Lavado") return -2; //error -2, ya está en Lavado 
+		if (getEstadoCarro() == "Lavado") return -2; //error -2, ya esta en Lavado 
 		estadoStr = "Lavado";
 		break;
 	default:
-		return false; //error 0, opción inválida
+		return false; //error 0, opcion invalida
 	}
 
 

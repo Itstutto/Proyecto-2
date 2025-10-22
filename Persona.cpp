@@ -10,8 +10,8 @@ Persona::Persona(string nombre, string id)
 	this->id = id;
 }
 Persona::~Persona(){}
-string Persona::getNombre(){	return nombre;}
-string Persona::getId(){return id;}
+string Persona::getNombre() const { return nombre; }
+string Persona::getId() const { return id; }
 void Persona::setNombre(string nombre){	this->nombre = nombre;}
 void Persona::setId(string id){this->id = id;}
 

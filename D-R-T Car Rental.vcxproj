@@ -124,24 +124,42 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Carro.cpp" />
+    <ClCompile Include="Cliente.cpp" />
+    <ClCompile Include="ClienteFisico.cpp" />
+    <ClCompile Include="ClienteJuridico.cpp" />
     <ClCompile Include="Colaborador.cpp" />
+    <ClCompile Include="ListaClientes.cpp" />
+    <ClCompile Include="ListaColaboradores.cpp" />
     <ClCompile Include="ListaEstados.cpp" />
     <ClCompile Include="ListaPlantel.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="NodoCl.cpp" />
+    <ClCompile Include="NodoCol.cpp" />
     <ClCompile Include="NodoEstadoCarro.cpp" />
     <ClCompile Include="NodoPl.cpp" />
     <ClCompile Include="Persona.cpp" />
     <ClCompile Include="Plantel.cpp" />
+    <ClCompile Include="Sucursal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Carro.h" />
+    <ClInclude Include="Cliente.h" />
+    <ClInclude Include="ClienteFisico.h" />
+    <ClInclude Include="ClienteJuridico.h" />
     <ClInclude Include="Colaborador.h" />
+    <ClInclude Include="ListaClientes.h" />
+    <ClInclude Include="ListaColaboradores.h" />
     <ClInclude Include="ListaEstados.h" />
     <ClInclude Include="ListaPlantel.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="NodoCl.h" />
+    <ClInclude Include="NodoCol.h" />
     <ClInclude Include="NodoEstadoCarro.h" />
     <ClInclude Include="NodoPl.h" />
     <ClInclude Include="Persona.h" />
     <ClInclude Include="Plantel.h" />
+    <ClInclude Include="Sucursal.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
