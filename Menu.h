@@ -1,14 +1,15 @@
 #pragma once
 #include "Sucursal.h"
+#include "ListaSucursales.h"
 
 class Menu {
 private:
-	Sucursal* sucursalActual;
-	void validarEntero(int& opcion);
-	void submenuPersonas();
+	ListaSucursales* sucursales;
+	bool validarEntero(int& opcion);
 	void inicializarDatos();
 public:
-	Menu(Sucursal* s);
+	Menu();
+	~Menu();
 	void iniciar();
 	void menuPrincipal();
 };

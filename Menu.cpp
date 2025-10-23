@@ -9,17 +9,32 @@
 
 using namespace std;
 
-Menu::Menu(Sucursal* s) : sucursalActual(s) {}
+Menu::Menu() {
+	sucursales = new ListaSucursales();
 
-void Menu::validarEntero(int& opcion) {
+}
+
+Menu::~Menu()
+{
+	delete sucursales;
+}
+
+bool Menu::validarEntero(int& opcion) {
 	if (cin.fail()) {
 		cin.clear();
 		cin.ignore(10000, '\n');
 		opcion = 0;
+		cout << "Entrada invalida. Intente de nuevo." << endl;
+		system("cls");
+		return true;
 	}
+	return false;
 }
 
 void Menu::inicializarDatos() {
+	Sucursal* suc1 = new Sucursal(1);
+
+	
 	// Plantel y carros
 	Plantel* plantel = new Plantel('A', 7, 8);
 
@@ -37,7 +52,7 @@ void Menu::inicializarDatos() {
 	plantel->agregarCarro(carro5, 43);
 	plantel->agregarCarro(carro6, 55);
 
-	sucursalActual->getPlanteles()->insertarFinal(plantel);
+	suc1->getPlanteles()->insertarFinal(plantel);
 
 	// Bucle de ejemplo para cambiar estado de carro1
 	/*
@@ -67,10 +82,10 @@ void Menu::inicializarDatos() {
 	ClienteFisico* cf2 = new ClienteFisico("Ana Gomez", "333", "Nicaragua");
 	ClienteJuridico* cj2 = new ClienteJuridico("Logistics Inc.", "444", "Costa Rica", "Transporte", 5.0);
 
-	sucursalActual->getClientes()->insertarFinal(cf1);
-	sucursalActual->getClientes()->insertarFinal(cj1);
-	sucursalActual->getClientes()->insertarFinal(cf2);
-	sucursalActual->getClientes()->insertarFinal(cj2);
+	suc1->getClientes()->insertarFinal(cf1);
+	suc1->getClientes()->insertarFinal(cj1);
+	suc1->getClientes()->insertarFinal(cf2);
+	suc1->getClientes()->insertarFinal(cj2);
 
 	// Colaboradores
 	Colaborador* co1 = new Colaborador("Maria Lopez", "C1", string("01/01/2024"));
@@ -78,9 +93,20 @@ void Menu::inicializarDatos() {
 	Colaborador* co2 = new Colaborador("Carlos Soto", "C2", string("15/05/2023"));
 
 
-	sucursalActual->getColaboradores()->insertarFinal(co1);
-	sucursalActual->getColaboradores()->insertarFinal(co1_dup);
-	sucursalActual->getColaboradores()->insertarFinal(co2);
+	suc1->getColaboradores()->insertarFinal(co1);
+	suc1->getColaboradores()->insertarFinal(co1_dup);
+	suc1->getColaboradores()->insertarFinal(co2);
+
+	sucursales->insertarFinal(suc1);
+
+	Cliente* prueba = dynamic_cast<Cliente*>(sucursales->obtenerSucursalPorIndice(0)->getColaboradores()->getPrimero()->getDato());
+	if (prueba) {
+		cout << prueba->getPaisResidencia() << endl;
+	}
+	else
+	{
+		cout << "No es un cliente" << endl;
+	}
 }
 
 void Menu::iniciar() {
@@ -89,89 +115,106 @@ void Menu::iniciar() {
 }
 
 void Menu::menuPrincipal() {
-	int opcion = 0;
+	int opcion = 0; //se usa en TODOS los menus
+	Sucursal* s = nullptr; // Sucursal seleccionada
+	int enteros;
+	string textos;
+	char sn;
+
 	do {
-		cout << "\n=== Menu Principal ===\n";
-		cout << "1. Mostrar estacionamiento del primer plantel\n";
-		cout << "2. Submenu personas (clientes y colaboradores)\n";
-		cout << "3. Mostrar resumen de planteles\n";
-		cout << "4. Salir\n";
-		cout << "Seleccione una opcion: ";
+		cout << "\n================ DRT CAR ====================\n";
+		cout << sucursales->mostrarSucursales(0);
 		cin >> opcion;
 		validarEntero(opcion);
 
-		switch (opcion) {
-		case 1: {
-			NodoPl* primero = sucursalActual->getPlanteles()->getPrimero();
-			if (primero) {
-				Plantel* p = primero->getDato();
-				cout << p->mostrarEstacionamiento(0) << endl;
-			} else {
-				cout << "No hay planteles registrados.\n";
+		if(opcion==sucursales->getTam()+3){}
+		else if (opcion >= 1 && opcion <= sucursales->getTam()) {
+			s = sucursales->obtenerSucursalPorIndice(opcion - 1);
+			
+			
+			do {
+				cout << s->mostrarOpciones();
+				cin >> opcion;
+				validarEntero(opcion);
+				switch (opcion) {
+				case 1:
+					cout << s->getClientes()->mostrarPersonas();
+					break;
+				case 2:
+					cout << s->getColaboradores()->mostrarPersonas();
+					break;
+				case 3:
+					cout << "Gestionar Planteles (funcionalidad no implementada)." << endl;
+					break;
+				case 4:
+					cout << "Gestionar Contratos (funcionalidad no implementada)." << endl;
+					break;
+				case 5:
+					break;
+				default:
+					system("cls");
+					cout << "Opcion invalida. Intente de nuevo." << endl<<endl;
+					break;
+				}
+			} while (opcion != 5);
+			opcion = 0; // Reiniciar opcion para el menu principal
+		}
+		else if (opcion == sucursales->getTam() + 1) {
+			Sucursal* nuevaSuc = new Sucursal();
+			do {
+				cout << "Ingrese el numero de la nueva sucursal: ";
+				cin >> enteros;
+			} while (validarEntero(enteros));
+			if (sucursales->buscarSucursal(enteros)) {
+				cout << "Sucursal con ese numero ya existe. Operacion cancelada." << endl;
+				delete nuevaSuc;
+				nuevaSuc = nullptr;
+
 			}
-			break;
+			nuevaSuc->setNumeroSucursal(enteros);
+			cout << "Esta seguro de crear la sucursal numero " << enteros << "? (s/n): ";
+			cin >> sn;
+			if (sn == 's' || sn == 'S') {
+				if (sucursales->insertarFinal(nuevaSuc)) {
+					cout << "Sucursal creada exitosamente." << endl;
+				}
+				else {
+					cout << "Error: No se pudo crear la sucursal. Puede que ya exista una sucursal con ese numero." << endl;
+					delete nuevaSuc;
+					nuevaSuc = nullptr;
+				}
+			}
+			else {
+				cout << "Creacion de sucursal cancelada." << endl;
+				delete nuevaSuc;
+				nuevaSuc = nullptr;
+			}
+
 		}
-		case 2:
-			submenuPersonas();
-			break;
-		case 3:
-			cout << sucursalActual->getPlanteles()->mostrarPlanteles() << endl;
-			break;
-		case 4:
-			break;
-		default:
-			cout << "Opcion invalida.\n";
+		else if (opcion == sucursales->getTam() + 2) {
+			cout << "Elija la sucursal a eliminar:"<<endl;
+			cout << sucursales->mostrarSucursales(1);
+			cin >> enteros;
+			validarEntero(enteros);
+			cout << "Esta seguro de eliminar la sucursal numero " << sucursales->obtenerSucursalPorIndice(enteros - 1)->getNumeroSucursal() << "? (Con esto elimina TODO (Planteles, Carros, Contratos, CLientes, etc)) (s/n): ";
+			cin >> sn;
+			if (sn == 's' || sn == 'S') {
+				if (sucursales->eliminarSucursal(sucursales->obtenerSucursalPorIndice(enteros - 1)->getNumeroSucursal())) {
+					cout << "Sucursal eliminada exitosamente." << endl;
+				}
+				else {
+					cout << "Error: No se pudo eliminar la sucursal." << endl;
+				}
+			}
+			else {
+				cout << "Eliminacion de sucursal cancelada." << endl;
+			}
 		}
-	} while (opcion != 4);
+		else {
+			cout << "Opcion invalida. Intente de nuevo."<<endl;
+		}
+
+	} while (opcion != sucursales->getTam()+3);
 }
 
-void Menu::submenuPersonas() {
-	int opcion = 0;
-	do {
-		cout << "\n--- Submenu Personas ---\n";
-		cout << "1. Mostrar clientes\n";
-		cout << "2. Mostrar colaboradores\n";
-		cout << "3. Buscar cliente por ID\n";
-		cout << "4. Buscar colaborador por ID\n";
-		cout << "5. Eliminar cliente por ID\n";
-		cout << "6. Volver\n";
-		cout << "Seleccione una opcion: ";
-		cin >> opcion;
-		validarEntero(opcion);
 
-		switch (opcion) {
-		case 1:
-			cout << sucursalActual->getClientes()->mostrarPersonas() << endl;
-			break;
-		case 2:
-			cout << sucursalActual->getColaboradores()->mostrarPersonas() << endl;
-			break;
-		case 3: {
-			string id;
-			cout << "ID del cliente: ";
-			cin >> id;
-			if (auto c = sucursalActual->getClientes()->buscarPersona(id)) cout << c->toString() << endl; else cout << "No encontrado.\n";
-			break;
-		}
-		case 4: {
-			string id;
-			cout << "ID del colaborador: ";
-			cin >> id;
-			if (auto c = sucursalActual->getColaboradores()->buscarPersona(id)) cout << c->toString() << endl; else cout << "No encontrado.\n";
-			break;
-		}
-		case 5: {
-			string id;
-			cout << "ID del cliente a eliminar: ";
-			cin >> id;
-			bool ok = sucursalActual->getClientes()->eliminarPersona(id);
-			cout << (ok ? "Eliminado.\n" : "No se encontro.\n");
-			break;
-		}
-		case 6:
-			break;
-		default:
-			cout << "Opcion invalida.\n";
-		}
-	} while (opcion != 6);
-}

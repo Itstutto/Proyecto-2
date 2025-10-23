@@ -4,10 +4,9 @@
 using namespace std;
 
 int main() {
-	Sucursal* s = new Sucursal(1);
-	Menu* m = new Menu(s);
+	
+	Menu* m = new Menu();
 	m->iniciar();
 	delete m;
-	delete s;
 	return 0;
 }

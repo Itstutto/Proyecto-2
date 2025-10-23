@@ -10,6 +10,7 @@ private:
 	ListaClientes1* clientes;
 	ListaColaboradores1* colaboradores;
 public:
+	Sucursal();
 	Sucursal(int numero);
 	~Sucursal();
 
@@ -19,4 +20,7 @@ public:
 	ListaPlantel* getPlanteles();
 	ListaClientes1* getClientes();
 	ListaColaboradores1* getColaboradores();
+
+
+	string mostrarOpciones();
 };

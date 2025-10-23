@@ -133,6 +133,7 @@
     <ClCompile Include="ListaEstados.cpp" />
     <ClCompile Include="ListaPersonas.cpp" />
     <ClCompile Include="ListaPlantel.cpp" />
+    <ClCompile Include="ListaSucursales.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="NodoCl.cpp" />
@@ -140,6 +141,7 @@
     <ClCompile Include="NodoEstadoCarro.cpp" />
     <ClCompile Include="NodoP.cpp" />
     <ClCompile Include="NodoPl.cpp" />
+    <ClCompile Include="NodoSuc.cpp" />
     <ClCompile Include="Persona.cpp" />
     <ClCompile Include="Plantel.cpp" />
     <ClCompile Include="Sucursal.cpp" />
@@ -155,12 +157,14 @@
     <ClInclude Include="ListaEstados.h" />
     <ClInclude Include="ListaPersonas.h" />
     <ClInclude Include="ListaPlantel.h" />
+    <ClInclude Include="ListaSucursales.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="NodoCl.h" />
     <ClInclude Include="NodoCol.h" />
     <ClInclude Include="NodoEstadoCarro.h" />
     <ClInclude Include="NodoP.h" />
     <ClInclude Include="NodoPl.h" />
+    <ClInclude Include="NodoSuc.h" />
     <ClInclude Include="Persona.h" />
     <ClInclude Include="Plantel.h" />
     <ClInclude Include="Sucursal.h" />
