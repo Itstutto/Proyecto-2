@@ -16,7 +16,7 @@ public:
 	// Getters
 	NodoPl* getPrimero();
 	NodoPl* getUltimo();
-	NodoPl* buscarPlantel(int pos);
+	Plantel* buscarPlantel(int pos);
 	int getTam();
 	// Métodos adicionales
 	bool insertarFinal(Plantel* p);

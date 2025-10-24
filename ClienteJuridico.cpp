@@ -22,3 +22,10 @@ string ClienteJuridico::toString() const {
 	   << ", % Descuento: " << porcentajeDescuento;
 	return ss.str();
 }
+
+string ClienteJuridico::infoMenu() const {
+	stringstream s;
+	//muestra solo el nombre y el id, para el menu
+	s << "Cliente Juridico - Nombre: " << getNombre() << ", ID: " << getId();
+	return s.str();
+}

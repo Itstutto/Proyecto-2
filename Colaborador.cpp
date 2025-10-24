@@ -70,4 +70,10 @@ string Colaborador::toString() const {
 	   << ", Fecha de ingreso: " << fechaIngreso;
 	return ss.str();
 }
+string Colaborador::infoMenu() const {
+	stringstream s;
+	//muestra solo el nombre y el id, para el menu
+	s << "Colaborador - Nombre: " << getNombre() << ", ID: " << getId();
+	return s.str();
+}
 

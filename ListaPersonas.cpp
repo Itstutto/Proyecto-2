@@ -72,4 +72,15 @@ Persona* ListaPersonas::buscarPersona(string id)
 	return nullptr; // No encontrado
 }
 
+Persona* ListaPersonas::obtenerPersonaPorIndice(int indice)
+{
+	indice--; // Ajustar a 0-based
+	if (indice < 0 || indice >= tam) return nullptr;
+	NodoP* actual = primero;
+	for (int i = 0; i < indice; i++) {
+		actual = actual->getSig();
+	}
+	return actual->getDato();
+}
+
 

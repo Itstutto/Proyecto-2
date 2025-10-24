@@ -21,7 +21,7 @@ NodoPl* ListaPlantel::getPrimero() {
 NodoPl* ListaPlantel::getUltimo() {
 	return ultimo;
 }
-NodoPl* ListaPlantel::buscarPlantel(int pos)
+Plantel* ListaPlantel::buscarPlantel(int pos)
 {
 	pos--; // Ajustar para índice basado en 0
 	if (pos < 0 || pos >= tam) return nullptr;
@@ -29,7 +29,7 @@ NodoPl* ListaPlantel::buscarPlantel(int pos)
 	for (int i = 0; i < pos; i++) {
 		actual = actual->getSig();
 	}
-	return actual;
+	return actual->getDato();
 }
 int ListaPlantel::getTam() {
 	return tam;

@@ -91,6 +91,7 @@ string ListaSucursales::mostrarSucursales(int ver)
 }
 Sucursal* ListaSucursales::obtenerSucursalPorIndice(int indice)
 {
+	indice--; // Ajustar a 0-based
 	if (indice < 0 || indice >= tam) return nullptr;
 	NodoSuc* actual = primero;
 	int contador = 0;

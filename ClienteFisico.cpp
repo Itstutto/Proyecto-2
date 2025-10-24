@@ -13,3 +13,9 @@ string ClienteFisico::toString() const {
 	ss << "Cliente Fisico - " << Cliente::toString();
 	return ss.str();
 }
+string ClienteFisico::infoMenu() const {
+	stringstream s;
+	//muestra solo el nombre y el id, para el menu
+	s << "Cliente Fisico - Nombre: " << getNombre() << ", ID: " << getId();
+	return s.str();
+}

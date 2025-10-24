@@ -20,6 +20,7 @@ public:
 	bool insertarFinal(Persona* p);
 	bool eliminarPersona(string id);
 	Persona* buscarPersona(string id);
-	virtual string mostrarPersonas() = 0;
+	virtual string mostrarPersonas(int ver) = 0;
+	Persona* obtenerPersonaPorIndice(int indice);
 };
 

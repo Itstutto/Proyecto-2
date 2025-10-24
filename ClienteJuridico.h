@@ -17,4 +17,5 @@ public:
 	void setPorcentajeDescuento(double pct);
 
 	string toString() const override;
+	string infoMenu() const override;
 };

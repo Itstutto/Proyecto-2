@@ -5,6 +5,6 @@ class ListaColaboradores1 : public ListaPersonas
 	public:
 	ListaColaboradores1();
 	~ListaColaboradores1();
-	string mostrarPersonas() override;
+	string mostrarPersonas(int ver) override;
 };
 

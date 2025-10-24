@@ -18,3 +18,16 @@ string Cliente::toString() const {
 	   << ", Pais de residencia: " << paisResidencia;
 	return ss.str();
 }
+
+string Cliente::mostrarCliente() const
+{
+	stringstream s;
+ 	s << nombre<<endl
+		<< "-----------------------------------------" << endl;
+	s<<"1. Modificar Cliente"<<endl
+		<< "2. Informacion del Cliente" << endl
+		<< "3. Historial de Alquileres (funcionalidad no implementada)" << endl
+		<< "4. Salir" << endl;
+	return s.str();
+
+}

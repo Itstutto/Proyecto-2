@@ -8,4 +8,5 @@ public:
 	virtual ~ClienteFisico();
 
 	string toString() const override;
+	string infoMenu() const override;
 };

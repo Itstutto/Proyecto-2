@@ -23,5 +23,6 @@ public:
 	string getFechaIngreso();
 	void setFechaIngreso(string fecha);
 	string toString() const override;
+	string infoMenu() const override;
 };
 

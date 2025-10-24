@@ -34,5 +34,6 @@ public:
 	bool agregarCarro(Carro* carro, int pos);
 	bool eliminarCarro(int f, int c);
 	string mostrarEstacionamiento(int ver);
+	string posicionesRecomendadas();
 };
 

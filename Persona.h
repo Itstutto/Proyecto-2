@@ -3,7 +3,7 @@
 using namespace std;
 class Persona
 {
-private:
+protected:
 	string nombre;
 	string id;
 public:
@@ -15,6 +15,7 @@ public:
 	void setNombre(string nombre);
 	void setId(string id);
 	virtual string toString() const = 0;
+	virtual string infoMenu() const = 0;
 
 };
 

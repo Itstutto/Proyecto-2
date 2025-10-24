@@ -6,7 +6,7 @@
 using namespace std;
 
 class Cliente : public Persona {
-private:
+protected:
 	string paisResidencia;
 public:
 	Cliente();
@@ -16,4 +16,5 @@ public:
 	string getPaisResidencia();
 	void setPaisResidencia(string pais);
 	string toString() const override; // virtual para ser sobrescrito
+	string mostrarCliente() const;
 };

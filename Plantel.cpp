@@ -124,3 +124,35 @@ string Plantel::mostrarEstacionamiento(int ver) {
 	}
 	return ss.str();
 }
+
+string Plantel::posicionesRecomendadas()
+{
+	stringstream s;
+
+	for (int i = 0; i < filas; ++i) {
+		for (int j = 0; j < columnas; ++j) {
+			if (estacionamiento[i][j] != nullptr) continue; // solo evaluar espacios libres
+
+			int vecinosVacios = 0;
+			int vecinosValidos = 0;
+
+			for (int fi = i - 1; fi <= i + 1; ++fi) {
+				for (int cj = j - 1; cj <= j + 1; ++cj) {
+					if (fi == i && cj == j) continue; // excluir la celda actual
+					if (fi >= 0 && fi < filas && cj >= 0 && cj < columnas) {
+						++vecinosValidos;
+						if (estacionamiento[fi][cj] == nullptr) {
+							++vecinosVacios;
+						}
+					}
+				}
+			}
+
+			// Recomendado si todos los vecinos válidos están libres
+			if (vecinosValidos > 0 && vecinosVacios == vecinosValidos) {
+				s << getEspacioEstacionamiento(i, j) << " ";
+			}
+		}
+	}
+	return s.str();
+}

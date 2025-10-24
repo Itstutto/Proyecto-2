@@ -6,6 +6,7 @@ class Menu {
 private:
 	ListaSucursales* sucursales;
 	bool validarEntero(int& opcion);
+	bool validarFlotante(double& opcion);
 	void inicializarDatos();
 public:
 	Menu();
