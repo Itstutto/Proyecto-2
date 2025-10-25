@@ -27,6 +27,7 @@ public:
 	// Getters basicos
 	string getCodigoTransaccion() const;
 	int getEstadoTransaccion() const;
+	void setEstadoTransaccion(int nuevoEstado); // NUEVO SETTER
 	string toResumen() const;
 
 	virtual string toString() const = 0;

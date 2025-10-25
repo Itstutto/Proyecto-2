@@ -13,6 +13,13 @@ SolicitudAlquiler::~SolicitudAlquiler() {}
 string SolicitudAlquiler::getCodigoTransaccion() const { return codigoTransaccion; }
 int  SolicitudAlquiler::getEstadoTransaccion() const { return estadoTransaccion; }
 
+// IMPLEMENTACIÓN DEL SETTER PARA EL ESTADO GENERAL DE LA TRANSACCIÓN
+void SolicitudAlquiler::setEstadoTransaccion(int nuevoEstado) {
+	if (nuevoEstado >= 1 && nuevoEstado <= 4) {
+		estadoTransaccion = nuevoEstado;
+	}
+}
+
 string SolicitudAlquiler::toResumen() const {
 	stringstream ss;
 	ss << codigoTransaccion << " - " << placaVehiculo << " - Cliente: " << idCliente << " - Estado: " << estadoTransaccion;

@@ -360,12 +360,75 @@ void Menu::menuPrincipal() {
                                         cout << "2. Rechazar Solicitud\n";
                                         cout << "3. Anular Solicitud\n";
                                         cout << "4. Regresar\n";
-                                    } else { // Si ya es Contrato (2), solo se puede anular o regresar
-                                        cout << "1. No disponible (Ya es Contrato)\n";
-                                        cout << "2. No disponible\n";
-                                        cout << "3. Anular Contrato\n";
-                                        cout << "4. Regresar\n";
+                                    } else { // Si ya NO es Pendiente (incluye Contrato 2, Rechazada 3, Anulada 4)
+                                        ContratoAlquiler* con = dynamic_cast<ContratoAlquiler*>(sol);
+                                        if (con) { // ES UN CONTRATO ACTIVO (Estado Transacción = 2)
+                                            do {
+                                                system("cls");
+                                                cout << "\n========= GESTION DE CONTRATO ACTIVO =========\n";
+                                                cout << "Estado Operativo Actual: " << con->getEstadoDetalladoStr() << "\n";
+                                                cout << "\n----------------------------------------------------\n";
+
+                                                cout << "1. Registrar Devolucion y Finalizar Contrato\n";
+                                                cout << "2. Anular Contrato\n";
+                                                cout << "3. Ver Historial de Carro (Bitacora)\n";
+                                                cout << "4. Regresar\n";
+
+                                                cout << "Seleccione una opcion: ";
+                                                cin >> opcion;
+
+                                                if (validarEntero(opcion)) continue;
+
+                                                switch (opcion) {
+                                                    case 1: {
+                                                        cout << "\nFuncionalidad: Registrar Devolucion (Calculo de Multa/Reintegro y Finalizacion del Contrato). [Pendiente de implementar logica compleja]\n";
+                                                        // Lógica pendiente:
+                                                        // 1. Pedir dias utilizados.
+                                                        // 2. Calcular diferencia de dias vs. diasAlquiler.
+                                                        // 3. Aplicar multa/reintegro (70% del diario por dia anticipado).
+                                                        // 4. Actualizar el Contrato: con->setEstadoDetallado(3, "Finalizado [detalle]");
+                                                        // 5. Actualizar el Carro: Buscar Carro por Placa y carro->setEstadosCarro(3, con->getIdColaborador()); // Devuelto
+                                                        break;
+                                                    }
+                                                    case 2: {
+                                                        // Solo se debería anular si el estado detallado es "Pendiente de Ejecución" (2)
+                                                        if (con->getEstadoDetallado() != 2) {
+                                                            cout << "ADVERTENCIA: Solo los contratos 'Pendiente de Ejecucion' pueden anularse facilmente.\n";
+                                                            cout << "La logica de anulacion para contratos 'En Alquiler' no esta implementada.\n";
+                                                            break;
+                                                        }
+                                                        cout << "Esta seguro de ANULAR el Contrato " << con->getCodigoTransaccion() << "? (s/n): ";
+                                                        cin >> sn;
+                                                        if (sn == 's' || sn == 'S') {
+                                                            // Implementación real: cambiar estado base a 4 (Anulada)
+                                                            con->setEstadoTransaccion(4);
+                                                            // Lógica pendiente: actualizar estado del carro si aplica
+                                                            cout << "\nCONTRATO ANULADO. [Logica de Carro Pendiente].\n";
+                                                        }
+                                                        break;
+                                                    }
+                                                    case 3: {
+                                                        cout << "\nFuncionalidad: Mostrar Bitacora del Carro (Se necesita buscar el Carro por Placa primero).\n";
+                                                        break;
+                                                    }
+                                                    case 4: // Regresar
+                                                        break;
+                                                    default:
+                                                        cout << "Opcion invalida.\n";
+                                                        break;
+                                                }
+                                                system("pause");
+                                            } while (opcion != 4);
+                                            opcion = 4; // salir del bucle de detalle superior
+                                            continue; // saltar el prompt general
+                                        } else { // Si es Rechazada (3) o Anulada (4)
+                                            cout << "Esta transaccion ya no es gestionable (Rechazada o Anulada).\n";
+                                            system("pause");
+                                            opcion = 4; // salir del bucle de detalle superior
+                                            continue; // saltar el prompt general
+                                        }
                                     }
+
                                     cout << "Seleccione una opcion: ";
                                     cin >> opcion; // Usar la variable 'opcion' para este sub-submenu
 
@@ -388,18 +451,21 @@ void Menu::menuPrincipal() {
                                         cout << "\nFuncionalidad: Aprobar solicitud. Estado de Carro y conversion de Solicitud (Pendiente de implementar logica).";
                                         break;
                                     }
-                                    case 2: { // Rechazar o no disponible
+                                    case 2: { // Rechazar Solicitud
                                          if (sol->getEstadoTransaccion() != 1) {
                                             cout << "Opcion no disponible para el estado actual de la transaccion.\n";
                                             break;
                                         }
-                                        // Lógica de Rechazo: Cambiar estado de la Solicitud a 3 (Rechazada)
-                                        cout << "\nFuncionalidad: Rechazar Solicitud y cambiar estado a 3 (Rechazada) (No implementada).\n";
+                                        // Implementación real: cambiar estado a 3 (Rechazada)
+                                        sol->setEstadoTransaccion(3);
+                                        cout << "\nSOLICITUD RECHAZADA exitosamente.\n";
                                         break;
                                     }
-                                    case 3: { // Anular (Pendiente: Lógica de Carro a Disponible/Devuelto/etc.)
-                                        // Lógica de Anulación: Cambiar estado de la Solicitud a 4 (Anulada)
-                                        cout << "\nFuncionalidad: Anular Transaccion y cambiar estado a 4 (Anulada) (No implementada).\n";
+                                    case 3: { // Anular Solicitud
+                                        // Implementación real: cambiar estado a 4 (Anulada)
+                                        sol->setEstadoTransaccion(4);
+                                        cout << "\nSOLICITUD ANULADA exitosamente.\n";
+                                        // Nota: Lógica de Carro (si aplica) pendiente de implementar
                                         break;
                                     }
                                     case 4: // Regresar

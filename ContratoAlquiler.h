@@ -2,11 +2,20 @@
 #include "SolicitudAlquiler.h"
 
 class ContratoAlquiler : public SolicitudAlquiler {
+private:
+	// Nuevos atributos para el manejo de sub-estados complejos de Contrato
+	int estadoDetalladoContrato; // 1=Aprobado en alquiler, 2=Pendiente de Ejecución, 3=Finalizado
+	string detalleFinalizacion;  // Guarda el detalle si es Finalizado (multa, reintegro, sin cargos)
 public:
 	ContratoAlquiler(const string& codigo, const string& cliente, const string& colaborador,
-					 const string& sucursal, const string& placa, int dias,
-					 const string& inicio, const string& entrega, double precioDiario, double precioTotal)
-		: SolicitudAlquiler(codigo, cliente, colaborador, sucursal, placa, dias, inicio, entrega, precioDiario, precioTotal, 2) {}
+		const string& sucursal, const string& placa, int dias,
+		const string& inicio, const string& entrega, double precioDiario, double precioTotal);
 	~ContratoAlquiler() override {}
+
+	// Getters y Setters para el estado detallado
+	int getEstadoDetallado() const;
+	string getEstadoDetalladoStr() const; // Devuelve el estado en texto
+	void setEstadoDetallado(int nuevoEstado, const string& detalle = "");
+
 	string toString() const override;
 };
