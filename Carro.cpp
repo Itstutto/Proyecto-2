@@ -6,83 +6,82 @@ Carro::Carro() {
 	marca = "";
 	ubicacion = "";
 	categoria = ' ';
-	estadosCarro = new ListaEstados();
-	estadosCarro->insertarInicio("Revision");
+	precioDiario = 0.0;
+	historialEstados = new ListaBitacora();
+	// estado inicial: Revision (4)
+	historialEstados->insertarFinal(new EstadoBitacora(4, 4, "SISTEMA"));
 }
 
-Carro::Carro(string placa, string modelo, string marca, string ubicacion, string tipoLicencia, char catergoria) {
+Carro::Carro(string placa, string modelo, string marca, string ubicacion, string tipoLicencia, char catergoria, double precio) {
 	this->placa = placa;
 	this->modelo = modelo;	
 	this->marca = marca;
 	this->ubicacion = ubicacion;
 	this->tipoLicencia = tipoLicencia;
 	this->categoria = catergoria;
-	this->estadosCarro = new ListaEstados();
-	estadosCarro->insertarInicio("Revision");
+	this->precioDiario = precio;
+	this->historialEstados = new ListaBitacora();
+	// estado inicial: Revision (4)
+	historialEstados->insertarFinal(new EstadoBitacora(4, 4, "SISTEMA"));
 }
 
 Carro::~Carro()
 {
-	delete estadosCarro;
+	delete historialEstados;
 }
 
-string Carro::getPlaca() {
-	return placa;
-}
-string Carro::getModelo() {
-	return modelo;
-}
-string Carro::getMarca() {
-	return marca;
-}
-string Carro::getUbicacion() {
-	return ubicacion;
-}
-string Carro::getTipoLicencia() {
-	return tipoLicencia;
-}
-char Carro::getCategoria() {
-	return categoria;
-}
+string Carro::getPlaca() { return placa; }
+string Carro::getModelo() { return modelo; }
+string Carro::getMarca() { return marca; }
+string Carro::getUbicacion() { return ubicacion; }
+string Carro::getTipoLicencia() { return tipoLicencia; }
+char Carro::getCategoria() { return categoria; }
+double Carro::getPrecioDiario() { return precioDiario; }
 
 string Carro::getEstadoCarro()
 {
-	return estadosCarro->getPrimero()->getEstado();
+	EstadoBitacora* ult = historialEstados->getUltimoEstado();
+	int e = ult ? ult->getEstadoActual() : 4; // por defecto Revision
+	switch (e) {
+		case 1: return "Disponible";
+		case 2: return "Alquilado";
+		case 3: return "Devuelto";
+		case 4: return "Revision";
+		case 5: return "Lavado";
+		default: return "Revision";
+	}
 }
 
 string Carro::getHistorialEstados()
 {
 	stringstream s;
-
-	s << estadosCarro->mostrarEstados();
+	s << historialEstados->mostrarBitacora();
 	return s.str();
 }
 
+void Carro::setPlaca(string p) { placa = p; }
+void Carro::setModelo(string m) { modelo = m; }
+void Carro::setMarca(string ma) { marca = ma; }
+void Carro::setUbicacion(string u) { ubicacion = u; }
+void Carro::setTipoLicencia(string t) { tipoLicencia = t; }
+void Carro::setCategoria(char c) { categoria = c; }
+void Carro::setPrecioDiario(double p) { precioDiario = p; }
+
+static bool transicionValida(int actual, int nuevo) {
+	// Matriz corregida
+	switch (actual) {
+	case 1: return (nuevo == 2 || nuevo == 4 || nuevo == 5); // Disponible -> {Alquilado, Revision, Lavado}
+	case 2: return (nuevo == 3); // Alquilado -> {Devuelto}
+	case 3: return (nuevo == 4 || nuevo == 5); // Devuelto -> {Revision, Lavado}
+	case 4: return (nuevo == 5); // Revision -> {Lavado}
+	case 5: return (nuevo == 1 || nuevo == 4); // Lavado -> {Disponible, Revision}
+	default: return false;
+	}
+}
 
 
 
-void Carro::setPlaca(string p) {
-	placa = p;
-}
-void Carro::setModelo(string m) {
-	modelo = m;
-}
-void Carro::setMarca(string ma) {
-	marca = ma;
-}
-void Carro::setUbicacion(string u) {
-	ubicacion = u;
-}
-void Carro::setTipoLicencia(string t) {
-	tipoLicencia = t;
-}
-void Carro::setCategoria(char c) {
-	categoria = c;
-}
-
-int Carro::setEstadosCarro(int estado)
-{
-	// Disponible, Alquilado, Devuelto, Revision, Lavado
+/*	// Disponible, Alquilado, Devuelto, Revision, Lavado
 
 	string estadoStr;
 	switch (estado) {
@@ -120,8 +119,17 @@ int Carro::setEstadosCarro(int estado)
 
 
 	estadosCarro->insertarInicio(estadoStr);
-	return true;
+	return true;*/
 
+
+int Carro::setEstadosCarro(int estado, string idColaborador)
+{
+	EstadoBitacora* ult = historialEstados->getUltimoEstado();
+	int actual = ult ? ult->getEstadoActual() : 4; // Revision por defecto
+	if (estado == actual) return -2;
+	if (!transicionValida(actual, estado)) return -1;
+	historialEstados->insertarFinal(new EstadoBitacora(actual, estado, idColaborador));
+	return 1;
 }
 
 string Carro::toString() {
@@ -129,8 +137,8 @@ string Carro::toString() {
 	ss << "---------------------------------------------------------------------------" << endl;
 	ss << "Carro [Placa: " << placa << ", Modelo: " << modelo << ", Marca: " << marca
 		<< ", Ubicacion: " << ubicacion << ", Tipo Licencia: " << tipoLicencia
-		<< ", Categoria: " << categoria << "]"<<endl
-		<< "Estados del Carro: " << estadosCarro->mostrarEstados();
+		<< ", Categoria: " << categoria << ", Precio Diario: " << precioDiario << "]"<<endl
+		<< getHistorialEstados();
 	ss << "---------------------------------------------------------------------------" << endl;
 	return ss.str();
 }

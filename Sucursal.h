@@ -2,6 +2,7 @@
 #include "ListaPlantel.h"
 #include "ListaColaboradores1.h"
 #include "ListaClientes1.h"
+#include "ListaSolicitudesContratos.h"
 
 class Sucursal {
 private:
@@ -9,6 +10,7 @@ private:
 	ListaPlantel* planteles;
 	ListaClientes1* clientes;
 	ListaColaboradores1* colaboradores;
+	ListaSolicitudesContratos* transacciones;
 public:
 	Sucursal();
 	Sucursal(int numero);
@@ -20,6 +22,7 @@ public:
 	ListaPlantel* getPlanteles();
 	ListaClientes1* getClientes();
 	ListaColaboradores1* getColaboradores();
+	ListaSolicitudesContratos* getTransacciones();
 
 
 	string mostrarOpciones();

@@ -6,6 +6,9 @@
 #include "ClienteJuridico.h"
 #include "Colaborador.h"
 #include "ListaPlantel.h"
+#include "SolicitudAlquiler.h"
+#include "ContratoAlquiler.h"
+#include "SolicitudPendiente.h"
 
 using namespace std;
 
@@ -50,12 +53,12 @@ void Menu::inicializarDatos() {
 	// Plantel y carros
 	Plantel* plantel = new Plantel('A', 7, 8);
 
-	Carro* carro1 = new Carro("123-ABC", "Corolla", "Toyota", "Madrid", "B1", 'B');
-	Carro* carro2 = new Carro("567-DEF", "Civic", "Honda", "Barcelona", "B1", 'B');
-	Carro* carro3 = new Carro("901-GHI", "Model S", "Tesla", "Valencia", "B2", 'A');
-	Carro* carro4 = new Carro("345-JKL", "F-150", "Ford", "Sevilla", "C1", 'C');
-	Carro* carro5 = new Carro("789-MNO", "Tucson", "Hyundai", "Bilbao", "B2", 'B');
-	Carro* carro6 = new Carro("234-PQR", "Golf", "Volkswagen", "Granada", "B1", 'B');
+	Carro* carro1 = new Carro("123-ABC", "Corolla", "Toyota", "Madrid", "B1", 'B', 45.00);
+	Carro* carro2 = new Carro("567-DEF", "Civic", "Honda", "Barcelona", "B1", 'B', 40.00);
+	Carro* carro3 = new Carro("901-GHI", "Model S", "Tesla", "Valencia", "B2", 'A', 60.00);
+	Carro* carro4 = new Carro("345-JKL", "F-150", "Ford", "Sevilla", "C1", 'C', 55.00);
+	Carro* carro5 = new Carro("789-MNO", "Tucson", "Hyundai", "Bilbao", "B2", 'B', 50.00);
+	Carro* carro6 = new Carro("234-PQR", "Golf", "Volkswagen", "Granada", "B1", 'B', 45.00);
 
 	plantel->agregarCarro(carro1, 0);
 	plantel->agregarCarro(carro2, 12);
@@ -66,28 +69,18 @@ void Menu::inicializarDatos() {
 
 	suc1->getPlanteles()->insertarFinal(plantel);
 
-	// Bucle de ejemplo para cambiar estado de carro1
-	/*
-	int estado = 0;
-	do {
-		cout << "Seleccione el estado del carro (estado actual: " << carro1->getEstadoCarro() << "):\n";
-		cout << "1. Disponible\n";
-		cout << "2. Alquilado\n";
-		cout << "3. Devuelto\n";
-		cout << "4. Revision\n";
-		cout << "5. Lavado\n";
-		cout << "Ingrese el numero correspondiente al estado: ";
-		cin >> estado;
-		validarEntero(estado);
-		if (estado >= 1 && estado <= 5) {
-			int comp = carro1->setEstadosCarro(estado);
-			if (comp == 1) cout << "Estado cambiado correctamente\n";
-			else if (comp == -1) cout << "No se puede cambiar al estado seleccionado desde el estado actual.\n";
-			else if (comp == -2) cout << "El carro ya esta en el estado seleccionado.\n";
-			else cout << "Opcion invalida.\n";
-		}
-	} while (estado != 6);
-	*/
+	// Transacciones de ejemplo
+	string idSucursalStr = to_string(suc1->getNumeroSucursal());
+	SolicitudAlquiler* sol1 = new SolicitudPendiente("S001", "111", "C1", idSucursalStr, "234-PQR", 5, "25/11/2025", "30/11/2025", 45.00, 225.00);
+	suc1->getTransacciones()->insertarFinal(sol1);
+	ContratoAlquiler* con1 = new ContratoAlquiler("C002", "333", "C2", idSucursalStr, "901-GHI", 10, "20/11/2025", "30/11/2025", 60.00, 600.00);
+	suc1->getTransacciones()->insertarFinal(con1);
+
+	// Bitacora: mover carro3 Disponible(1) -> Alquilado(2)
+	carro3->setEstadosCarro(5, "SISTEMA"); // Revision -> Lavado
+	carro3->setEstadosCarro(1, "SISTEMA"); // Lavado -> Disponible
+	carro3->setEstadosCarro(2, "C2");      // Disponible -> Alquilado
+
 	// Clientes
 	ClienteFisico* cf1 = new ClienteFisico("Juan Perez", "111", "Costa Rica");
 	ClienteJuridico* cj1 = new ClienteJuridico("TechSolutions S.A.", "222", "Panama", "Software", 10.5);
@@ -111,14 +104,14 @@ void Menu::inicializarDatos() {
 
 	sucursales->insertarFinal(suc1);
 
-	Cliente* prueba = dynamic_cast<Cliente*>(sucursales->obtenerSucursalPorIndice(0)->getColaboradores()->getPrimero()->getDato());
+	/*Cliente* prueba = dynamic_cast<Cliente*>(sucursales->obtenerSucursalPorIndice(0)->getColaboradores()->getPrimero()->getDato());
 	if (prueba) {
 		cout << prueba->getPaisResidencia() << endl;
 	}
 	else
 	{
 		cout << "No es un cliente" << endl;
-	}
+	}*/
 }
 
 void Menu::iniciar() {
@@ -299,7 +292,7 @@ void Menu::menuPrincipal() {
 									}
 								}
 								else {
-									system("cls");
+						system("cls");
 									cout << "Opcion invalida. Intente de nuevo." << endl<<endl;
 								}
 
@@ -308,21 +301,136 @@ void Menu::menuPrincipal() {
 						}
 						else if (opcion == lc->getTam() + 4); // Salir
 						else {
-							system("cls");
+						system("cls");
 							cout << "Opcion invalida. Intente de nuevo." << endl<<endl;
 						}
 					} while (opcion != lc->getTam()+4);
 					opcion = 0; // Reiniciar opcion para el menu de sucursal
 					break; // Termina gestionar clientes--------------------------------------------------------------------
+
 				case 2:// Inicia gestionar colaboradores--------------------------------------------------------------------
 						cout << s->getColaboradores()->mostrarPersonas(0);
 						break;// Termina gestionar colaboradores--------------------------------------------------------------------
+
 				case 3:// Inicia gestionar planteles--------------------------------------------------------------------
-					cout << "Gestionar Planteles (funcionalidad no implementada)." << endl;
-					break;// Termina gestionar planteles--------------------------------------------------------------------
-				case 4:// Inicia gestionar contratos--------------------------------------------------------------------
-					cout << "Gestionar Contratos (funcionalidad no implementada)." << endl;
-					break;// Termina gestionar contratos--------------------------------------------------------------------
+                    cout << "Gestionar Planteles (funcionalidad no implementada)." << endl;
+                    break;// Termina gestionar planteles--------------------------------------------------------------------
+
+                case 4:// Inicia gestionar contratos/solicitudes --------------------------------------------------------------------
+                    do {
+                        system("cls"); // Limpiar antes de mostrar el menu
+                        cout << "\n============= GESTION DE TRANSACCIONES ==============\n";
+                        // Mostrar resumen de Solicitudes y Contratos
+                        cout << s->getTransacciones()->mostrarTransacciones();
+                        cout << "\n1. Crear Solicitud de Alquiler\n";
+                        cout << "2. Ver Detalle y Gestionar Transaccion (Aprobar/Rechazar/Anular)\n";
+                        cout << "3. Regresar\n";
+                        cout << "Seleccione una opcion: ";
+                        cin >> enteros; // Usar la variable 'enteros' para este submenú
+                        
+                        if (validarEntero(enteros)) continue;
+
+                        switch (enteros) {
+                        case 1: { // Crear Solicitud de Alquiler
+                            system("cls");
+                            cout << "\nFuncionalidad: Crear Solicitud (No implementada aún).\n";
+                            system("pause");
+                            break;
+                        }
+                        case 2: { // Ver Detalle y Gestionar Transaccion
+                            system("cls");
+                            // Mostrar nuevamente la lista antes de pedir el codigo
+                            cout << s->getTransacciones()->mostrarTransacciones();
+                            cout << "\nDigite el codigo de la transaccion (ej. S001 o C002): ";
+                            cin >> textos; // Usar la variable 'textos' para el codigo
+                            
+                            SolicitudAlquiler* sol = s->getTransacciones()->buscarTransaccion(textos);
+
+                            if (sol) {
+                                // Inicia submenu de gestion de la transaccion
+                                do {
+                                    system("cls");
+                                    cout << "\n========= DETALLE Y GESTION DE TRANSACCION =========\n";
+                                    cout << sol->toString() << endl; // Muestra el detalle completo
+                                    cout << "\n----------------------------------------------------\n";
+
+                                    // Mostrar opciones de gestion segun el estado
+                                    if (sol->getEstadoTransaccion() == 1) { // Solo si es Pendiente (1)
+                                        cout << "1. Aprobar Solicitud (Convertir a Contrato)\n";
+                                        cout << "2. Rechazar Solicitud\n";
+                                        cout << "3. Anular Solicitud\n";
+                                        cout << "4. Regresar\n";
+                                    } else { // Si ya es Contrato (2), solo se puede anular o regresar
+                                        cout << "1. No disponible (Ya es Contrato)\n";
+                                        cout << "2. No disponible\n";
+                                        cout << "3. Anular Contrato\n";
+                                        cout << "4. Regresar\n";
+                                    }
+                                    cout << "Seleccione una opcion: ";
+                                    cin >> opcion; // Usar la variable 'opcion' para este sub-submenu
+
+                                    if (validarEntero(opcion)) continue;
+
+                                    switch (opcion) {
+                                    case 1: { // Aprobar o no disponible
+                                        if (sol->getEstadoTransaccion() != 1) {
+                                            cout << "Esta transaccion ya no es Pendiente y no puede ser Aprobada.\n";
+                                            break;
+                                        }
+                                        
+                                        // Lógica de Aprobación
+                                        cout << "ID Colaborador que aprueba: ";
+                                        cin >> textos; // Usar 'textos' para el ID del colaborador
+                                        
+                                        // NOTA IMPORTANTE: Buscar el Carro por placa y cambiar estado a Alquilado (2)
+                                        // con carro->setEstadosCarro(2, textos) y convertir la Solicitud a Contrato.
+                                        
+                                        cout << "\nFuncionalidad: Aprobar solicitud. Estado de Carro y conversion de Solicitud (Pendiente de implementar logica).";
+                                        break;
+                                    }
+                                    case 2: { // Rechazar o no disponible
+                                         if (sol->getEstadoTransaccion() != 1) {
+                                            cout << "Opcion no disponible para el estado actual de la transaccion.\n";
+                                            break;
+                                        }
+                                        // Lógica de Rechazo: Cambiar estado de la Solicitud a 3 (Rechazada)
+                                        cout << "\nFuncionalidad: Rechazar Solicitud y cambiar estado a 3 (Rechazada) (No implementada).\n";
+                                        break;
+                                    }
+                                    case 3: { // Anular (Pendiente: Lógica de Carro a Disponible/Devuelto/etc.)
+                                        // Lógica de Anulación: Cambiar estado de la Solicitud a 4 (Anulada)
+                                        cout << "\nFuncionalidad: Anular Transaccion y cambiar estado a 4 (Anulada) (No implementada).\n";
+                                        break;
+                                    }
+                                    case 4: // Regresar
+                                        break;
+                                    default:
+                                        cout << "Opcion invalida.\n";
+                                        break;
+                                    }
+                                    system("pause");
+                                } while (opcion != 4);
+                                opcion = 0; // Reiniciar 'opcion' para el menu de transacciones
+                            } else {
+                                system("cls");
+                                cout << "ERROR: No se encontro ninguna transaccion con el codigo: " << textos << endl;
+                                system("pause");
+                            }
+                            break;
+                        }
+                        case 3: // Regresar
+							system("cls");
+                            break;
+                        default:
+                            system("cls");
+                            cout << "Opcion invalida. Intente de nuevo.\n";
+                            system("pause");
+                            break;
+                        }
+                    } while (enteros != 3);
+                    opcion = 0; // Reiniciar 'opcion' para el menu de sucursal
+                    break; // Termina gestionar contratos/solicitudes --------------------------------------------------------------------
+
 				case 5:// Regresar al menu principal
 					break;
 				default:
@@ -368,20 +476,38 @@ void Menu::menuPrincipal() {
 
 		} //Termina agregar sucursal--------------------------------------------------------------------
 		else if (opcion == sucursales->getTam() + 2) {//Inicia eliminar sucursal--------------------------------------------------------------------
-			do {
+			// Prompt robusto: repetir hasta que el entero sea valido y este en rango
+			bool cancelar = false;
+			while (true) {
 				cout << "Elija la sucursal a eliminar:" << endl;
 				cout << sucursales->mostrarSucursales(1);
 				cin >> enteros;
 				system("cls");
-				if (!validarEntero(enteros) && enteros<1 || enteros>sucursales->getTam()) {// Validar rango
-					cout << "Opcion invalida. Intente de nuevo." << endl;
-					continue;
+				if (validarEntero(enteros)) {
+					continue; // reintentar si hubo error de entrada
 				}
-			}while(validarEntero(enteros));
-			cout << "Esta seguro de eliminar la sucursal numero " << sucursales->obtenerSucursalPorIndice(enteros)->getNumeroSucursal() << "? (Con esto elimina TODO (Planteles, Carros, Contratos, CLientes, etc)) (s/n): ";
+				int opcionSalir = sucursales->getTam() + 1;
+				if (enteros == opcionSalir) { // usuario eligio salir
+					cancelar = true;
+					break;
+				}
+				if (enteros < 1 || enteros > sucursales->getTam()) {
+					cout << "Opcion invalida. Intente de nuevo." << endl;
+					continue; // reintentar si esta fuera de rango
+				}
+				break; // valido
+			}
+
+			if (!cancelar) {
+				Sucursal* sel = sucursales->obtenerSucursalPorIndice(enteros);
+				if (!sel) {
+					cout << "Seleccion invalida. Intente de nuevo." << endl;
+				}
+				else {
+					cout << "Esta seguro de eliminar la sucursal numero " << sel->getNumeroSucursal() << "? (Con esto elimina TODO (Planteles, Carros, Contratos, CLientes, etc)) (s/n): ";
 			cin >> sn;
 			if (sn == 's' || sn == 'S') {
-				if (sucursales->eliminarSucursal(sucursales->obtenerSucursalPorIndice(enteros)->getNumeroSucursal())) {
+						if (sucursales->eliminarSucursal(sel->getNumeroSucursal())) {
 					cout << "Sucursal eliminada exitosamente." << endl;
 				}
 				else {
@@ -390,7 +516,10 @@ void Menu::menuPrincipal() {
 			}
 			else {
 				cout << "Eliminacion de sucursal cancelada." << endl;
+		}
+				}
 			}
+			// si cancelar==true, simplemente volver al menu principal
 		}//Termina eliminar sucursal--------------------------------------------------------------------
 		else {
 			cout << "Opcion invalida. Intente de nuevo."<<endl;

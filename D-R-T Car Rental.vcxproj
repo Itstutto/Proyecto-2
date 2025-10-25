@@ -128,22 +128,26 @@
     <ClCompile Include="ClienteFisico.cpp" />
     <ClCompile Include="ClienteJuridico.cpp" />
     <ClCompile Include="Colaborador.cpp" />
+    <ClCompile Include="ContratoAlquiler.cpp" />
+    <ClCompile Include="EstadoBitacora.cpp" />
+    <ClCompile Include="ListaBitacora.cpp" />
     <ClCompile Include="ListaClientes1.cpp" />
     <ClCompile Include="ListaColaboradores1.cpp" />
-    <ClCompile Include="ListaEstados.cpp" />
     <ClCompile Include="ListaPersonas.cpp" />
     <ClCompile Include="ListaPlantel.cpp" />
+    <ClCompile Include="ListaSolicitudesContratos.cpp" />
     <ClCompile Include="ListaSucursales.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="NodoCl.cpp" />
     <ClCompile Include="NodoCol.cpp" />
-    <ClCompile Include="NodoEstadoCarro.cpp" />
     <ClCompile Include="NodoP.cpp" />
     <ClCompile Include="NodoPl.cpp" />
     <ClCompile Include="NodoSuc.cpp" />
     <ClCompile Include="Persona.cpp" />
     <ClCompile Include="Plantel.cpp" />
+    <ClCompile Include="SolicitudAlquiler.cpp" />
+    <ClCompile Include="SolicitudPendiente.cpp" />
     <ClCompile Include="Sucursal.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,21 +156,25 @@
     <ClInclude Include="ClienteFisico.h" />
     <ClInclude Include="ClienteJuridico.h" />
     <ClInclude Include="Colaborador.h" />
+    <ClInclude Include="ContratoAlquiler.h" />
+    <ClInclude Include="EstadoBitacora.h" />
+    <ClInclude Include="ListaBitacora.h" />
     <ClInclude Include="ListaClientes1.h" />
     <ClInclude Include="ListaColaboradores1.h" />
-    <ClInclude Include="ListaEstados.h" />
     <ClInclude Include="ListaPersonas.h" />
     <ClInclude Include="ListaPlantel.h" />
+    <ClInclude Include="ListaSolicitudesContratos.h" />
     <ClInclude Include="ListaSucursales.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="NodoCl.h" />
     <ClInclude Include="NodoCol.h" />
-    <ClInclude Include="NodoEstadoCarro.h" />
     <ClInclude Include="NodoP.h" />
     <ClInclude Include="NodoPl.h" />
     <ClInclude Include="NodoSuc.h" />
     <ClInclude Include="Persona.h" />
     <ClInclude Include="Plantel.h" />
+    <ClInclude Include="SolicitudAlquiler.h" />
+    <ClInclude Include="SolicitudPendiente.h" />
     <ClInclude Include="Sucursal.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
