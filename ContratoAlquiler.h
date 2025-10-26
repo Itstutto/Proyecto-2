@@ -7,9 +7,9 @@ private:
 	int estadoDetalladoContrato; // 1=Aprobado en alquiler, 2=Pendiente de Ejecución, 3=Finalizado
 	string detalleFinalizacion;  // Guarda el detalle si es Finalizado (multa, reintegro, sin cargos)
 public:
-	ContratoAlquiler(const string& codigo, const string& cliente, const string& colaborador,
-		const string& sucursal, const string& placa, int dias,
-		const string& inicio, const string& entrega, double precioDiario, double precioTotal);
+
+	//constructor copia de una solicitud aprobada
+	ContratoAlquiler(const SolicitudAlquiler& solicitudAprobada);
 	~ContratoAlquiler() override {}
 
 	// Getters y Setters para el estado detallado

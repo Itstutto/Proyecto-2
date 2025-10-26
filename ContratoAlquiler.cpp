@@ -2,14 +2,27 @@
 #include <sstream>
 
 // IMPLEMENTACIÓN DEL CONSTRUCTOR: Inicializar el estado detallado a 'Aprobado Pendiente de Ejecución' (2)
-ContratoAlquiler::ContratoAlquiler(const string& codigo, const string& cliente, const string& colaborador,
-					 const string& sucursal, const string& placa, int dias,
-					 const string& inicio, const string& entrega, double precioDiario, double precioTotal)
-	// Llama al constructor base con estadoTransaccion = 2 (Aprobada/Contrato)
-	: SolicitudAlquiler(codigo, cliente, colaborador, sucursal, placa, dias, inicio, entrega, precioDiario, precioTotal, 2),
-	  estadoDetalladoContrato(2), // Por defecto: Aprobado Pendiente de Ejecución
-	  detalleFinalizacion("")
-{}
+
+
+
+ContratoAlquiler::ContratoAlquiler(const SolicitudAlquiler & solicitudAprobada)
+{
+	// Copia los atributos base desde la solicitud aprobada
+	cliente = solicitudAprobada.getCliente();
+	colaborador = solicitudAprobada.getColaborador();
+	vehiculo = solicitudAprobada.getCarro();
+	diasAlquiler = solicitudAprobada.getDiasAlquiler();
+	fechaInicio = solicitudAprobada.getFechaInicioTM();
+	fechaEntrega = solicitudAprobada.getFechaEntregaTM();
+	precioDiario = solicitudAprobada.getPrecioDiario();
+	precioTotal = solicitudAprobada.getPrecioTotal();
+	estadoTransaccion = 2; // Cambia el estado de transacción a 'Aprobada/Contrato'
+	tipoTransaccion = 'C'; // Indica que es un Contrato
+	// Inicializa el estado detallado del contrato
+	estadoDetalladoContrato = 2; // Aprobado pendiente de ejecucion
+	detalleFinalizacion = "";
+
+}
 
 // IMPLEMENTACIÓN DE GETTERS Y SETTERS
 int ContratoAlquiler::getEstadoDetallado() const {

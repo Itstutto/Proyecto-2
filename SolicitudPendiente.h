@@ -3,9 +3,8 @@
 
 class SolicitudPendiente : public SolicitudAlquiler {
 public:
-	SolicitudPendiente(const string& codigo, const string& cliente, const string& colaborador,
-					 const string& sucursal, const string& placa, int dias,
-					 const string& inicio, const string& entrega, double precioDiario, double precioTotal);
+	SolicitudPendiente(Persona* cliente, Persona* colaborador, Carro* Vehiculo, int dias,
+		const int& inicio, const int& entrega, double precioDiario, double precioTotal);
 	~SolicitudPendiente() override;
 	string toString() const override;
 };

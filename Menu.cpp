@@ -22,6 +22,170 @@ Menu::~Menu()
 	delete sucursales;
 }
 
+void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
+{
+	int enteros = 0;
+	int opcion = 0;
+	char sn;
+	string textos;
+	do {
+		do {
+			cout << lsc->mostrarTransacciones();
+			cin >> enteros;
+			if (enteros<1 || enteros>lsc->getTam() + 1) {
+				cout << "Opcion invalida. Intente de nuevo." << endl;
+				continue;
+			}
+		} while (validarEntero(enteros));
+
+		if (enteros == lsc->getTam() + 1);
+		else {
+			SolicitudAlquiler* sol = lsc->buscarTransaccion(enteros);
+			if (sol) {
+				// Inicia submenu de gestion de la transaccion
+				do {
+					system("cls");
+					cout << "\n========= DETALLE Y GESTION DE TRANSACCION =========\n";
+					cout << sol->toString() << endl; // Muestra el detalle completo
+					cout << "\n----------------------------------------------------\n";
+
+					// Mostrar opciones de gestion segun el estado
+					if (sol->getEstadoTransaccion() == 1) { // Solo si es Pendiente (1)
+						cout << "1. Aprobar Solicitud (Convertir a Contrato)\n";
+						cout << "2. Rechazar Solicitud\n";
+						cout << "3. Anular Solicitud\n";
+						cout << "4. Regresar\n";
+					}
+					else { // Si ya NO es Pendiente (incluye Contrato 2, Rechazada 3, Anulada 4)
+						ContratoAlquiler* con = dynamic_cast<ContratoAlquiler*>(sol);
+						if (con) { // ES UN CONTRATO ACTIVO (Estado Transacción = 2)
+							do {
+								system("cls");
+								cout << "\n========= GESTION DE CONTRATO ACTIVO =========\n";
+								cout << "Estado Operativo Actual: " << con->getEstadoDetalladoStr() << "\n";
+								cout << "\n----------------------------------------------------\n";
+
+								cout << "1. Registrar Devolucion y Finalizar Contrato\n";
+								cout << "2. Anular Contrato\n";
+								cout << "3. Ver Historial de Carro (Bitacora)\n";
+								cout << "4. Regresar\n";
+
+								cout << "Seleccione una opcion: ";
+								cin >> opcion;
+
+								if (validarEntero(opcion)) continue;
+
+								switch (opcion) {
+								case 1: {
+									cout << "\nFuncionalidad: Registrar Devolucion (Calculo de Multa/Reintegro y Finalizacion del Contrato). [Pendiente de implementar logica compleja]\n";
+									// Lógica pendiente:
+									// 1. Pedir dias utilizados.
+									// 2. Calcular diferencia de dias vs. diasAlquiler.
+									// 3. Aplicar multa/reintegro (70% del diario por dia anticipado).
+									// 4. Actualizar el Contrato: con->setEstadoDetallado(3, "Finalizado [detalle]");
+									// 5. Actualizar el Carro: Buscar Carro por Placa y carro->setEstadosCarro(3, con->getIdColaborador()); // Devuelto
+									break;
+								}
+								case 2: {
+									// Solo se debería anular si el estado detallado es "Pendiente de Ejecución" (2)
+									if (con->getEstadoDetallado() != 2) {
+										cout << "ADVERTENCIA: Solo los contratos 'Pendiente de Ejecucion' pueden anularse facilmente.\n";
+										cout << "La logica de anulacion para contratos 'En Alquiler' no esta implementada.\n";
+										break;
+									}
+									cout << "Esta seguro de ANULAR el Contrato " << con->getCodigoTransaccion() << "? (s/n): ";
+									cin >> sn;
+									if (sn == 's' || sn == 'S') {
+										// Implementación real: cambiar estado base a 4 (Anulada)
+										con->setEstadoTransaccion(4);
+										// Lógica pendiente: actualizar estado del carro si aplica
+										cout << "\nCONTRATO ANULADO. [Logica de Carro Pendiente].\n";
+									}
+									break;
+								}
+								case 3: {
+									cout << "\nFuncionalidad: Mostrar Bitacora del Carro (Se necesita buscar el Carro por Placa primero).\n";
+									break;
+								}
+								case 4: // Regresar
+									break;
+								default:
+									cout << "Opcion invalida.\n";
+									break;
+								}
+								system("pause");
+							} while (opcion != 4);
+							opcion = 4; // salir del bucle de detalle superior
+							continue; // saltar el prompt general
+						}
+						else { // Si es Rechazada (3) o Anulada (4)
+							cout << "Esta transaccion ya no es gestionable (Rechazada o Anulada).\n";
+							system("pause");
+							opcion = 4; // salir del bucle de detalle superior
+							continue; // saltar el prompt general
+						}
+					}
+
+					cout << "Seleccione una opcion: ";
+					cin >> opcion; // Usar la variable 'opcion' para este sub-submenu
+
+					if (validarEntero(opcion)) continue;
+
+					switch (opcion) {
+					case 1: { // Aprobar o no disponible
+						if (sol->getEstadoTransaccion() != 1) {
+							cout << "Esta transaccion ya no es Pendiente y no puede ser Aprobada.\n";
+							break;
+						}
+
+						// Lógica de Aprobación
+						cout << "ID Colaborador que aprueba: ";
+						cin >> textos; // Usar 'textos' para el ID del colaborador
+
+						// NOTA IMPORTANTE: Buscar el Carro por placa y cambiar estado a Alquilado (2)
+						// con carro->setEstadosCarro(2, textos) y convertir la Solicitud a Contrato.
+
+						cout << "\nFuncionalidad: Aprobar solicitud. Estado de Carro y conversion de Solicitud (Pendiente de implementar logica).";
+						break;
+					}
+					case 2: { // Rechazar Solicitud
+						if (sol->getEstadoTransaccion() != 1) {
+							cout << "Opcion no disponible para el estado actual de la transaccion.\n";
+							break;
+						}
+						// Implementación real: cambiar estado a 3 (Rechazada)
+						sol->setEstadoTransaccion(3);
+						cout << "\nSOLICITUD RECHAZADA exitosamente.\n";
+						break;
+					}
+					case 3: { // Anular Solicitud
+						// Implementación real: cambiar estado a 4 (Anulada)
+						sol->setEstadoTransaccion(4);
+						cout << "\nSOLICITUD ANULADA exitosamente.\n";
+						// Nota: Lógica de Carro (si aplica) pendiente de implementar
+						break;
+					}
+					case 4: // Regresar
+						break;
+					default:
+						cout << "Opcion invalida.\n";
+						break;
+					}
+					system("pause");
+				} while (opcion != 4);
+				opcion = 0; // Reiniciar 'opcion' para el menu de transacciones
+			}
+			else {
+				system("cls");
+				cout << "ERROR al encontrar la solicitud ";
+				system("pause");
+			}
+		}
+
+
+	} while (enteros != lsc->getTam() + 1);
+}
+
 bool Menu::validarEntero(int& opcion) {
 	if (cin.fail()) {
 		cin.clear();
@@ -69,12 +233,6 @@ void Menu::inicializarDatos() {
 
 	suc1->getPlanteles()->insertarFinal(plantel);
 
-	// Transacciones de ejemplo
-	string idSucursalStr = to_string(suc1->getNumeroSucursal());
-	SolicitudAlquiler* sol1 = new SolicitudPendiente("S001", "111", "C1", idSucursalStr, "234-PQR", 5, "25/11/2025", "30/11/2025", 45.00, 225.00);
-	suc1->getTransacciones()->insertarFinal(sol1);
-	ContratoAlquiler* con1 = new ContratoAlquiler("C002", "333", "C2", idSucursalStr, "901-GHI", 10, "20/11/2025", "30/11/2025", 60.00, 600.00);
-	suc1->getTransacciones()->insertarFinal(con1);
 
 	// Bitacora: mover carro3 Disponible(1) -> Alquilado(2)
 	carro3->setEstadosCarro(5, "SISTEMA"); // Revision -> Lavado
@@ -101,6 +259,15 @@ void Menu::inicializarDatos() {
 	suc1->getColaboradores()->insertarFinal(co1);
 	suc1->getColaboradores()->insertarFinal(co1_dup);
 	suc1->getColaboradores()->insertarFinal(co2);
+
+	// Solicitudes y Contratos
+	SolicitudAlquiler* sol1 = new SolicitudPendiente(cf1, co1, carro1, 5, 12062024, 17062024, 45.00, 225.00);
+	SolicitudAlquiler* sol2 = new SolicitudPendiente(cj1, co2, carro4, 3, 15062024, 18062024, 55.00, 165.00); // no se agrega a solicitudes porque se aprueba de una vez
+	SolicitudAlquiler* sol3 = new ContratoAlquiler(*sol2); // Contrato basado en la solicitud aprobada
+	suc1->getSolicitudes()->insertarFinal(sol1);
+	suc1->getContratos()->insertarFinal(sol3);
+
+
 
 	sucursales->insertarFinal(suc1);
 
@@ -130,6 +297,7 @@ void Menu::menuPrincipal() {
 	ClienteJuridico* cjur = nullptr; // Cliente Juridico seleccionado
 	Colaborador* colab = nullptr; // Colaborador seleccionado
 	ListaClientes1* lc = nullptr; // Lista de clientes de la sucursal
+	ListaSolicitudesContratos* lsc = nullptr; // Lista de solicitudes/contratos de la sucursal
 
 
 
@@ -321,9 +489,8 @@ void Menu::menuPrincipal() {
                         system("cls"); // Limpiar antes de mostrar el menu
                         cout << "\n============= GESTION DE TRANSACCIONES ==============\n";
                         // Mostrar resumen de Solicitudes y Contratos
-                        cout << s->getTransacciones()->mostrarTransacciones();
-                        cout << "\n1. Crear Solicitud de Alquiler\n";
-                        cout << "2. Ver Detalle y Gestionar Transaccion (Aprobar/Rechazar/Anular)\n";
+						cout << "\n1. Crear Solicitud de Alquiler\n";
+                        cout << "\n2. Ver Detalle y Gestionar Transaccion (Aprobar/Rechazar/Anular)\n";
                         cout << "3. Regresar\n";
                         cout << "Seleccione una opcion: ";
                         cin >> enteros; // Usar la variable 'enteros' para este submenú
@@ -331,157 +498,40 @@ void Menu::menuPrincipal() {
                         if (validarEntero(enteros)) continue;
 
                         switch (enteros) {
-                        case 1: { // Crear Solicitud de Alquiler
-                            system("cls");
-                            cout << "\nFuncionalidad: Crear Solicitud (No implementada aún).\n";
-                            system("pause");
-                            break;
-                        }
+						case 1: { // Crear Solicitud de Alquiler
+							cout << "Pendiente de implementar la logica completa de creacion de solicitud." << endl;
+						}
                         case 2: { // Ver Detalle y Gestionar Transaccion
                             system("cls");
                             // Mostrar nuevamente la lista antes de pedir el codigo
-                            cout << s->getTransacciones()->mostrarTransacciones();
-                            cout << "\nDigite el codigo de la transaccion (ej. S001 o C002): ";
-                            cin >> textos; // Usar la variable 'textos' para el codigo
-                            
-                            SolicitudAlquiler* sol = s->getTransacciones()->buscarTransaccion(textos);
+							do{
+								cout << "1. Ver Solicitudes" << endl;
+								cout << "2. Ver Contratos" << endl;
+								cout << "3. Regresar" << endl;
+								cout << "\nDigite la opcion: ";
+								cin >> enteros; // Usar la variable 'textos' para el codigo
+								if(!validarEntero(enteros) && enteros<0 || enteros>3) {
+									cout << "Opcion invalida. Intente de nuevo." << endl;
+									continue;
+								}
+							} while (validarEntero(enteros));
+							switch (enteros) {
+							case 1: {
+								lsc = s->getSolicitudes();
+								gestionarTransacciones(lsc);
+								break;
+							}
+							case 2: {
+								lsc = s->getContratos();
+								gestionarTransacciones(lsc);
+								break;
+							}
+							default:
+									cout << "Opcion invalida. Intente de nuevo." << endl;
+									break;
+							}
 
-                            if (sol) {
-                                // Inicia submenu de gestion de la transaccion
-                                do {
-                                    system("cls");
-                                    cout << "\n========= DETALLE Y GESTION DE TRANSACCION =========\n";
-                                    cout << sol->toString() << endl; // Muestra el detalle completo
-                                    cout << "\n----------------------------------------------------\n";
-
-                                    // Mostrar opciones de gestion segun el estado
-                                    if (sol->getEstadoTransaccion() == 1) { // Solo si es Pendiente (1)
-                                        cout << "1. Aprobar Solicitud (Convertir a Contrato)\n";
-                                        cout << "2. Rechazar Solicitud\n";
-                                        cout << "3. Anular Solicitud\n";
-                                        cout << "4. Regresar\n";
-                                    } else { // Si ya NO es Pendiente (incluye Contrato 2, Rechazada 3, Anulada 4)
-                                        ContratoAlquiler* con = dynamic_cast<ContratoAlquiler*>(sol);
-                                        if (con) { // ES UN CONTRATO ACTIVO (Estado Transacción = 2)
-                                            do {
-                                                system("cls");
-                                                cout << "\n========= GESTION DE CONTRATO ACTIVO =========\n";
-                                                cout << "Estado Operativo Actual: " << con->getEstadoDetalladoStr() << "\n";
-                                                cout << "\n----------------------------------------------------\n";
-
-                                                cout << "1. Registrar Devolucion y Finalizar Contrato\n";
-                                                cout << "2. Anular Contrato\n";
-                                                cout << "3. Ver Historial de Carro (Bitacora)\n";
-                                                cout << "4. Regresar\n";
-
-                                                cout << "Seleccione una opcion: ";
-                                                cin >> opcion;
-
-                                                if (validarEntero(opcion)) continue;
-
-                                                switch (opcion) {
-                                                    case 1: {
-                                                        cout << "\nFuncionalidad: Registrar Devolucion (Calculo de Multa/Reintegro y Finalizacion del Contrato). [Pendiente de implementar logica compleja]\n";
-                                                        // Lógica pendiente:
-                                                        // 1. Pedir dias utilizados.
-                                                        // 2. Calcular diferencia de dias vs. diasAlquiler.
-                                                        // 3. Aplicar multa/reintegro (70% del diario por dia anticipado).
-                                                        // 4. Actualizar el Contrato: con->setEstadoDetallado(3, "Finalizado [detalle]");
-                                                        // 5. Actualizar el Carro: Buscar Carro por Placa y carro->setEstadosCarro(3, con->getIdColaborador()); // Devuelto
-                                                        break;
-                                                    }
-                                                    case 2: {
-                                                        // Solo se debería anular si el estado detallado es "Pendiente de Ejecución" (2)
-                                                        if (con->getEstadoDetallado() != 2) {
-                                                            cout << "ADVERTENCIA: Solo los contratos 'Pendiente de Ejecucion' pueden anularse facilmente.\n";
-                                                            cout << "La logica de anulacion para contratos 'En Alquiler' no esta implementada.\n";
-                                                            break;
-                                                        }
-                                                        cout << "Esta seguro de ANULAR el Contrato " << con->getCodigoTransaccion() << "? (s/n): ";
-                                                        cin >> sn;
-                                                        if (sn == 's' || sn == 'S') {
-                                                            // Implementación real: cambiar estado base a 4 (Anulada)
-                                                            con->setEstadoTransaccion(4);
-                                                            // Lógica pendiente: actualizar estado del carro si aplica
-                                                            cout << "\nCONTRATO ANULADO. [Logica de Carro Pendiente].\n";
-                                                        }
-                                                        break;
-                                                    }
-                                                    case 3: {
-                                                        cout << "\nFuncionalidad: Mostrar Bitacora del Carro (Se necesita buscar el Carro por Placa primero).\n";
-                                                        break;
-                                                    }
-                                                    case 4: // Regresar
-                                                        break;
-                                                    default:
-                                                        cout << "Opcion invalida.\n";
-                                                        break;
-                                                }
-                                                system("pause");
-                                            } while (opcion != 4);
-                                            opcion = 4; // salir del bucle de detalle superior
-                                            continue; // saltar el prompt general
-                                        } else { // Si es Rechazada (3) o Anulada (4)
-                                            cout << "Esta transaccion ya no es gestionable (Rechazada o Anulada).\n";
-                                            system("pause");
-                                            opcion = 4; // salir del bucle de detalle superior
-                                            continue; // saltar el prompt general
-                                        }
-                                    }
-
-                                    cout << "Seleccione una opcion: ";
-                                    cin >> opcion; // Usar la variable 'opcion' para este sub-submenu
-
-                                    if (validarEntero(opcion)) continue;
-
-                                    switch (opcion) {
-                                    case 1: { // Aprobar o no disponible
-                                        if (sol->getEstadoTransaccion() != 1) {
-                                            cout << "Esta transaccion ya no es Pendiente y no puede ser Aprobada.\n";
-                                            break;
-                                        }
-                                        
-                                        // Lógica de Aprobación
-                                        cout << "ID Colaborador que aprueba: ";
-                                        cin >> textos; // Usar 'textos' para el ID del colaborador
-                                        
-                                        // NOTA IMPORTANTE: Buscar el Carro por placa y cambiar estado a Alquilado (2)
-                                        // con carro->setEstadosCarro(2, textos) y convertir la Solicitud a Contrato.
-                                        
-                                        cout << "\nFuncionalidad: Aprobar solicitud. Estado de Carro y conversion de Solicitud (Pendiente de implementar logica).";
-                                        break;
-                                    }
-                                    case 2: { // Rechazar Solicitud
-                                         if (sol->getEstadoTransaccion() != 1) {
-                                            cout << "Opcion no disponible para el estado actual de la transaccion.\n";
-                                            break;
-                                        }
-                                        // Implementación real: cambiar estado a 3 (Rechazada)
-                                        sol->setEstadoTransaccion(3);
-                                        cout << "\nSOLICITUD RECHAZADA exitosamente.\n";
-                                        break;
-                                    }
-                                    case 3: { // Anular Solicitud
-                                        // Implementación real: cambiar estado a 4 (Anulada)
-                                        sol->setEstadoTransaccion(4);
-                                        cout << "\nSOLICITUD ANULADA exitosamente.\n";
-                                        // Nota: Lógica de Carro (si aplica) pendiente de implementar
-                                        break;
-                                    }
-                                    case 4: // Regresar
-                                        break;
-                                    default:
-                                        cout << "Opcion invalida.\n";
-                                        break;
-                                    }
-                                    system("pause");
-                                } while (opcion != 4);
-                                opcion = 0; // Reiniciar 'opcion' para el menu de transacciones
-                            } else {
-                                system("cls");
-                                cout << "ERROR: No se encontro ninguna transaccion con el codigo: " << textos << endl;
-                                system("pause");
-                            }
+                           
                             break;
                         }
                         case 3: // Regresar

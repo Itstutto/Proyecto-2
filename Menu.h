@@ -1,7 +1,7 @@
 #pragma once
 #include "Sucursal.h"
 #include "ListaSucursales.h"
-
+#include "ListaSolicitudesContratos.h"
 class Menu {
 private:
 	ListaSucursales* sucursales;
@@ -11,6 +11,10 @@ private:
 public:
 	Menu();
 	~Menu();
+
+	void gestionarTransacciones(ListaSolicitudesContratos* lsc);
+
+
 	void iniciar();
 	void menuPrincipal();
 };

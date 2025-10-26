@@ -3,21 +3,24 @@ Sucursal::Sucursal() : numeroSucursal(0) {
 	planteles = new ListaPlantel();
 	clientes = new ListaClientes1();
 	colaboradores = new ListaColaboradores1();
-	transacciones = new ListaSolicitudesContratos();
+	solicitudes = new ListaSolicitudesContratos();
+	contratos = new ListaSolicitudesContratos();
 }
 
 Sucursal::Sucursal(int numero) : numeroSucursal(numero) {
 	planteles = new ListaPlantel();
 	clientes = new ListaClientes1();
 	colaboradores = new ListaColaboradores1();
-	transacciones = new ListaSolicitudesContratos();
+	solicitudes = new ListaSolicitudesContratos();
+	contratos = new ListaSolicitudesContratos();
 }
 
 Sucursal::~Sucursal() {
 	delete planteles;
 	delete clientes;
 	delete colaboradores;
-	delete transacciones;
+	delete solicitudes;
+	delete contratos;
 }
 
 int Sucursal::getNumeroSucursal() const { return numeroSucursal; }
@@ -26,7 +29,8 @@ void Sucursal::setNumeroSucursal(int numero) { numeroSucursal = numero; }
 ListaPlantel* Sucursal::getPlanteles() { return planteles; }
 ListaClientes1* Sucursal::getClientes() { return clientes; }
 ListaColaboradores1* Sucursal::getColaboradores() { return colaboradores; }
-ListaSolicitudesContratos* Sucursal::getTransacciones() { return transacciones; }
+ListaSolicitudesContratos* Sucursal::getSolicitudes() { return solicitudes; }
+ListaSolicitudesContratos* Sucursal::getContratos() { return contratos; }
 //usar "endl" en vez de \n (aplica en todo)
 string Sucursal::mostrarOpciones() {
 	stringstream ss;

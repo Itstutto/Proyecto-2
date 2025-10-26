@@ -10,7 +10,9 @@ private:
 	ListaPlantel* planteles;
 	ListaClientes1* clientes;
 	ListaColaboradores1* colaboradores;
-	ListaSolicitudesContratos* transacciones;
+	ListaSolicitudesContratos* solicitudes;
+	ListaSolicitudesContratos* contratos;
+
 public:
 	Sucursal();
 	Sucursal(int numero);
@@ -22,7 +24,8 @@ public:
 	ListaPlantel* getPlanteles();
 	ListaClientes1* getClientes();
 	ListaColaboradores1* getColaboradores();
-	ListaSolicitudesContratos* getTransacciones();
+	ListaSolicitudesContratos* getSolicitudes();
+	ListaSolicitudesContratos* getContratos();
 
 
 	string mostrarOpciones();

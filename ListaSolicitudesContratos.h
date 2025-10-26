@@ -11,7 +11,8 @@ private:
 public:
 	ListaSolicitudesContratos();
 	~ListaSolicitudesContratos();
+	int getTam() const;
 	bool insertarFinal(SolicitudAlquiler* s);
-	SolicitudAlquiler* buscarTransaccion(const string& codigo);
+	SolicitudAlquiler* buscarTransaccion(const int& pos);
 	string mostrarTransacciones();
 };
