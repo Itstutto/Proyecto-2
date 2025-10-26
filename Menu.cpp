@@ -342,9 +342,73 @@ void Menu::menuPrincipal() {
 									cin >> opcion;
 								} while (validarEntero(opcion));
 								switch (opcion) {
-								case 1:
-									cout << "Modificar Cliente (funcionalidad no implementada)." << endl;
+								case 1: { // Modificar informacion del cliente-----------------------------------------------------------------------------
+									bool tipoCliente = dynamic_cast<ClienteFisico*>(cli) != nullptr; // true si es ClienteFisico, false si es ClienteJuridico
+									int limite = tipoCliente ? 4 : 6; // Numero de opciones segun el tipo de cliente
+									do {
+										do {
+											cout << cli->mostrarModificar() << endl;
+											cin >> opcion;
+										} while (validarEntero(opcion));
+										if (opcion > limite) {
+											cout << "Opcion invalida. Intente de nuevo." << endl;
+											continue;
+										}
+										if (opcion == limite); // Salir
+										else {
+											switch (opcion) {
+											case 1:
+												cout << "Digite el nuevo nombre del cliente: ";
+												cin.ignore();
+												getline(cin, textos);
+												cli->setNombre(textos);
+												cout << "Nombre actualizado exitosamente." << endl;
+												break;
+											case 2:
+												cout << "Digite la nueva cedula del cliente: ";
+												cin >> textos;
+												if (lc->buscarPersona(textos)) {
+													cout << "Cliente con esa cedula ya existe. Operacion cancelada." << endl;
+													continue;
+												}
+												cli->setId(textos);
+												cout << "Cedula actualizada exitosamente." << endl;
+												break;
+											case 3:
+												cout << "Digite el nuevo pais de residencia del cliente: ";
+												cin.ignore();
+												getline(cin, textos);
+												cli->setPaisResidencia(textos);
+												cout << "Pais de residencia actualizado exitosamente." << endl;
+												break;
+											case 4:
+												if (!tipoCliente) {
+													cjur = dynamic_cast<ClienteJuridico*>(cli);
+													cout << "Digite la nueva actividad economica del cliente juridico: ";
+													cin.ignore();
+													getline(cin, textos);
+													cjur->setActividadEconomica(textos);
+													cout << "Actividad economica actualizada exitosamente." << endl;
+												}
+												break;
+											case 5:
+												if (!tipoCliente) {
+													cjur = dynamic_cast<ClienteJuridico*>(cli);
+													double pct;
+													do {
+														cout << "Digite el nuevo porcentaje de descuento del cliente juridico: ";
+														cin >> pct;
+													} while (validarFlotante(pct));
+													cjur->setPorcentajeDescuento(pct);
+													cout << "Porcentaje de descuento actualizado exitosamente." << endl;
+												}
+												break;
+											}
+										}
+
+									} while (opcion != limite);
 									break;
+								}	//Termina Modificar informacion del cliente-----------------------------------------------------------------------------	
 								case 2:
 									cout << "Informacion del Cliente:" << endl;
 									cout << cli->toString() << endl;

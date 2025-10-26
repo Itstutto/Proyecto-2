@@ -9,4 +9,5 @@ public:
 
 	string toString() const override;
 	string infoMenu() const override;
+	string mostrarModificar() const override;
 };

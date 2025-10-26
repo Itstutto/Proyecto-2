@@ -31,3 +31,13 @@ string Cliente::mostrarCliente() const
 	return s.str();
 
 }
+
+string Cliente::mostrarModificar() const
+{
+	stringstream s;
+	//muestra en un menu las opciones que se pueden modificar 
+	s << "1. Nombre " << endl
+		<< "2. ID " << endl
+		<< "3. Pais de residencia " << endl;
+	return s.str();
+}

@@ -29,3 +29,13 @@ string ClienteJuridico::infoMenu() const {
 	s << "Cliente Juridico - Nombre: " << getNombre() << ", ID: " << getId();
 	return s.str();
 }
+
+string ClienteJuridico::mostrarModificar() const
+{
+	stringstream s;
+	s<< Cliente::mostrarModificar()
+		<< "4. Actividad economica: " << actividadEconomica << endl
+		<< "5. Porcentaje de descuento: " << porcentajeDescuento << endl
+		<< "6. Salir" << endl;
+	return s.str();
+}

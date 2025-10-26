@@ -77,3 +77,15 @@ string Colaborador::infoMenu() const {
 	return s.str();
 }
 
+string Colaborador::mostrarModificar() const
+{
+	stringstream s;
+	//muestra en un menu las opciones que se pueden modificar 
+	s << "1. Nombre: " << nombre << endl
+		<< "2. ID: " << id << endl
+		<< "3. Fecha de contratacion: " << getFechaContratacion() << endl
+		<< "4. Fecha de ingreso: " << fechaIngreso << endl
+		<< "5. Salir" << endl;
+	return s.str();
+}
+

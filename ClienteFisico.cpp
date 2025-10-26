@@ -19,3 +19,11 @@ string ClienteFisico::infoMenu() const {
 	s << "Cliente Fisico - Nombre: " << getNombre() << ", ID: " << getId();
 	return s.str();
 }
+
+string ClienteFisico::mostrarModificar() const
+{
+	stringstream s;
+	s << Cliente::mostrarModificar()<< endl
+		<< "4. Salir" << endl;
+	return s.str();
+}

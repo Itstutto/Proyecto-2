@@ -17,4 +17,5 @@ public:
 	void setPaisResidencia(string pais);
 	string toString() const override; // virtual para ser sobrescrito
 	string mostrarCliente() const;
+	virtual string mostrarModificar() const override;
 };

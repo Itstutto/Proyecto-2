@@ -16,6 +16,7 @@ public:
 	void setId(string id);
 	virtual string toString() const = 0;
 	virtual string infoMenu() const = 0;
+	virtual string mostrarModificar() const = 0;
 
 };
 
