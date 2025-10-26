@@ -54,3 +54,17 @@ string ListaSolicitudesContratos::mostrarTransacciones() {
 	ss << ++num << ") Regresar\n";
 	return ss.str();
 }
+string ListaSolicitudesContratos::toString() const {
+	// muestra todas las transacciones en detalle
+	stringstream ss;
+	if (!primero) {
+		ss << "No hay transacciones disponibles.\n";
+		return ss.str();
+	}
+	NodoSolicitud* a = primero;
+	while (a) {
+		ss << a->getDato()->toString() << "\n";
+		a = a->getSig();
+	}
+	return ss.str();
+}

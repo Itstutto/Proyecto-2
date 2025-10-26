@@ -15,4 +15,5 @@ public:
 	bool insertarFinal(SolicitudAlquiler* s);
 	SolicitudAlquiler* buscarTransaccion(const int& pos);
 	string mostrarTransacciones();
+	string toString() const;
 };

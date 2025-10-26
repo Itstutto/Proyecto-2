@@ -60,7 +60,7 @@ public:
 	void setFechaEntrega(const int& entrega);
 	void setPrecioDiario(double precio);
 	void setPrecioTotal(double precio);
-
+	void calcularFechaEntrega(); // calcula fecha entrega a partir de inicio + diasAlquiler
 
 
 

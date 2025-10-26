@@ -33,7 +33,12 @@ SolicitudAlquiler::SolicitudAlquiler(Persona* cliente, Persona* colaborador, Car
 }
 
 
-SolicitudAlquiler::~SolicitudAlquiler() {}
+SolicitudAlquiler::~SolicitudAlquiler() {
+	// No se eliminan cliente, colaborador ni vehiculo porque son gestionados externamente, se asignan a nullptr
+	cliente = nullptr;
+	colaborador = nullptr;
+	vehiculo = nullptr;
+}
 
 string SolicitudAlquiler::getCodigoTransaccion() const { 
 	stringstream s;
@@ -118,7 +123,19 @@ void SolicitudAlquiler::setFechaEntrega(const int& entrega) {
 	fechaEntrega.tm_year = anio - 1900; // tm_year es años desde 1900
 }
 void SolicitudAlquiler::setPrecioDiario(double precio) { precioDiario = precio; }
-void SolicitudAlquiler::setPrecioTotal(double precio) { precioTotal = precio; }
+void SolicitudAlquiler::setPrecioTotal(double precio) { precioTotal = precio * diasAlquiler; } // calcular total basado en diasAlquiler
+
+void SolicitudAlquiler::calcularFechaEntrega()
+{
+	// Crear una copia de la fecha de inicio para manipular
+	tm fechaCalculo = fechaInicio;
+	// Sumar los diasAlquiler a la fecha de inicio
+	fechaCalculo.tm_mday += diasAlquiler;
+	// Normalizar la fecha (manejar desbordamientos de dias/meses)
+	mktime(&fechaCalculo);
+	// Actualizar la fechaEntrega con la fecha calculada
+	fechaEntrega = fechaCalculo;
+}
 
 
 

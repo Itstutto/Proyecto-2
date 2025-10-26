@@ -1,6 +1,9 @@
 #include "SolicitudPendiente.h"
 #include <sstream>
 
+SolicitudPendiente::SolicitudPendiente() : SolicitudAlquiler() {
+}
+
 SolicitudPendiente::SolicitudPendiente(Persona* cliente, Persona* colaborador, Carro* Vehiculo, int dias,
 	const int& inicio, const int& entrega, double precioDiario, double precioTotal)
 	: SolicitudAlquiler(cliente, colaborador, Vehiculo, dias,

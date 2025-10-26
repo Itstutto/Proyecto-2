@@ -71,16 +71,6 @@ bool ListaPlantel::eliminarPlantel(char id) {
 	tam--;
 	return true;
 }
-Plantel* ListaPlantel::buscarPlantel(char id) {
-	NodoPl* actual = primero;
-	while (actual) {
-		if (actual->getDato()->getIdentificador() == id) {
-			return actual->getDato();
-		}
-		actual = actual->getSig();
-	}
-	return nullptr; // No encontrado
-}
 
 string ListaPlantel::mostrarPlanteles() {
 	stringstream s;
@@ -88,16 +78,20 @@ string ListaPlantel::mostrarPlanteles() {
 	NodoPl* actual = primero;
 	while (actual) {
 		s << "Plantel " << actual->getDato()->getIdentificador() << ": "
-		  << actual->getDato()->getCanDisponibles() << " disponibles de "
-		  << actual->getDato()->getCanTotal() << " totales.\n";
+			<< actual->getDato()->getCanDisponibles() << " disponibles de "
+			<< actual->getDato()->getCanTotal() << " totales.\n";
 		actual = actual->getSig();
 	}
 	return s.str();
 }
 
-string ListaPlantel::mostrarListaPlanteles()
+string ListaPlantel::mostrarListaPlanteles(int ver)
 {
 	stringstream ss;
+	if (!primero) {
+		ss << "No hay planteles disponibles.\n";
+		return ss.str();
+	}
 	NodoPl* actual = primero;
 	int numPlantel = 1;
 	while (actual != nullptr) {
@@ -105,5 +99,10 @@ string ListaPlantel::mostrarListaPlanteles()
 		actual = actual->getSig();
 		numPlantel++;
 	}
+	if (ver == 0) {
+		ss << numPlantel++ << ". Crear nuevo plantel\n";
+		ss << numPlantel++ << ". Eliminar plantel\n";
+	}
+	ss << numPlantel << ". Regresar\n";
 	return ss.str();
 }

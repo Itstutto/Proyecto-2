@@ -23,6 +23,7 @@ public:
 	int getColumnas();
 	string getEspacioEstacionamiento(int f, int c);
 	Carro* getCarroxPos(int f, int c);
+	Carro* getCarroxPlaca(string placa);
 	int getCanTotal();
 	int getCanDisponibles();
 	

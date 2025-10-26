@@ -38,6 +38,16 @@ Carro* Plantel::getCarroxPos(int f, int c) {
 	}
 	return nullptr;
 }
+Carro* Plantel::getCarroxPlaca(string placa) {
+	for (int i = 0; i < filas; ++i) {
+		for (int j = 0; j < columnas; ++j) {
+			if (estacionamiento[i][j] && estacionamiento[i][j]->getPlaca() == placa) {
+				return estacionamiento[i][j];
+			}
+		}
+	}
+	return nullptr;
+}
 
 int Plantel::getCanTotal()
 {
@@ -97,6 +107,9 @@ bool Plantel::eliminarCarro(int f, int c) {
 
 // ver =0: Informacion completa del plantel, ver=1: solo espacios del estacionamiento
 string Plantel::mostrarEstacionamiento(int ver) {
+	//Version 1: Mostrar solo la matriz del estacionamiento, ademas si un carro no esta "Disponible" mostrar "*******" en lugar de la placa
+	//Version 0: Mostrar informacion completa del plantel + matriz del estacionamiento
+
 	stringstream ss;
 	if (ver == 0) {
 		ss << "Plantel " << identificador << " (" << filas << "x" << columnas << "):\n"
@@ -113,7 +126,16 @@ string Plantel::mostrarEstacionamiento(int ver) {
 		ss << "\n";
 		for (int j = 0; j < columnas; ++j) {
 			if (estacionamiento[i][j]) {
-				ss << "| " << estacionamiento[i][j]->getPlaca() << " | "; // Mostrar placa del carro
+				if (ver == 1) {
+					if (estacionamiento[i][j]->getEstadoCarro() != "Disponible") {
+						ss << "|  *******  | "; // Carro no disponible
+						continue;
+					}
+					ss << "| " << estacionamiento[i][j]->getPlaca() << " | "; // Mostrar placa del carro
+				}
+				else {
+					ss << "| " << estacionamiento[i][j]->getPlaca() << " | "; // Mostrar placa del carro
+				}
 			} else {
 				ss << "|  Libre  | "; // Espacio libre
 			}

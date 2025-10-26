@@ -21,12 +21,11 @@ public:
 	// Métodos adicionales
 	bool insertarFinal(Plantel* p);
 	bool eliminarPlantel(char id);
-	Plantel* buscarPlantel(char id);
 	string mostrarPlanteles();
 
 
 
 
-	string mostrarListaPlanteles();
+	string mostrarListaPlanteles(int ver);
 };
 
