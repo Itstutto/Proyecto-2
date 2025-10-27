@@ -41,6 +41,16 @@ SolicitudAlquiler* ListaSolicitudesContratos::buscarTransaccion(const int& pos) 
 	}
 	return nullptr;
 }
+SolicitudAlquiler* ListaSolicitudesContratos::buscarTransaccionPorCodigo(const int& codigo) {
+	NodoSolicitud* a = primero;
+	while (a) {
+		if (a->getDato()->getCodigoTransaccionInt() == codigo) {
+			return a->getDato();
+		}
+		a = a->getSig();
+	}
+	return nullptr;
+}
 
 string ListaSolicitudesContratos::mostrarTransacciones() {
 	stringstream ss;

@@ -318,17 +318,17 @@ void Menu::menuPrincipal() {
 		system("cls");
 		validarEntero(opcion);
 
-		if(opcion==sucursales->getTam()+3){}
+		if (opcion == sucursales->getTam() + 3) {}
 		else if (opcion >= 1 && opcion <= sucursales->getTam()) {
 			s = sucursales->obtenerSucursalPorIndice(opcion);
-			
-			
+
+
 			do {
 				cout << s->mostrarOpciones();
 				cin >> opcion;
 				system("cls");
 				validarEntero(opcion);
-				
+
 				switch (opcion) {
 				case 1:// Inicia gestionar clientes--------------------------------------------------------------------
 					do {
@@ -338,7 +338,7 @@ void Menu::menuPrincipal() {
 						cin >> opcion;
 						system("cls");
 						validarEntero(opcion);
-						if (opcion >= 1 && opcion <= lc->getTam()) { 
+						if (opcion >= 1 && opcion <= lc->getTam()) {
 							// Inicia Mostrar detalles del cliente seleccionado-----------------------------------------------------------------------------
 							cli = dynamic_cast<Cliente*>(lc->obtenerPersonaPorIndice(opcion));
 							do {
@@ -445,7 +445,7 @@ void Menu::menuPrincipal() {
 								}
 							} while (validarEntero(tipoCliente));
 							if (tipoCliente == 1) {
-								cli= new ClienteFisico();
+								cli = new ClienteFisico();
 							}
 							else {
 								cli = new ClienteJuridico();
@@ -497,11 +497,11 @@ void Menu::menuPrincipal() {
 								cli = nullptr;
 							}
 
-							
+
 						}
 						else if (opcion == lc->getTam() + 3) {
 							do {
-								
+
 								do
 								{
 									cout << "Elija el cliente a eliminar: " << endl;
@@ -529,44 +529,44 @@ void Menu::menuPrincipal() {
 									}
 								}
 								else {
-						system("cls");
-									cout << "Opcion invalida. Intente de nuevo." << endl<<endl;
+									system("cls");
+									cout << "Opcion invalida. Intente de nuevo." << endl << endl;
 								}
 
-							} while (opcion != lc->getTam()+1);
+							} while (opcion != lc->getTam() + 1);
 
 						}
 						else if (opcion == lc->getTam() + 4); // Salir
 						else {
-						system("cls");
-							cout << "Opcion invalida. Intente de nuevo." << endl<<endl;
+							system("cls");
+							cout << "Opcion invalida. Intente de nuevo." << endl << endl;
 						}
-					} while (opcion != lc->getTam()+4);
+					} while (opcion != lc->getTam() + 4);
 					opcion = 0; // Reiniciar opcion para el menu de sucursal
 					break; // Termina gestionar clientes--------------------------------------------------------------------
 
 				case 2:// Inicia gestionar colaboradores--------------------------------------------------------------------
-						cout << s->getColaboradores()->mostrarPersonas(0);
-						break;// Termina gestionar colaboradores--------------------------------------------------------------------
+					cout << s->getColaboradores()->mostrarPersonas(0);
+					break;// Termina gestionar colaboradores--------------------------------------------------------------------
 
 				case 3:// Inicia gestionar planteles--------------------------------------------------------------------
-                    cout << "Gestionar Planteles (funcionalidad no implementada)." << endl;
-                    break;// Termina gestionar planteles--------------------------------------------------------------------
+					cout << "Gestionar Planteles (funcionalidad no implementada)." << endl;
+					break;// Termina gestionar planteles--------------------------------------------------------------------
 
-                case 4:// Inicia gestionar contratos/solicitudes --------------------------------------------------------------------
-                    do {
-                        system("cls"); // Limpiar antes de mostrar el menu
-                        cout << "\n============= GESTION DE TRANSACCIONES ==============\n";
-                        // Mostrar resumen de Solicitudes y Contratos
+				case 4:// Inicia gestionar contratos/solicitudes --------------------------------------------------------------------
+					do {
+						system("cls"); // Limpiar antes de mostrar el menu
+						cout << "\n============= GESTION DE TRANSACCIONES ==============\n";
+						// Mostrar resumen de Solicitudes y Contratos
 						cout << "\n1. Crear Solicitud de Alquiler\n";
-                        cout << "\n2. Ver Detalle y Gestionar Transaccion (Aprobar/Rechazar/Anular)\n";
-                        cout << "3. Regresar\n";
-                        cout << "Seleccione una opcion: ";
-                        cin >> enteros; // Usar la variable 'enteros' para este submenú
-                        
-                        if (validarEntero(enteros)) continue;
+						cout << "\n2. Ver Detalle y Gestionar Transaccion (Aprobar/Rechazar/Anular)\n";
+						cout << "3. Regresar\n";
+						cout << "Seleccione una opcion: ";
+						cin >> enteros; // Usar la variable 'enteros' para este submenú
 
-                        switch (enteros) {
+						if (validarEntero(enteros)) continue;
+
+						switch (enteros) {
 						case 1: { // Crear Solicitud de Alquiler
 							lc = s->getClientes();
 							lcol = s->getColaboradores();
@@ -576,7 +576,7 @@ void Menu::menuPrincipal() {
 								cout << s->getClientes()->mostrarPersonas(1);
 								cin >> enteros;
 								if (validarEntero(enteros)) continue;
-							} while (enteros<0 || enteros>lc->getTam()+1);
+							} while (enteros<0 || enteros>lc->getTam() + 1);
 							if (enteros == lc->getTam() + 1) {
 								delete sol;
 								sol = nullptr;
@@ -612,7 +612,7 @@ void Menu::menuPrincipal() {
 								break; // cancelar
 							}
 							p = s->getPlanteles()->buscarPlantel(enteros);
-							
+
 							// Muetra carros, selecciona por placa y si es invalida repite
 
 							string placaSeleccionada;
@@ -641,7 +641,7 @@ void Menu::menuPrincipal() {
 							} while (validarEntero(enteros) || enteros < 1000000 || enteros > 31129999);
 							sol->setFechaInicio(enteros);
 							sol->calcularFechaEntrega();
-							
+
 							double precioDiario;
 							do {
 								cout << "Digite el precio diario del alquiler: ";
@@ -655,6 +655,10 @@ void Menu::menuPrincipal() {
 							if (sn == 's' || sn == 'S') {
 								if (s->getSolicitudes()->insertarFinal(sol)) {
 									cout << "Solicitud de alquiler creada exitosamente." << endl;
+									//mandar a historial del cliente una copia de la solicitud
+									cli->getHistorial()->insertarFinal(new SolicitudPendiente(*sol));
+									//mandar a historial del colaborador una copia de la solicitud
+									colab->getHistorial()->insertarFinal(new SolicitudPendiente(*sol));
 								}
 								else {
 									cout << "Error: No se pudo crear la solicitud de alquiler." << endl;
@@ -669,56 +673,56 @@ void Menu::menuPrincipal() {
 							}
 							break;
 						} // <- agregado para evitar caer en case 2
-case 2: { // Ver Detalle y Gestionar Transaccion
-    system("cls");
-    // Mostrar nuevamente la lista antes de pedir el codigo
-    do{
-        cout << "1. Ver Solicitudes" << endl;
-        cout << "2. Ver Contratos" << endl;
-        cout << "3. Regresar" << endl;
-        cout << "\nDigite la opcion: ";
-        cin >> enteros; // Usar la variable 'textos' para el codigo
-        if(!validarEntero(enteros) && enteros<0 || enteros>3) {
-            cout << "Opcion invalida. Intente de nuevo." << endl;
-            continue;
-        }
-    } while (validarEntero(enteros));
-    switch (enteros) {
-    case 1: {
-        lsc = s->getSolicitudes();
-        gestionarTransacciones(lsc);
-        break;
-    }
-    case 2: {
-        lsc = s->getContratos();
-        gestionarTransacciones(lsc);
-        break;
-    }
-    default:
-        cout << "Opcion invalida. Intente de nuevo." << endl;
-        break;
-    }
+						case 2: { // Ver Detalle y Gestionar Transaccion
+							system("cls");
+							// Mostrar nuevamente la lista antes de pedir el codigo
+							do {
+								cout << "1. Ver Solicitudes" << endl;
+								cout << "2. Ver Contratos" << endl;
+								cout << "3. Regresar" << endl;
+								cout << "\nDigite la opcion: ";
+								cin >> enteros; // Usar la variable 'textos' para el codigo
+								if (!validarEntero(enteros) && enteros < 0 || enteros>3) {
+									cout << "Opcion invalida. Intente de nuevo." << endl;
+									continue;
+								}
+							} while (validarEntero(enteros));
+							switch (enteros) {
+							case 1: {
+								lsc = s->getSolicitudes();
+								gestionarTransacciones(lsc);
+								break;
+							}
+							case 2: {
+								lsc = s->getContratos();
+								gestionarTransacciones(lsc);
+								break;
+							}
+							default:
+								cout << "Opcion invalida. Intente de nuevo." << endl;
+								break;
+							}
 
-    break;
-}
-case 3: // Regresar
-    system("cls");
-    break;
-default:
-    system("cls");
-    cout << "Opcion invalida. Intente de nuevo.\n";
-    system("pause");
-    break;
-}
-} while (enteros != 3);
-opcion = 0; // Reiniciar 'opcion' para el menu de sucursal
-break; // Termina gestionar contratos/solicitudes --------------------------------------------------------------------
+							break;
+						}
+						case 3: // Regresar
+							system("cls");
+							break;
+						default:
+							system("cls");
+							cout << "Opcion invalida. Intente de nuevo.\n";
+							system("pause");
+							break;
+						}
+					} while (enteros != 3);
+					opcion = 0; // Reiniciar 'opcion' para el menu de sucursal
+					break; // Termina gestionar contratos/solicitudes --------------------------------------------------------------------
 
 				case 5:// Regresar al menu principal
 					break;
 				default:
 					system("cls");
-					cout << "Opcion invalida. Intente de nuevo." << endl<<endl;
+					cout << "Opcion invalida. Intente de nuevo." << endl << endl;
 					break;
 				}
 			} while (opcion != 5);
@@ -788,27 +792,27 @@ break; // Termina gestionar contratos/solicitudes ------------------------------
 				}
 				else {
 					cout << "Esta seguro de eliminar la sucursal numero " << sel->getNumeroSucursal() << "? (Con esto elimina TODO (Planteles, Carros, Contratos, CLientes, etc)) (s/n): ";
-			cin >> sn;
-			if (sn == 's' || sn == 'S') {
+					cin >> sn;
+					if (sn == 's' || sn == 'S') {
 						if (sucursales->eliminarSucursal(sel->getNumeroSucursal())) {
-					cout << "Sucursal eliminada exitosamente." << endl;
-				}
-				else {
-					cout << "Error: No se pudo eliminar la sucursal." << endl;
-				}
-			}
-			else {
-				cout << "Eliminacion de sucursal cancelada." << endl;
-		}
+							cout << "Sucursal eliminada exitosamente." << endl;
+						}
+						else {
+							cout << "Error: No se pudo eliminar la sucursal." << endl;
+						}
+					}
+					else {
+						cout << "Eliminacion de sucursal cancelada." << endl;
+					}
 				}
 			}
 			// si cancelar==true, simplemente volver al menu principal
 		}//Termina eliminar sucursal--------------------------------------------------------------------
 		else {
-			cout << "Opcion invalida. Intente de nuevo."<<endl;
+			cout << "Opcion invalida. Intente de nuevo." << endl;
 		}
 
-	} while (opcion != sucursales->getTam()+3);
+	} while (opcion != sucursales->getTam() + 3);
 }
 
 

@@ -1,4 +1,5 @@
 #include "SolicitudAlquiler.h"
+#include "ClienteJuridico.h"
 int SolicitudAlquiler::consecutivo = 0;
 
 //constructo
@@ -44,6 +45,10 @@ string SolicitudAlquiler::getCodigoTransaccion() const {
 	stringstream s;
 	s << tipoTransaccion<<codigoTransaccion;
 	return s.str();
+}
+int SolicitudAlquiler::getCodigoTransaccionInt() const
+{
+	return codigoTransaccion;
 }
 int  SolicitudAlquiler::getEstadoTransaccion() const { return estadoTransaccion; }
 
@@ -121,7 +126,17 @@ void SolicitudAlquiler::setFechaEntrega(const int& entrega) {
 	fechaEntrega.tm_year = anio - 1900; // tm_year es años desde 1900
 }
 void SolicitudAlquiler::setPrecioDiario(double precio) { precioDiario = precio; }
-void SolicitudAlquiler::setPrecioTotal(double precio) { precioTotal = precio * diasAlquiler; } // calcular total basado en diasAlquiler
+void SolicitudAlquiler::setPrecioTotal(double precio) { 
+	precioTotal = precio * diasAlquiler;
+	//aplica descuento si es cliente juridico
+	if (!cliente) return;
+	ClienteJuridico* cj = dynamic_cast<ClienteJuridico*>(cliente);
+	if (cj) {
+		double descuento = cj->getPorcentajeDescuento(); // obtener el porcentaje de descuento
+		precioTotal = precioTotal * (1 - descuento / 100.0); // aplicar descuento
+	}
+
+} // calcular total basado en diasAlquiler
 
 void SolicitudAlquiler::calcularFechaEntrega()
 {

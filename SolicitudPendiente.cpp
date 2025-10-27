@@ -4,6 +4,10 @@
 SolicitudPendiente::SolicitudPendiente() : SolicitudAlquiler() {
 }
 
+SolicitudPendiente::SolicitudPendiente(const SolicitudAlquiler& otra) : SolicitudAlquiler(otra)
+{
+}
+
 SolicitudPendiente::SolicitudPendiente(Persona* cliente, Persona* colaborador, Carro* Vehiculo, int dias,
 	const int& inicio, const int& entrega, double precioDiario, double precioTotal)
 	: SolicitudAlquiler(cliente, colaborador, Vehiculo, dias,

@@ -15,6 +15,7 @@ public:
 	int getTam() const;
 	bool insertarFinal(SolicitudAlquiler* s);
 	SolicitudAlquiler* buscarTransaccion(const int& pos);
+	SolicitudAlquiler* buscarTransaccionPorCodigo(const int& codigo); // Nuevo metodo
 	string mostrarTransacciones();
 	string toString() const;
 };

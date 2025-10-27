@@ -34,6 +34,7 @@ public:
 
 	// Getters basicos
 	string getCodigoTransaccion() const;
+	int getCodigoTransaccionInt() const; // NUEVO GETTER PARA OBTENER SOLO LA PARTE NUMERICA
 	int getEstadoTransaccion() const;
 	void setEstadoTransaccion(int nuevoEstado); // NUEVO SETTER
 

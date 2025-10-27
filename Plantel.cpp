@@ -128,7 +128,7 @@ string Plantel::mostrarEstacionamiento(int ver) {
 			if (estacionamiento[i][j]) {
 				if (ver == 1) {
 					if (estacionamiento[i][j]->getEstadoCarro() != "Disponible") {
-						ss << "|  *******  | "; // Carro no disponible
+						ss << "| ******* | "; // Carro no disponible
 						continue;
 					}
 					ss << "| " << estacionamiento[i][j]->getPlaca() << " | "; // Mostrar placa del carro
