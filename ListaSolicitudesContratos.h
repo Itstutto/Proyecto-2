@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include "SolicitudAlquiler.h"
+#include "NodoSolicitud.h"
 
 class ListaSolicitudesContratos {
 private:

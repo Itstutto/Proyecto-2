@@ -68,8 +68,6 @@ tm SolicitudAlquiler::getFechaEntregaTM() const { return fechaEntrega; }
 
 
 
-
-
 string SolicitudAlquiler::getIdCliente() const { return cliente->getId(); }
 string SolicitudAlquiler::getIdColaborador() const { return colaborador->getId(); }
 string SolicitudAlquiler::getPlacaVehiculo() const { return vehiculo->getPlaca(); }
@@ -136,21 +134,4 @@ void SolicitudAlquiler::calcularFechaEntrega()
 	// Actualizar la fechaEntrega con la fecha calculada
 	fechaEntrega = fechaCalculo;
 }
-
-
-
-
-
-
-
-
-
-
-NodoSolicitud::NodoSolicitud() : dato(nullptr), sig(nullptr) {}
-NodoSolicitud::NodoSolicitud(SolicitudAlquiler* d) : dato(d), sig(nullptr) {}
-NodoSolicitud::~NodoSolicitud() {}
-SolicitudAlquiler* NodoSolicitud::getDato() { return dato; }
-NodoSolicitud* NodoSolicitud::getSig() { return sig; }
-void NodoSolicitud::setDato(SolicitudAlquiler* d) { dato = d; }
-void NodoSolicitud::setSig(NodoSolicitud* s) { sig = s; }
 

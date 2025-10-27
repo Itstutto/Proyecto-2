@@ -34,11 +34,3 @@ string EstadoBitacora::toString() const {
 	   << " (colab: " << idColaborador << ")";
 	return ss.str();
 }
-
-NodoBitacora::NodoBitacora() : dato(nullptr), sig(nullptr) {}
-NodoBitacora::NodoBitacora(EstadoBitacora* e) : dato(e), sig(nullptr) {}
-NodoBitacora::~NodoBitacora() {}
-EstadoBitacora* NodoBitacora::getDato() { return dato; }
-NodoBitacora* NodoBitacora::getSig() { return sig; }
-void NodoBitacora::setDato(EstadoBitacora* e) { dato = e; }
-void NodoBitacora::setSig(NodoBitacora* s) { sig = s; }

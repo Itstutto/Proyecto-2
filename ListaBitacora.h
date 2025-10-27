@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include "EstadoBitacora.h"
+#include "NodoBitacora.h"
 
 using namespace std;
 

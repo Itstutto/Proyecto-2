@@ -23,9 +23,6 @@ public:
 	bool eliminarPlantel(char id);
 	string mostrarPlanteles();
 
-
-
-
 	string mostrarListaPlanteles(int ver);
 };
 

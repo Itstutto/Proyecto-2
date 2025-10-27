@@ -19,17 +19,3 @@ public:
 	string getIdColaborador() const;
 	string toString() const;
 };
-
-class NodoBitacora {
-private:
-	EstadoBitacora* dato;
-	NodoBitacora* sig;
-public:
-	NodoBitacora();
-	NodoBitacora(EstadoBitacora* e);
-	~NodoBitacora();
-	EstadoBitacora* getDato();
-	NodoBitacora* getSig();
-	void setDato(EstadoBitacora* e);
-	void setSig(NodoBitacora* s);
-};
