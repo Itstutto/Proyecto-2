@@ -10,7 +10,7 @@ public:
 
 	//constructor copia de una solicitud aprobada
 	ContratoAlquiler(const SolicitudAlquiler& solicitudAprobada);
-	~ContratoAlquiler() override {}
+	~ContratoAlquiler() override;
 
 	// Getters y Setters para el estado detallado
 	int getEstadoDetallado() const;

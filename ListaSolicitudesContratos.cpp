@@ -64,6 +64,18 @@ bool ListaSolicitudesContratos::transaccionesCliente(string id)
 	return false;
 }
 
+bool ListaSolicitudesContratos::transaccionesColaborador(string id)
+{
+	NodoSolicitud* a = primero;
+	while (a) {
+		if (a->getDato()->getIdColaborador() == id) {
+			return true;
+		}
+		a = a->getSig();
+	}
+	return false;
+}
+
 void ListaSolicitudesContratos::clienteEliminado(string id)
 {
 	// Se crea solo cliente fisico porque nada mas es para identificacion, no importa el tipo
@@ -100,6 +112,30 @@ void ListaSolicitudesContratos::vehiculoEliminado(string placa)
 			a->getDato()->setCarro(nullptr); // Desvincula el vehiculo eliminado
 			a->getDato()->setCarro(c); // Asigna un vehiculo por defecto
 		}
+		a = a->getSig();
+	}
+}
+
+void ListaSolicitudesContratos::eliminarTransaccionPorCodigo(const int& codigo)
+{
+	NodoSolicitud* a = primero;
+	NodoSolicitud* anterior = nullptr;
+	while (a) {
+		if (a->getDato()->getCodigoTransaccionInt() == codigo) {
+			if (anterior) {
+				anterior->setSig(a->getSig());
+			} else {
+				primero = a->getSig();
+			}
+			if (a == ultimo) {
+				ultimo = anterior;
+			}
+			delete a->getDato();
+			delete a;
+			tam--;
+			return;
+		}
+		anterior = a;
 		a = a->getSig();
 	}
 }

@@ -18,11 +18,13 @@ public:
 	SolicitudAlquiler* buscarTransaccion(const int& pos);
 	SolicitudAlquiler* buscarTransaccionPorCodigo(const int& codigo); // Nuevo metodo
 	bool transaccionesCliente(string id); // Verifica si un cliente tiene transacciones
+	bool transaccionesColaborador(string id); // Verifica si un colaborador tiene transacciones
 	void clienteEliminado(string id);
 	void colaboradorEliminado(string id);
 	void vehiculoEliminado(string placa);
 	//Mostrar transacciones por colaborador, numeradas para seleccion
 	// al selecionar una, devolver la transaccion
+	void eliminarTransaccionPorCodigo(const int& codigo);
 	string mostrarTransacciones();
 	string toString() const;
 };

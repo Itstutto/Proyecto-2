@@ -34,6 +34,7 @@ public:
 	// Métodos adicionales
 	bool agregarCarro(Carro* carro, int f, int c);
 	bool eliminarCarro(int f, int c);
+	bool eliminarCarro(string placa);
 	bool estaVacio();
 	bool esPosicionValida(int x, int y);
 	string mostrarPlantel();

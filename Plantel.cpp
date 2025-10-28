@@ -102,6 +102,22 @@ bool Plantel::eliminarCarro(int f, int c) {
 	return true;
 }
 
+bool Plantel::eliminarCarro(string placa)
+{
+	for (int i = 0; i < filas; ++i) {
+		for (int j = 0; j < columnas; ++j) {
+			if (estacionamiento[i][j] && estacionamiento[i][j]->getPlaca() == placa) {
+				delete estacionamiento[i][j];
+				estacionamiento[i][j] = nullptr;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+
+
 bool Plantel::estaVacio()
 {
 	return getCanDisponibles() == getCanTotal(); // true si todos los espacios estan libres

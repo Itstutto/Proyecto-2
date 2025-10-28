@@ -24,6 +24,16 @@ ContratoAlquiler::ContratoAlquiler(const SolicitudAlquiler & solicitudAprobada)
 
 }
 
+ContratoAlquiler::~ContratoAlquiler()
+{
+	cliente = nullptr;
+	colaborador = nullptr;
+	vehiculo = nullptr;
+	// No se eliminan los punteros ya que no son dueños de la memoria
+}
+
+
+
 // IMPLEMENTACIÓN DE GETTERS Y SETTERS
 int ContratoAlquiler::getEstadoDetallado() const {
 	return estadoDetalladoContrato;

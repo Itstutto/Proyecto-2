@@ -67,10 +67,10 @@ SolicitudAlquiler::SolicitudAlquiler(const SolicitudAlquiler& otra)
 }
 
 SolicitudAlquiler::~SolicitudAlquiler() {
-	// Gestionado internamente
-	delete cliente;
-	delete colaborador;
-	delete vehiculo;
+	// Gestionado externamente
+	cliente = nullptr;
+	colaborador = nullptr;
+	vehiculo = nullptr;
 }
 
 string SolicitudAlquiler::getCodigoTransaccion() const { 

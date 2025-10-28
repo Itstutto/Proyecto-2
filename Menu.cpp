@@ -45,6 +45,7 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 				// Inicia submenu de gestion de la transaccion
 				do {
 					system("cls");
+					if (!sol) break; //Solicitud eliminada, sale de bucle
 					cout << "\n========= DETALLE Y GESTION DE TRANSACCION =========\n";
 					cout << sol->toString() << endl; // Muestra el detalle completo
 					cout << "\n----------------------------------------------------\n";
@@ -156,6 +157,13 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 						// Implementación real: cambiar estado a 3 (Rechazada)
 						sol->setEstadoTransaccion(3);
 						cout << "\nSOLICITUD RECHAZADA exitosamente.\n";
+						cout << "Nota: En el cliente " << sol->getCliente()->getNombre() << " puede ver la solicitud RECHAZADA\n";
+						Cliente* cli = dynamic_cast<Cliente*>(sol->getCliente());
+						Colaborador* col = dynamic_cast<Colaborador*>(sol->getColaborador());
+						cli->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3); // Actualizar historial cliente
+						col->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3); // Actualizar historial colaborador
+						lsc->eliminarTransaccionPorCodigo(sol->getCodigoTransaccionInt()); // Eliminar de la lista general
+						opcion = 4; //Obliga a salir del menu
 						break;
 					}
 					case 3: { // Anular Solicitud
@@ -268,6 +276,8 @@ void Menu::inicializarDatos() {
 	SolicitudAlquiler* sol2 = new SolicitudPendiente(cj1, co2, carro4, 3, 15062024, 18062024, 55.00, 165.00); // no se agrega a solicitudes porque se aprueba de una vez
 	SolicitudAlquiler* sol3 = new ContratoAlquiler(*sol2); // Contrato basado en la solicitud aprobada
 	suc1->getSolicitudes()->insertarFinal(sol1);
+	cf1->getHistorial()->insertarFinal(new SolicitudPendiente(*sol1)); 
+	co1->getHistorial()->insertarFinal(new SolicitudPendiente(*sol1));
 	suc1->getContratos()->insertarFinal(sol3);
 
 
@@ -619,7 +629,45 @@ void Menu::menuPrincipal() {
 							
 						}
 						else if (opcion == lcol->getTam() + 2) {
-							cout << "Eliminar colaborador (funcionalidad no implementada)." << endl;
+							do {
+								do {
+									cout << "Elija el colaborador a eliminar: " << endl;
+									cout << lcol->mostrarPersonas(1);
+									cin >> opcion;
+									system("cls");
+								} while (validarEntero(opcion));
+								if (opcion == lcol->getTam() + 1); // Salir
+								else if (opcion<1 || opcion>lcol->getTam() + 1) {
+									cout << "Opcion invalida. Intente de nuevo." << endl << endl;
+									continue;
+								}
+								else {
+									colab = dynamic_cast<Colaborador*>(lcol->obtenerPersonaPorIndice(opcion));
+									if (s->getSolicitudes()->transaccionesColaborador(colab->getId()) || s->getContratos()->transaccionesColaborador(colab->getId())) {
+										system("cls");
+										cout << "No se puede eliminar al colaborador " << colab->getNombre() << " con ID " << colab->getId() << " porque tiene solicitudes o contratos asociados." << endl;
+										continue;
+									}
+									cout << "Esta seguro de eliminar al colaborador " << colab->getNombre() << " con ID " << colab->getId() << "? (s/n): ";
+									cin >> sn;
+									system("cls");
+									if (sn == 's' || sn == 'S') {
+										// Eliminar colaborador de solicitudes y contratos MUY IMPORTANTE
+										s->getSolicitudes()->colaboradorEliminado(colab->getId());
+										s->getContratos()->colaboradorEliminado(colab->getId());
+										s->getClientes()->eliminarColaboradorHistorial(colab->getId());
+										if (lcol->eliminarPersona(colab->getId())) {
+											cout << "Colaborador eliminado exitosamente." << endl;
+										}
+										else {
+											cout << "Error: No se pudo eliminar el colaborador." << endl;
+										}
+									}
+									else {
+										cout << "Eliminacion de colaborador cancelada." << endl;
+									}
+								}
+							} while (opcion!= lcol->getTam()+1);
 						}
 						else if (opcion == lcol->getTam() + 3); // Salir
 						else {
@@ -738,6 +786,35 @@ void Menu::menuPrincipal() {
 										car = nullptr;
 									}
 									break;
+								case 4:
+									do {
+										cout << p->mostrarEstacionamiento(0);
+										cout << "Digite la placa del carro a eliminar: ";
+										cin >> textos;
+										car = p->getCarroxPlaca(textos);
+									} while (!car);
+									if(car->getEstadoCarro() == "Alquilado") {
+										cout << "No se puede eliminar el carro porque esta alquilado. Operacion cancelada." << endl;
+										continue;
+									}
+									cout << "Esta seguro de eliminar el carro con placa " << car->getPlaca() << "? (s/n): ";
+									cin >> sn;
+									if (sn == 's' || sn == 'S') {
+										system("cls");
+										// Eliminar carro de solicitudes, contratos, clientes y colaboradores MUY IMPORTANTE
+										s->getClientes()->vehiculoEliminado(car->getPlaca());
+										s->getColaboradores()->vehiculoEliminado(car->getPlaca());
+
+										if (p->eliminarCarro(car->getPlaca())) {
+											cout << "Carro eliminado exitosamente." << endl;
+										}
+										else {
+											cout << "Error: No se pudo eliminar el carro." << endl;
+										}
+									}
+									else {
+										cout << "Eliminacion de carro cancelada." << endl;
+									}
 
 								default:
 									cout << "Opcion invalida. Intente de nuevo." << endl;
@@ -897,6 +974,7 @@ void Menu::menuPrincipal() {
 								Carro* carroSeleccionado = p->getCarroxPlaca(placaSeleccionada);
 								if (carroSeleccionado && carroSeleccionado->getEstadoCarro() == "Disponible") { // Disponible
 									sol->setCarro(carroSeleccionado);
+									// Cambia estado del carro a "Alquilado" HASTA QUE SE APRUEBE LA SOLICITUD
 									break; // Carro valido seleccionado
 								}
 								else {
