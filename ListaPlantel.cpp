@@ -31,6 +31,17 @@ Plantel* ListaPlantel::buscarPlantel(int pos)
 	}
 	return actual->getDato();
 }
+Plantel* ListaPlantel::buscarPlantel(char id)
+{
+	NodoPl* actual = primero;
+	while (actual) {
+		if (actual->getDato()->getIdentificador() == id) {
+			return actual->getDato();
+		}
+		actual = actual->getSig();
+	}
+	return nullptr;
+}
 int ListaPlantel::getTam() {
 	return tam;
 }

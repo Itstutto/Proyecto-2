@@ -224,12 +224,12 @@ void Menu::inicializarDatos() {
 	Carro* carro5 = new Carro("789-MNO", "Tucson", "Hyundai", "Bilbao", "B2", 'B', 50.00);
 	Carro* carro6 = new Carro("234-PQR", "Golf", "Volkswagen", "Granada", "B1", 'B', 45.00);
 
-	plantel->agregarCarro(carro1, 0);
-	plantel->agregarCarro(carro2, 12);
-	plantel->agregarCarro(carro3, 24);
-	plantel->agregarCarro(carro4, 31);
-	plantel->agregarCarro(carro5, 43);
-	plantel->agregarCarro(carro6, 55);
+	plantel->agregarCarro(carro1, 0, 0);
+	plantel->agregarCarro(carro2, 1, 2);
+	plantel->agregarCarro(carro3, 2, 4);
+	plantel->agregarCarro(carro4, 3, 1);
+	plantel->agregarCarro(carro5, 4, 3);
+	plantel->agregarCarro(carro6, 5, 5);
 
 	suc1->getPlanteles()->insertarFinal(plantel);
 
@@ -298,6 +298,7 @@ void Menu::menuPrincipal() {
 	Cliente* cli = nullptr; // Cliente seleccionado
 	ClienteFisico* cfis = nullptr; // Cliente Fisico seleccionado
 	ClienteJuridico* cjur = nullptr; // Cliente Juridico seleccionado
+	Carro* car = nullptr; // Carro seleccionado
 	ListaPlantel* lp = nullptr; // Lista de planteles de la sucursal
 	Colaborador* colab = nullptr; // Colaborador seleccionado
 	ListaClientes1* lc = nullptr; // Lista de clientes de la sucursal
@@ -309,6 +310,7 @@ void Menu::menuPrincipal() {
 
 	int enteros;
 	string textos;
+	char carac;
 	char sn;
 
 	do {
@@ -513,12 +515,25 @@ void Menu::menuPrincipal() {
 								if (opcion == lc->getTam() + 1); // Salir
 								else if (opcion >= 1 && opcion <= lc->getTam()) {
 									cli = dynamic_cast<Cliente*>(lc->obtenerPersonaPorIndice(opcion));
+									
+									if (s->getSolicitudes()->transaccionesCliente(cli->getId()) || s->getContratos()->transaccionesCliente(cli->getId())) {
+										system("cls");
+										cout << "No se puede eliminar al cliente " << cli->getNombre() << " con ID " << cli->getId() << " porque tiene solicitudes o contratos asociados." << endl;
+										continue;
+									}
+									
 									cout << "Esta seguro de eliminar al cliente " << cli->getNombre() << " con ID " << cli->getId() << "? (s/n): ";
 									cin >> sn;
 									system("cls");
 									if (sn == 's' || sn == 'S') {
+										// Eliminar cliente de solicitudes, contratos y colaboradores MUY IMPORTANTE
+										s->getSolicitudes()->clienteEliminado(cli->getId());
+										s->getContratos()->clienteEliminado(cli->getId());
+										s->getColaboradores()->eliminarClienteHistorial(cli->getId());
 										if (lc->eliminarPersona(cli->getId())) {
 											cout << "Cliente eliminado exitosamente." << endl;
+
+
 										}
 										else {
 											cout << "Error: No se pudo eliminar el cliente." << endl;
@@ -546,11 +561,269 @@ void Menu::menuPrincipal() {
 					break; // Termina gestionar clientes--------------------------------------------------------------------
 
 				case 2:// Inicia gestionar colaboradores--------------------------------------------------------------------
-					cout << s->getColaboradores()->mostrarPersonas(0);
+					lcol = s->getColaboradores();
+					do {
+						do {
+							cout << s->getColaboradores()->mostrarPersonas(0);
+							cin >> opcion;
+						} while (validarEntero(opcion));
+						if (opcion >= 1 && opcion <= lcol->getTam()) {
+							// Inicia Mostrar detalles del colaborador seleccionado-----------------------------------------------------------------------------
+							colab = dynamic_cast<Colaborador*>(lcol->obtenerPersonaPorIndice(opcion));
+							cout << "Informacion del Colaborador:" << endl;
+							cout << colab->toString() << endl;
+							system("pause");
+							system("cls");
+						}
+						else if (opcion == lcol->getTam() + 1) {
+							colab = new Colaborador();
+							cout << "Digite id del colaborador: ";
+							cin >> textos;
+							if (lcol->buscarPersona(textos)) {
+								cout << "Colaborador con ese ID ya existe. Operacion cancelada." << endl;
+								delete colab;
+								colab = nullptr;
+								continue;
+							}
+							colab->setId(textos);
+							cout << "Digite el nombre del colaborador: ";
+							cin.ignore();
+							getline(cin, textos);
+							colab->setNombre(textos);
+							do {
+								cout << "Digite la fecha de ingreso del colaborador (DD/MM/AAAA): ";
+								cin >> enteros;
+							} while (validarEntero(enteros));
+							colab->setFechaIngreso(enteros);
+							cout << colab->toString() << endl;
+							cout << "Esta seguro de agregar este colaborador? (s/n): ";
+							cin >> sn;
+							if (sn == 's' || sn == 'S') {
+								system("cls");
+								if (lcol->insertarFinal(colab)) {
+									cout << "Colaborador agregado exitosamente." << endl;
+								}
+								else {
+									cout << "Error: No se pudo agregar el colaborador. Puede que ya exista un colaborador con ese ID." << endl;
+									//no se elimina colab porque el insertarFinal lo hace en caso de error
+									colab = nullptr;
+								}
+							}
+							else {
+								cout << "Creacion de colaborador cancelada." << endl;
+								delete colab; // eliminar colaborador creado
+								colab = nullptr;
+							}
+
+
+							
+						}
+						else if (opcion == lcol->getTam() + 2) {
+							cout << "Eliminar colaborador (funcionalidad no implementada)." << endl;
+						}
+						else if (opcion == lcol->getTam() + 3); // Salir
+						else {
+							system("cls");
+							cout << "Opcion invalida. Intente de nuevo." << endl << endl;
+						}
+					} while (opcion != lcol->getTam() + 3);
 					break;// Termina gestionar colaboradores--------------------------------------------------------------------
 
 				case 3:// Inicia gestionar planteles--------------------------------------------------------------------
-					cout << "Gestionar Planteles (funcionalidad no implementada)." << endl;
+					lp = s->getPlanteles();
+					
+					do {
+						do {
+							cout << lp->mostrarListaPlanteles(0);
+							cin >> opcion;
+							system("cls");
+						} while (validarEntero(opcion));
+						if (opcion == lp->getTam() + 3); // Salir
+						else if (opcion >= 1 && opcion <= lp->getTam()) {
+							// Inicia Mostrar detalles del plantel seleccionado-----------------------------------------------------------------------------
+							p = lp->buscarPlantel(opcion);
+							do {
+								do {
+									cout << p->mostrarPlantel();
+									cin >> opcion;
+								} while (validarEntero(opcion));
+								switch (opcion) {
+								case 1:
+									cout << p->mostrarEstacionamiento(0);
+									break;
+								case 2: {// Ver carro especifico
+									do {
+										cout << p->mostrarEstacionamiento(0);
+										cout << "Digite la placa del carro a ver: ";
+										cin >> textos;
+										car = p->getCarroxPlaca(textos);
+										system("cls");
+										if (!car) cout << "No se encontro un carro con esa placa. Intente de nuevo." << endl;
+									} while (!car);
+									cout << "Informacion del Carro:" << endl;
+									cout << car->toString() << endl;
+									system("pause");
+									break;
+								}
+								case 3:
+									
+									cout << "Digite la placa del carro a agregar: ";
+									cin >> textos;
+									if (s->buscarCarroPorPlaca(textos)) {
+										cout << "Carro con esa placa ya existe en el plantel. Operacion cancelada." << endl;
+										continue;
+									}
+									car = new Carro();
+									car->setPlaca(textos);
+									cout << "Digite la marca del carro: ";
+									cin.ignore();
+									getline(cin, textos);
+									car->setMarca(textos);
+									cout << "Digite el modelo del carro: ";
+									getline(cin, textos);
+									car->setModelo(textos);
+									cout << "Digite el tipo de licencia requerida (A, B, C): ";
+									cin >> textos;
+									car->setTipoLicencia(textos);
+									double precio;
+									do {
+										cout << "Digite el precio diario de alquiler del carro: ";
+										cin >> precio;
+									} while (validarFlotante(precio) || precio <= 0);
+									car->setPrecioDiario(precio);
+									cout << "Digite la categoria del carro (A, B, C): ";
+									cin >> carac;
+									car->setCategoria(carac);
+									int fila, columna;
+									do {
+										cout << p->mostrarEstacionamiento(0);
+										do {
+											
+											cout << "Digite la posicion donde desea agregar el carro ";
+											cout << "Ubicaciones recomendadas: " << p->posicionesRecomendadas() << endl;
+											cout << "Fila: ";
+											cin >> fila;
+
+										} while (validarEntero(fila));
+										
+										do {
+											cout << "Columna: ";
+											cin >> columna;
+										} while (validarEntero(columna));
+
+										if (!p->esPosicionValida(fila, columna)) {
+											system("cls");
+											cout << "Posicion invalida o ya ocupada. Intente de nuevo." << endl;
+										}
+
+									} while (!p->esPosicionValida(fila, columna));
+									car->setUbicacion("(Asignada al agregar carro)");
+									cout << car->toString() << endl;
+									cout << "Esta seguro de agregar este carro en la posicion (" << fila << ", " << columna << ")? (s/n): ";
+									cin >> sn;
+									if (sn == 's' || sn == 'S') {
+										system("cls");
+										if (p->agregarCarro(car, fila, columna)) {
+											cout << "Carro agregado exitosamente." << endl;
+										}
+										else {
+											cout << "Error: No se pudo agregar el carro. Puede que ya exista un carro con esa placa." << endl;
+											//no se elimina car porque el agregarCarro lo hace en caso de error
+											car = nullptr;
+										}
+									}
+									else {
+										cout << "Creacion de carro cancelada." << endl;
+										delete car; // eliminar carro creado
+										car = nullptr;
+									}
+									break;
+
+								default:
+									cout << "Opcion invalida. Intente de nuevo." << endl;
+									break;
+								}
+							} while (opcion != 5);
+							system("pause");
+						}
+						else if (opcion == lp->getTam() + 1) {
+							p = new Plantel();
+							cout << "Digite el identificador del plantel (A-Z): ";
+							cin >> carac;
+							if (lp->buscarPlantel(carac)) {
+								cout << "Plantel con ese identificador ya existe. Operacion cancelada." << endl;
+								continue;
+							}
+							int filas, columnas;
+							do {
+								cout << "Digite el numero de filas del plantel: ";
+								cin >> filas;
+							} while (validarEntero(filas) || filas <= 0);
+							do {
+								cout << "Digite el numero de columnas del plantel: ";
+								cin >> columnas;
+							} while (validarEntero(columnas) || columnas <= 0);
+							p = new Plantel(carac, filas, columnas);
+							cout << p->mostrarEstacionamiento(0);
+							cout << "Esta seguro de agregar este plantel? (s/n): ";
+							cin >> sn;
+							if (sn == 's' || sn == 'S') {
+								system("cls");
+								if (lp->insertarFinal(p)) {
+									cout << "Plantel agregado exitosamente." << endl;
+								}
+								else {
+									cout << "Error: No se pudo agregar el plantel. Puede que ya exista un plantel con ese identificador." << endl;
+									//no se elimina p porque el insertarFinal lo hace en caso de error
+									p = nullptr;
+								}
+							}
+							else {
+								cout << "Creacion de plantel cancelada." << endl;
+								delete p; // eliminar plantel creado
+								p = nullptr;
+							}
+						}
+						else if (opcion == lp->getTam() + 2) {
+							do {
+								do {
+									cout << "Elija el plantel a eliminar: " << endl;
+									cout << lp->mostrarListaPlanteles(1);
+									cin >> opcion;
+								} while (validarEntero(opcion));
+								if (opcion == lp->getTam() + 1); // SALIR
+								else if (opcion > lp->getTam() + 1 || opcion<1) {
+									cout << "Opcion invalida. Intente de nuevo." << endl << endl;
+									continue;
+								}
+								else {
+									p = lp->buscarPlantel(opcion);
+									if (!p->estaVacio()) {
+										cout << "No se puede eliminar el plantel porque aun tiene carros asignados. Operacion cancelada." << endl;
+										continue;
+									}
+									cout << "Esta seguro de eliminar el plantel " << p->getIdentificador() << "? (s/n): ";
+									cin >> sn;
+									if (sn == 's' || sn == 'S') {
+										if (lp->eliminarPlantel(p->getIdentificador())) {
+											cout << "Plantel eliminado exitosamente." << endl;
+										}
+										else {
+											cout << "Error: No se pudo eliminar el plantel." << endl;
+										}
+									}
+									else {
+										cout << "Eliminacion de plantel cancelada." << endl;
+									}
+								}
+							} while (opcion != lp->getTam() + 1);
+						}
+						else {
+							system("cls");
+							cout << "Opcion invalida. Intente de nuevo." << endl << endl;
+						}
+
+					} while (opcion != lp->getTam() + 3);
 					break;// Termina gestionar planteles--------------------------------------------------------------------
 
 				case 4:// Inicia gestionar contratos/solicitudes --------------------------------------------------------------------

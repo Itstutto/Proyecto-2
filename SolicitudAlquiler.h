@@ -29,6 +29,8 @@ public:
 	SolicitudAlquiler(Persona* cliente, Persona* colaborador, Carro* Vehiculo, int dias,
 					 const int& inicio, const int& entrega, double precioDiario, double precioTotal,
 					  char tipoTransaccion, int estado = 1);
+	//Constructor copia profunda
+	SolicitudAlquiler(const SolicitudAlquiler& otra);
 	virtual ~SolicitudAlquiler();
 	static int consecutivo;
 

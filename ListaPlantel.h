@@ -17,6 +17,7 @@ public:
 	NodoPl* getPrimero();
 	NodoPl* getUltimo();
 	Plantel* buscarPlantel(int pos);
+	Plantel* buscarPlantel(char id);
 	int getTam();
 	// Métodos adicionales
 	bool insertarFinal(Plantel* p);

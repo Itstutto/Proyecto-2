@@ -32,8 +32,11 @@ public:
 	void setFilas(int f);
 	void setColumnas(int c);
 	// Métodos adicionales
-	bool agregarCarro(Carro* carro, int pos);
+	bool agregarCarro(Carro* carro, int f, int c);
 	bool eliminarCarro(int f, int c);
+	bool estaVacio();
+	bool esPosicionValida(int x, int y);
+	string mostrarPlantel();
 	string mostrarEstacionamiento(int ver);
 	string posicionesRecomendadas();
 };

@@ -1,5 +1,8 @@
 #include "SolicitudAlquiler.h"
 #include "ClienteJuridico.h"
+#include "ClienteFisico.h"
+#include "Cliente.h"
+#include "Colaborador.h"
 int SolicitudAlquiler::consecutivo = 0;
 
 //constructo
@@ -34,11 +37,40 @@ SolicitudAlquiler::SolicitudAlquiler(Persona* cliente, Persona* colaborador, Car
 }
 
 
+SolicitudAlquiler::SolicitudAlquiler(const SolicitudAlquiler& otra)
+{
+	//hace una copia profunda de la solicitud de alquiler
+	tipoTransaccion = otra.tipoTransaccion;
+	codigoTransaccion = otra.codigoTransaccion;
+	diasAlquiler = otra.diasAlquiler;
+	fechaInicio = otra.fechaInicio;
+	fechaEntrega = otra.fechaEntrega;
+	precioDiario = otra.precioDiario;
+	precioTotal = otra.precioTotal;
+	estadoTransaccion = otra.estadoTransaccion;
+
+	// Copia profunda de cliente, colaborador y vehiculo, crea nueva memoria, gestion de memoria propia
+	if (dynamic_cast<ClienteJuridico*>(otra.cliente)) {
+		ClienteJuridico* cj = dynamic_cast<ClienteJuridico*>(otra.cliente);
+		cliente = new ClienteJuridico(*cj);
+	}
+	else {
+		ClienteFisico* cf = dynamic_cast<ClienteFisico*>(otra.cliente);
+		cliente = new ClienteFisico(*cf);
+	}
+	if (dynamic_cast<Colaborador*>(otra.colaborador)) {
+		Colaborador* col = dynamic_cast<Colaborador*>(otra.colaborador);
+		colaborador = new Colaborador(*col);
+	}
+	vehiculo = new Carro(*otra.vehiculo);
+
+}
+
 SolicitudAlquiler::~SolicitudAlquiler() {
-	// No se eliminan cliente, colaborador ni vehiculo porque son gestionados externamente, se asignan a nullptr
-	cliente = nullptr;
-	colaborador = nullptr;
-	vehiculo = nullptr;
+	// Gestionado internamente
+	delete cliente;
+	delete colaborador;
+	delete vehiculo;
 }
 
 string SolicitudAlquiler::getCodigoTransaccion() const { 

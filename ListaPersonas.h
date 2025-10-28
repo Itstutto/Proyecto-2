@@ -17,6 +17,8 @@ public:
 	NodoP* getUltimo();
 	int getTam();
 
+	void vehiculoEliminado(string placa);
+
 	bool insertarFinal(Persona* p);
 	bool eliminarPersona(string id);
 	Persona* buscarPersona(string id);

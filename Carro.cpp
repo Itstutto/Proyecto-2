@@ -5,6 +5,7 @@ Carro::Carro() {
 	modelo = "";
 	marca = "";
 	ubicacion = "";
+	tipoLicencia = "";
 	categoria = ' ';
 	precioDiario = 0.0;
 	historialEstados = new ListaBitacora();

@@ -1,4 +1,5 @@
 #include "ListaPersonas.h"
+#include "ListaSolicitudesContratos.h"
 ListaPersonas::ListaPersonas()
 {
 	primero = nullptr;
@@ -18,6 +19,20 @@ ListaPersonas::~ListaPersonas()
 NodoP* ListaPersonas::getPrimero() { return primero; }
 NodoP* ListaPersonas::getUltimo() { return ultimo; }
 int ListaPersonas::getTam() { return tam; }
+void ListaPersonas::vehiculoEliminado(string placa)
+{
+	NodoP* actual = primero;
+	while (actual) {
+		Persona* p = actual->getDato();
+		if (p) {
+			ListaSolicitudesContratos* historial = p->getHistorial();
+			if (historial) {
+				historial->vehiculoEliminado(placa);
+			}
+		}
+		actual = actual->getSig();
+	}
+}
 bool ListaPersonas::insertarFinal(Persona* p)
 {
 	NodoP* nuevo = new NodoP(p);

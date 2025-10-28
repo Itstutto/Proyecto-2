@@ -60,7 +60,21 @@ void Colaborador::setFechaContratacion(int fecha)
 
 string Colaborador::getFechaIngreso() { return fechaIngreso; }
 
-void Colaborador::setFechaIngreso(string fecha) { this->fechaIngreso = fecha; }
+void Colaborador::setFechaIngreso(int fecha) {
+	//setea ambos, fechaIngreso (string) y fechaContratacion (tm)
+	// entero en formato DDMMYYYY
+	int dia = fecha / 1000000;
+	int mes = (fecha / 10000) % 100;
+	int anio = fecha % 10000;
+	fechaContratacion.tm_mday = dia;
+	fechaContratacion.tm_mon = mes - 1; // tm_mon es 0-11
+	fechaContratacion.tm_year = anio - 1900; // tm_year es años desde 1900
+	stringstream ss;
+	ss << (dia < 10 ? "0" : "") << dia << "/"
+	   << (mes < 10 ? "0" : "") << mes << "/"
+		<< anio;
+	fechaIngreso = ss.str();
+}
 
 string Colaborador::toString() const {
 	stringstream ss;

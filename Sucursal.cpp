@@ -31,6 +31,18 @@ ListaClientes1* Sucursal::getClientes() { return clientes; }
 ListaColaboradores1* Sucursal::getColaboradores() { return colaboradores; }
 ListaSolicitudesContratos* Sucursal::getSolicitudes() { return solicitudes; }
 ListaSolicitudesContratos* Sucursal::getContratos() { return contratos; }
+Carro* Sucursal::buscarCarroPorPlaca(const string& placa)
+{
+	NodoPl* actual = planteles->getPrimero();
+	while (actual) {
+		Carro* carroEncontrado = actual->getDato()->getCarroxPlaca(placa);
+		if (carroEncontrado) {
+			return carroEncontrado;
+		}
+		actual = actual->getSig();
+	}
+	return nullptr; // No se encontró el carro en ningún plantel
+}
 //usar "endl" en vez de \n (aplica en todo)
 string Sucursal::mostrarOpciones() {
 	stringstream ss;

@@ -52,6 +52,58 @@ SolicitudAlquiler* ListaSolicitudesContratos::buscarTransaccionPorCodigo(const i
 	return nullptr;
 }
 
+bool ListaSolicitudesContratos::transaccionesCliente(string id)
+{
+	NodoSolicitud* a = primero;
+	while (a) {
+		if (a->getDato()->getIdCliente() == id) {
+			return true;
+		}
+		a = a->getSig();
+	}
+	return false;
+}
+
+void ListaSolicitudesContratos::clienteEliminado(string id)
+{
+	// Se crea solo cliente fisico porque nada mas es para identificacion, no importa el tipo
+	NodoSolicitud* a = primero;
+	while (a) {
+		if (a->getDato()->getIdCliente() == id) {
+			Cliente* c = new ClienteFisico(a->getDato()->getCliente()->getNombre()+" ELIMINADO", a->getDato()->getIdCliente() + " ELIMINADO", "N/A");
+			a->getDato()->setCliente(nullptr); // Desvincula el cliente eliminado
+			a->getDato()->setCliente(c); // Asigna un cliente por defecto
+		}
+		a = a->getSig();
+	}
+}
+
+void ListaSolicitudesContratos::colaboradorEliminado(string id)
+{
+	NodoSolicitud* a = primero;
+	while (a) {
+		if (a->getDato()->getIdColaborador() == id) {
+			Colaborador* c = new Colaborador("Colaborador ELIMINADO", id + " ELIMINADO", 0);
+			a->getDato()->setColaborador(nullptr); // Desvincula el colaborador eliminado
+			a->getDato()->setColaborador(c); // Asigna un colaborador por defecto
+		}
+		a = a->getSig();
+	}
+}
+void ListaSolicitudesContratos::vehiculoEliminado(string placa)
+{
+	NodoSolicitud* a = primero;
+	while (a) {
+		if (a->getDato()->getPlacaVehiculo() == placa) {
+			Carro* temp = a->getDato()->getCarro();
+			Carro* c = new Carro(temp->getPlaca() + " ELIMINADO", temp->getModelo() + " ELIMINADO",temp->getMarca()+" ELIMINADO", "Basurero", "N/A", '0', '0');
+			a->getDato()->setCarro(nullptr); // Desvincula el vehiculo eliminado
+			a->getDato()->setCarro(c); // Asigna un vehiculo por defecto
+		}
+		a = a->getSig();
+	}
+}
+
 string ListaSolicitudesContratos::mostrarTransacciones() {
 	stringstream ss;
 	ss << "Transacciones:" << "\n";

@@ -27,6 +27,8 @@ public:
 	ListaSolicitudesContratos* getSolicitudes();
 	ListaSolicitudesContratos* getContratos();
 
+	Carro* buscarCarroPorPlaca(const string& placa);
+
 
 	string mostrarOpciones();
 };

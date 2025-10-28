@@ -36,10 +36,12 @@ EstadoBitacora* ListaBitacora::getUltimoEstado() {
 string ListaBitacora::mostrarBitacora() {
 	stringstream ss;
 	ss << "Bitacora de estados:" << endl;
+	ss << "Leyenda de estados: 1=Disponible, 2=Alquilado, 3=Devuelto, 4=En Revision, 5=Lavado" << endl;
 	NodoBitacora* a = primero;
 	while (a) {
+		if (!a->getSig()) ss << "Estado actual. " << endl;
 		ss << "- " << a->getDato()->toString() << endl;
 		a = a->getSig();
-	}
+	} 
 	return ss.str();
 }

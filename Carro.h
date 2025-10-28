@@ -17,6 +17,10 @@ private:
 	double precioDiario;
 	ListaBitacora* historialEstados; // Bitacora de cambios de estado
 public:
+	static double precioA;
+	static double precioB;
+	static double precioC;
+	static double precioD;
 	Carro();
 	Carro(string placa, string modelo, string marca, string ubicacion, string tipoLicencia, char categoria, double precio);
 	~Carro();

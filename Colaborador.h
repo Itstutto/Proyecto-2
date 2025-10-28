@@ -21,7 +21,7 @@ public:
 	void setFechaContratacion(int fecha);
 
 	string getFechaIngreso();
-	void setFechaIngreso(string fecha);
+	void setFechaIngreso(int fecha);
 	string toString() const override;
 	string infoMenu() const override;
 	string mostrarModificar() const override;

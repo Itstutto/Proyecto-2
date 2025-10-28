@@ -1,6 +1,23 @@
 #include "ListaClientes1.h"
+#include "ListaSolicitudesContratos.h"
 ListaClientes1::ListaClientes1() : ListaPersonas() {}
 ListaClientes1::~ListaClientes1() {}
+
+void ListaClientes1::eliminarColaboradorHistorial(string id)
+{
+	NodoP* actual = primero;
+	while (actual) {
+		Persona* p = actual->getDato();
+		if (p) {
+			ListaSolicitudesContratos* historial = p->getHistorial();
+			if (historial) {
+				historial->clienteEliminado(id);
+			}
+		}
+		actual = actual->getSig();
+	}
+}
+
 string ListaClientes1::mostrarPersonas(int ver) {
 	stringstream ss;
 	int opcion = 1;

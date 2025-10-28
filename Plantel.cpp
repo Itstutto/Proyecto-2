@@ -83,17 +83,14 @@ void Plantel::setFilas(int f) {
 void Plantel::setColumnas(int c) {
 	columnas = c;
 }
-bool Plantel::agregarCarro(Carro* carro, int pos) {
-
-	int f = pos / 10;
-	int c = pos % 10;
+bool Plantel::agregarCarro(Carro* carro, int f, int c) {
 
 	if (f < 0 || f >= filas || c < 0 || c >= columnas) return false;
-
-	if (f < 0 || f >= filas || c < 0 || c >= columnas) return false;
-	if (estacionamiento[f][c]) return false; // Ya hay un carro
+	if (estacionamiento[f][c]) return false; // Espacio ya ocupado
 	estacionamiento[f][c] = carro;
-	carro->setUbicacion(getEspacioEstacionamiento(f, c));
+	stringstream s;
+	s << "Plantel " << identificador << f << c;
+	carro->setUbicacion(s.str());
 	return true;
 }
 
@@ -103,6 +100,30 @@ bool Plantel::eliminarCarro(int f, int c) {
 	delete estacionamiento[f][c];
 	estacionamiento[f][c] = nullptr;
 	return true;
+}
+
+bool Plantel::estaVacio()
+{
+	return getCanDisponibles() == getCanTotal(); // true si todos los espacios estan libres
+}
+
+bool Plantel::esPosicionValida(int x, int y)
+{
+	return !estacionamiento[x][y]; // true si la posicion esta libre
+}
+
+string Plantel::mostrarPlantel() {
+	//muestra las opciones del plantel
+	stringstream ss;
+	ss<<"Plantel " << identificador << " (" << filas << "x" << columnas << "):\n"
+		<< "---------------------------------------------------------\n"
+		<< "1. Mostrar informacion del plantel\n"
+		<< "2. Ver Carro especifico\n"
+		<< "3. Agregar carro\n"
+		<< "4. Eliminar carro\n"
+		<< "5. Salir\n";
+	return ss.str();
+
 }
 
 // ver =0: Informacion completa del plantel, ver=1: solo espacios del estacionamiento
@@ -146,6 +167,7 @@ string Plantel::mostrarEstacionamiento(int ver) {
 	}
 	return ss.str();
 }
+
 
 string Plantel::posicionesRecomendadas()
 {
