@@ -138,7 +138,16 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 							cout << "Esta transaccion ya no es Pendiente y no puede ser Aprobada.\n";
 							break;
 						}
-
+						if (sol->getCarro()->getCategoria() == '0') {
+							cout << "El carro asociado ha sido eliminado o no es valido. Se eliminara la solicitud\n";
+							Cliente* cli = dynamic_cast<Cliente*>(sol->getCliente());
+							Colaborador* col = dynamic_cast<Colaborador*>(sol->getColaborador());
+							cli->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3); // Actualizar historial cliente
+							col->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3); // Actualizar historial colaborador
+							lsc->eliminarTransaccionPorCodigo(sol->getCodigoTransaccionInt()); // Eliminar de la lista general
+							opcion = 4; //Obliga a salir del menu
+							break;
+						}
 						// Lógica de Aprobación
 						cout << "ID Colaborador que aprueba: ";
 						cin >> textos; // Usar 'textos' para el ID del colaborador
@@ -802,6 +811,8 @@ void Menu::menuPrincipal() {
 									if (sn == 's' || sn == 'S') {
 										system("cls");
 										// Eliminar carro de solicitudes, contratos, clientes y colaboradores MUY IMPORTANTE
+										lsc = s->getSolicitudes();
+										lsc->vehiculoEliminado(car->getPlaca());
 										s->getClientes()->vehiculoEliminado(car->getPlaca());
 										s->getColaboradores()->vehiculoEliminado(car->getPlaca());
 
