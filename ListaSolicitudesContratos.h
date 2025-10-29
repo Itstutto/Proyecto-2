@@ -27,4 +27,8 @@ public:
 	void eliminarTransaccionPorCodigo(const int& codigo);
 	string mostrarTransacciones();
 	string toString() const;
+
+	// NUEVOS METODOS
+	string mostrarTransaccionesPorColaborador(string idColaborador);
+	SolicitudAlquiler* obtenerTransaccionFiltradaPorIndice(string idColaborador, int indice);
 };

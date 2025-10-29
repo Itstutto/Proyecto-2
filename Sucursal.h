@@ -30,5 +30,13 @@ public:
 	Carro* buscarCarroPorPlaca(const string& placa);
 
 
+	// Lógica principal para convertir solicitud pendiente a contrato activo
+	bool convertirSolicitudAContrato(int idSolicitud, const string& idColaboradorAprueba,
+		ListaSolicitudesContratos* listaSolicitudes,
+		ListaSolicitudesContratos* listaContratos,
+		ListaClientes1* listaClientes,
+		ListaColaboradores1* listaColaboradores);
+
+
 	string mostrarOpciones();
 };

@@ -5,11 +5,11 @@
 #include <ctime>
 
 using namespace std;
-
+class ListaSolicitudesContratos; // forward declaration
 class Colaborador : public Persona
 {
 private:
-	tm fechaContratacion; // fecha con estructura tm (código existente)
+	tm fechaContratacion; // fecha con estructura tm (codigo existente)
 	string fechaIngreso; // adicional, formato libre (DD/MM/AAAA)
 public:
 	Colaborador();
@@ -25,5 +25,8 @@ public:
 	string toString() const override;
 	string infoMenu() const override;
 	string mostrarModificar() const override;
+
+	// Muestra la lista de solicitudes PENDIENTES que este colaborador ha gestionado.
+	string mostrarSolicitudesPendientesGestionadas(ListaSolicitudesContratos* lsc);
 };
 

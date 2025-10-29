@@ -166,3 +166,52 @@ string ListaSolicitudesContratos::toString() const {
 	}
 	return ss.str();
 }
+
+// Muestra el listado filtrado
+string ListaSolicitudesContratos::mostrarTransaccionesPorColaborador(string idColaborador) {
+	stringstream ss;
+	ss << "Solicitudes Pendientes para Colaborador (ID: " << idColaborador << "):\n";
+
+	NodoSolicitud* actual = primero;
+	int num = 1;
+	bool encontrado = false;
+
+	while (actual) {
+		// Filtra por ID de Colaborador y Estado 1 (Pendiente)
+		if (actual->getDato()->getIdColaborador() == idColaborador && actual->getDato()->getEstadoTransaccion() == 1) {
+			ss << num << ") " << actual->getDato()->toResumen() << " (Cod: " << actual->getDato()->getCodigoTransaccion() << ")\n";
+			num++;
+			encontrado = true;
+		}
+		actual = actual->getSig();
+	}
+
+	if (!encontrado) {
+		ss << "(No hay solicitudes pendientes gestionadas por este colaborador).\n";
+		num = 1;
+	}
+
+	ss << num << ") Regresar\n";
+
+	return ss.str();
+}
+
+// Obtiene la transacción por índice en el listado filtrado, como me mostró
+SolicitudAlquiler* ListaSolicitudesContratos::obtenerTransaccionFiltradaPorIndice(string idColaborador, int indice) {
+	if (indice <= 0) return nullptr;
+
+	NodoSolicitud* actual = primero;
+	int contador = 0;
+
+	while (actual) {
+		// Filtra por ID de Colaborador y Estado 1 (Pendiente)
+		if (actual->getDato()->getIdColaborador() == idColaborador && actual->getDato()->getEstadoTransaccion() == 1) {
+			contador++;
+			if (contador == indice) {
+				return actual->getDato();
+			}
+		}
+		actual = actual->getSig();
+	}
+	return nullptr;
+}

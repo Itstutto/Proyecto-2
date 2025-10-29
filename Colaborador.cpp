@@ -1,5 +1,6 @@
 #include "Colaborador.h"
 #include <sstream>
+#include "ListaSolicitudesContratos.h"
 
 Colaborador::Colaborador() : Persona()
 {
@@ -101,5 +102,12 @@ string Colaborador::mostrarModificar() const
 		<< "4. Fecha de ingreso: " << fechaIngreso << endl
 		<< "5. Salir" << endl;
 	return s.str();
+}
+
+
+string Colaborador::mostrarSolicitudesPendientesGestionadas(ListaSolicitudesContratos* lsc) {
+	if (!lsc) return "Error: Lista de solicitudes no proporcionada.";
+	// Delega la tarea de filtrado y visualización a la clase lista.
+	return lsc->mostrarTransaccionesPorColaborador(getId()); 
 }
 

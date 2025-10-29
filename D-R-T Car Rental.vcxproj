@@ -140,8 +140,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="NodoBitacora.cpp" />
-    <ClCompile Include="NodoCl.cpp" />
-    <ClCompile Include="NodoCol.cpp" />
     <ClCompile Include="NodoP.cpp" />
     <ClCompile Include="NodoPl.cpp" />
     <ClCompile Include="NodoSolicitud.cpp" />
@@ -169,8 +167,6 @@
     <ClInclude Include="ListaSucursales.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="NodoBitacora.h" />
-    <ClInclude Include="NodoCl.h" />
-    <ClInclude Include="NodoCol.h" />
     <ClInclude Include="NodoP.h" />
     <ClInclude Include="NodoPl.h" />
     <ClInclude Include="NodoSolicitud.h" />

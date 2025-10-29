@@ -22,6 +22,120 @@ Menu::~Menu()
 	delete sucursales;
 }
 
+
+
+// Implementación de la nueva función auxiliar
+void Menu::mostrarTransaccionesColaborador(Sucursal* s, Colaborador* colab) {
+	int seleccion = 0;
+	ListaSolicitudesContratos* lsc = s->getSolicitudes();
+	
+	do {
+		system("cls");
+		cout << "\n============= SOLICITUDES PENDIENTES GESTIONADAS POR " << colab->getNombre() << " ==============\n";
+		
+		// 1. Mostrar la lista filtrada
+		cout << colab->mostrarSolicitudesPendientesGestionadas(lsc); 
+
+		cout << "Seleccione el numero de la solicitud para gestionar o Regresar: ";
+		cin >> seleccion;
+		
+		if (validarEntero(seleccion)) continue;
+		
+		// 2. Obtener la Solicitud seleccionada por el índice FILTRADO
+		SolicitudAlquiler* sol = lsc->obtenerTransaccionFiltradaPorIndice(colab->getId(), seleccion);
+		
+		if (!sol) { 
+			// Lógica para salir si se selecciona "Regresar" o es inválido
+			// Calculamos la opción de Regresar dinámicamente sin acceder a nodos internos:
+			int numSolicitudes = 0;
+			while (lsc->obtenerTransaccionFiltradaPorIndice(colab->getId(), numSolicitudes + 1)) {
+				numSolicitudes++;
+			}
+			int opcionRegresar = numSolicitudes + 1;
+			
+			if (seleccion == opcionRegresar) {
+				break; // Salir del bucle principal
+			}
+			
+			cout << "Opcion invalida. Intente de nuevo.\n";
+			system("pause");
+			continue;
+		} 
+		
+		if (sol) {
+			// 3. Entrar en el submenú de gestión
+			int opcionGestion;
+			string textos; // Para el ID del colaborador que aprueba
+			
+			do {
+				system("cls");
+				cout << "\n========= GESTION DE SOLICITUD #" << sol->getCodigoTransaccion() << " =========\n";
+				cout << sol->toString() << endl;
+				cout << "\n----------------------------------------------------\n";
+
+				cout << "1. Aprobar Solicitud (Convertir a Contrato)\n";
+				cout << "2. Rechazar Solicitud\n";
+				cout << "3. Anular Solicitud\n";
+				cout << "4. Regresar\n";
+
+				cout << "Seleccione una opcion: ";
+				cin >> opcionGestion;
+				if (validarEntero(opcionGestion)) continue;
+
+				switch (opcionGestion) {
+					case 1: { // Aprobar y convertir (Lógica CRÍTICA)
+						cout << colab->toString() << endl;
+						cout << "ID Colaborador que aprueba la conversion (su ID): ";
+						cin >> textos; 
+						
+						// LLAMADA A LA LÓGICA DE NEGOCIO EN SUCURSAL (Incluye la validación de carro alquilado)
+						if (s->convertirSolicitudAContrato(sol->getCodigoTransaccionInt(), textos, s->getSolicitudes(), s->getContratos(), s->getClientes(), s->getColaboradores())) {
+							cout << "Operacion de Aprobacion Exitosa.\n";
+							seleccion = 0; // Fuerza la actualización de la lista
+							opcionGestion = 4; // Salir del submenú de gestión
+						} else {
+							// Si falla por carro no disponible/eliminado, la solicitud se elimina, forzamos la salida.
+							if (!s->getSolicitudes()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())) {
+								seleccion = 0;
+								opcionGestion = 4;
+							}
+						}
+						break;
+					}
+					case 2: { // Rechazar
+						sol->setEstadoTransaccion(3); 
+						
+						// Actualizar historiales y eliminar de la lista principal
+						Cliente* cli = dynamic_cast<Cliente*>(sol->getCliente());
+						Colaborador* col = dynamic_cast<Colaborador*>(sol->getColaborador());
+						if (cli) cli->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3);
+						if (col) col->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3);
+
+						lsc->eliminarTransaccionPorCodigo(sol->getCodigoTransaccionInt());
+						cout << "\nSOLICITUD RECHAZADA Y ELIMINADA exitosamente.\n";
+						seleccion = 0; // Fuerza la actualización de la lista
+						opcionGestion = 4;
+						break;
+					}
+					case 3: { // Anular
+						sol->setEstadoTransaccion(4); // 4 = Anulada
+						cout << "\nSOLICITUD ANULADA exitosamente.\n";
+						break;
+					}
+					case 4: // Regresar
+						break;
+					default:
+						cout << "Opcion invalida.\n";
+						break;
+				}
+				system("pause");
+			} while (opcionGestion != 4);
+		}
+
+	} while (seleccion != 0); 
+}
+
+
 void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 {
 	int enteros = 0;
@@ -77,42 +191,42 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 								if (validarEntero(opcion)) continue;
 
 								switch (opcion) {
-								case 1: {
-									cout << "\nFuncionalidad: Registrar Devolucion (Calculo de Multa/Reintegro y Finalizacion del Contrato). [Pendiente de implementar logica compleja]\n";
-									// Lógica pendiente:
-									// 1. Pedir dias utilizados.
-									// 2. Calcular diferencia de dias vs. diasAlquiler.
-									// 3. Aplicar multa/reintegro (70% del diario por dia anticipado).
-									// 4. Actualizar el Contrato: con->setEstadoDetallado(3, "Finalizado [detalle]");
-									// 5. Actualizar el Carro: Buscar Carro por Placa y carro->setEstadosCarro(3, con->getIdColaborador()); // Devuelto
-									break;
-								}
-								case 2: {
-									// Solo se debería anular si el estado detallado es "Pendiente de Ejecución" (2)
-									if (con->getEstadoDetallado() != 2) {
-										cout << "ADVERTENCIA: Solo los contratos 'Pendiente de Ejecucion' pueden anularse facilmente.\n";
-										cout << "La logica de anulacion para contratos 'En Alquiler' no esta implementada.\n";
+									case 1: {
+										cout << "\nFuncionalidad: Registrar Devolucion (Calculo de Multa/Reintegro y Finalizacion del Contrato). [Pendiente de implementar logica compleja]\n";
+										// Lógica pendiente:
+										// 1. Pedir dias utilizados.
+										// 2. Calcular diferencia de dias vs. diasAlquiler.
+										// 3. Aplicar multa/reintegro (70% del diario por dia anticipado).
+										// 4. Actualizar el Contrato: con->setEstadoDetallado(3, "Finalizado [detalle]");
+										// 5. Actualizar el Carro: Buscar Carro por Placa y carro->setEstadosCarro(3, con->getIdColaborador()); // Devuelto
 										break;
 									}
-									cout << "Esta seguro de ANULAR el Contrato " << con->getCodigoTransaccion() << "? (s/n): ";
-									cin >> sn;
-									if (sn == 's' || sn == 'S') {
-										// Implementación real: cambiar estado base a 4 (Anulada)
-										con->setEstadoTransaccion(4);
-										// Lógica pendiente: actualizar estado del carro si aplica
-										cout << "\nCONTRATO ANULADO. [Logica de Carro Pendiente].\n";
+									case 2: {
+										// Solo se debería anular si el estado detallado es "Pendiente de Ejecución" (2)
+										if (con->getEstadoDetallado() != 2) {
+											cout << "ADVERTENCIA: Solo los contratos 'Pendiente de Ejecucion' pueden anularse facilmente.\n";
+											cout << "La logica de anulacion para contratos 'En Alquiler' no esta implementada.\n";
+											break;
+										}
+										cout << "Esta seguro de ANULAR el Contrato " << con->getCodigoTransaccion() << "? (s/n): ";
+										cin >> sn;
+										if (sn == 's' || sn == 'S') {
+											// Implementación real: cambiar estado base a 4 (Anulada)
+											con->setEstadoTransaccion(4);
+											// Lógica pendiente: actualizar estado del carro si aplica
+											cout << "\nCONTRATO ANULADO. [Logica de Carro Pendiente].\n";
+										}
+										break;
 									}
-									break;
-								}
-								case 3: {
-									cout << "\nFuncionalidad: Mostrar Bitacora del Carro (Se necesita buscar el Carro por Placa primero).\n";
-									break;
-								}
-								case 4: // Regresar
-									break;
-								default:
-									cout << "Opcion invalida.\n";
-									break;
+									case 3: {
+										cout << "\nFuncionalidad: Mostrar Bitacora del Carro (Se necesita buscar el Carro por Placa primero).\n";
+										break;
+									}
+									case 4: // Regresar
+										break;
+									default:
+										cout << "Opcion invalida.\n";
+										break;
 								}
 								system("pause");
 							} while (opcion != 4);
@@ -133,13 +247,40 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 					if (validarEntero(opcion)) continue;
 
 					switch (opcion) {
-					case 1: { // Aprobar o no disponible
-						if (sol->getEstadoTransaccion() != 1) {
-							cout << "Esta transaccion ya no es Pendiente y no puede ser Aprobada.\n";
+						case 1: { // Aprobar o no disponible
+							if (sol->getEstadoTransaccion() != 1) {
+								cout << "Esta transaccion ya no es Pendiente y no puede ser Aprobada.\n";
+								break;
+							}
+							if (sol->getCarro()->getCategoria() == '0') {
+								cout << "El carro asociado ha sido eliminado o no es valido. Se eliminara la solicitud\n";
+								Cliente* cli = dynamic_cast<Cliente*>(sol->getCliente());
+								Colaborador* col = dynamic_cast<Colaborador*>(sol->getColaborador());
+								cli->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3); // Actualizar historial cliente
+								col->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3); // Actualizar historial colaborador
+								lsc->eliminarTransaccionPorCodigo(sol->getCodigoTransaccionInt()); // Eliminar de la lista general
+								opcion = 4; //Obliga a salir del menu
+								break;
+							}
+							// Lógica de Aprobación
+							cout << "ID Colaborador que aprueba: ";
+							cin >> textos; // Usar 'textos' para el ID del colaborador
+
+							// NOTA IMPORTANTE: Buscar el Carro por placa y cambiar estado a Alquilado (2)
+							// con carro->setEstadosCarro(2, textos) y convertir la Solicitud a Contrato.
+
+							cout << "\nFuncionalidad: Aprobar solicitud. Estado de Carro y conversion de Solicitud (Pendiente de implementar logica).";
 							break;
 						}
-						if (sol->getCarro()->getCategoria() == '0') {
-							cout << "El carro asociado ha sido eliminado o no es valido. Se eliminara la solicitud\n";
+						case 2: { // Rechazar Solicitud
+							if (sol->getEstadoTransaccion() != 1) {
+								cout << "Opcion no disponible para el estado actual de la transaccion.\n";
+								break;
+							}
+							// Implementación real: cambiar estado a 3 (Rechazada)
+							sol->setEstadoTransaccion(3);
+							cout << "\nSOLICITUD RECHAZADA exitosamente.\n";
+							cout << "Nota: En el cliente " << sol->getCliente()->getNombre() << " puede ver la solicitud RECHAZADA\n";
 							Cliente* cli = dynamic_cast<Cliente*>(sol->getCliente());
 							Colaborador* col = dynamic_cast<Colaborador*>(sol->getColaborador());
 							cli->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3); // Actualizar historial cliente
@@ -148,45 +289,18 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 							opcion = 4; //Obliga a salir del menu
 							break;
 						}
-						// Lógica de Aprobación
-						cout << "ID Colaborador que aprueba: ";
-						cin >> textos; // Usar 'textos' para el ID del colaborador
-
-						// NOTA IMPORTANTE: Buscar el Carro por placa y cambiar estado a Alquilado (2)
-						// con carro->setEstadosCarro(2, textos) y convertir la Solicitud a Contrato.
-
-						cout << "\nFuncionalidad: Aprobar solicitud. Estado de Carro y conversion de Solicitud (Pendiente de implementar logica).";
-						break;
-					}
-					case 2: { // Rechazar Solicitud
-						if (sol->getEstadoTransaccion() != 1) {
-							cout << "Opcion no disponible para el estado actual de la transaccion.\n";
+						case 3: { // Anular Solicitud
+							// Implementación real: cambiar estado a 4 (Anulada)
+							sol->setEstadoTransaccion(4);
+							cout << "\nSOLICITUD ANULADA exitosamente.\n";
+							// Nota: Lógica de Carro (si aplica) pendiente de implementar
 							break;
 						}
-						// Implementación real: cambiar estado a 3 (Rechazada)
-						sol->setEstadoTransaccion(3);
-						cout << "\nSOLICITUD RECHAZADA exitosamente.\n";
-						cout << "Nota: En el cliente " << sol->getCliente()->getNombre() << " puede ver la solicitud RECHAZADA\n";
-						Cliente* cli = dynamic_cast<Cliente*>(sol->getCliente());
-						Colaborador* col = dynamic_cast<Colaborador*>(sol->getColaborador());
-						cli->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3); // Actualizar historial cliente
-						col->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3); // Actualizar historial colaborador
-						lsc->eliminarTransaccionPorCodigo(sol->getCodigoTransaccionInt()); // Eliminar de la lista general
-						opcion = 4; //Obliga a salir del menu
-						break;
-					}
-					case 3: { // Anular Solicitud
-						// Implementación real: cambiar estado a 4 (Anulada)
-						sol->setEstadoTransaccion(4);
-						cout << "\nSOLICITUD ANULADA exitosamente.\n";
-						// Nota: Lógica de Carro (si aplica) pendiente de implementar
-						break;
-					}
-					case 4: // Regresar
-						break;
-					default:
-						cout << "Opcion invalida.\n";
-						break;
+						case 4: // Regresar
+							break;
+						default:
+							cout << "Opcion invalida.\n";
+							break;
 					}
 					system("pause");
 				} while (opcion != 4);
@@ -288,7 +402,7 @@ void Menu::inicializarDatos() {
 	cf1->getHistorial()->insertarFinal(new SolicitudPendiente(*sol1)); 
 	co1->getHistorial()->insertarFinal(new SolicitudPendiente(*sol1));
 	suc1->getContratos()->insertarFinal(sol3);
-
+	
 
 
 	sucursales->insertarFinal(suc1);
@@ -589,10 +703,38 @@ void Menu::menuPrincipal() {
 						if (opcion >= 1 && opcion <= lcol->getTam()) {
 							// Inicia Mostrar detalles del colaborador seleccionado-----------------------------------------------------------------------------
 							colab = dynamic_cast<Colaborador*>(lcol->obtenerPersonaPorIndice(opcion));
-							cout << "Informacion del Colaborador:" << endl;
-							cout << colab->toString() << endl;
-							system("pause");
-							system("cls");
+							
+							do { // Submenu de Detalle de Colaborador (NUEVO BUCLE)
+								system("cls");
+								cout << "\nColaborador: " << colab->getNombre() << " (ID: " << colab->getId() << ")\n";
+								cout << "----------------------------------------------------\n";
+								cout << "1. Ver Informacion Detallada\n";
+								cout << "2. Ver Solicitudes Pendientes Gestionadas\n"; 
+								cout << "3. Regresar\n";
+								
+								cout << "Seleccione una opcion: ";
+								cin >> enteros; 
+								if (validarEntero(enteros)) continue;
+								
+								switch (enteros) {
+									case 1:
+										cout << "Informacion del Colaborador:" << endl;
+										cout << colab->toString() << endl;
+										system("pause");
+										break;
+									case 2: // GESTION DE SOLICITUDES DEL COLABORADOR
+										mostrarTransaccionesColaborador(s, colab); // Llamada a la nueva función
+										break;
+									case 3:
+										break; 
+									default:
+										cout << "Opcion invalida.\n";
+										system("pause");
+										break;
+								}
+							} while (enteros != 3);
+
+							system("cls"); 
 						}
 						else if (opcion == lcol->getTam() + 1) {
 							colab = new Colaborador();
@@ -928,153 +1070,153 @@ void Menu::menuPrincipal() {
 						if (validarEntero(enteros)) continue;
 
 						switch (enteros) {
-						case 1: { // Crear Solicitud de Alquiler
-							lc = s->getClientes();
-							lcol = s->getColaboradores();
-							sol = new SolicitudPendiente();
-							do {
-								cout << "Seleccione el cliente que realiza la solicitud: " << endl;
-								cout << s->getClientes()->mostrarPersonas(1);
-								cin >> enteros;
-								if (validarEntero(enteros)) continue;
-							} while (enteros<0 || enteros>lc->getTam() + 1);
-							if (enteros == lc->getTam() + 1) {
-								delete sol;
-								sol = nullptr;
-								cout << "Operacion cancelada." << endl;
-								break; // cancelar
-							}
-							cli = dynamic_cast<Cliente*>(lc->obtenerPersonaPorIndice(enteros));
-							sol->setCliente(cli);
-							do {
-								cout << "Seleccione el colaborador que atiende la solicitud: " << endl;
-								cout << s->getColaboradores()->mostrarPersonas(1);
-								cin >> enteros;
-								if (validarEntero(enteros)) continue;
-							} while (enteros<0 || enteros>lcol->getTam() + 1);
-							if (enteros == lcol->getTam() + 1) {
-								delete sol;
-								sol = nullptr;
-								cout << "Operacion cancelada." << endl;
-								break; // cancelar
-							}
-							colab = dynamic_cast<Colaborador*>(lcol->obtenerPersonaPorIndice(enteros));
-							sol->setColaborador(colab);
-							do {
-								cout << "Seleccione el plantel de donde se alquilara el carro: " << endl;
-								cout << s->getPlanteles()->mostrarListaPlanteles(1);
-								cin >> enteros;
-								if (validarEntero(enteros)) continue;
-							} while (enteros<0 || enteros>s->getPlanteles()->getTam() + 1);
-							if (enteros == s->getPlanteles()->getTam() + 1) {
-								delete sol;
-								sol = nullptr;
-								cout << "Operacion cancelada." << endl;
-								break; // cancelar
-							}
-							p = s->getPlanteles()->buscarPlantel(enteros);
+							case 1: { // Crear Solicitud de Alquiler
+								lc = s->getClientes();
+								lcol = s->getColaboradores();
+								sol = new SolicitudPendiente();
+								do {
+									cout << "Seleccione el cliente que realiza la solicitud: " << endl;
+									cout << s->getClientes()->mostrarPersonas(1);
+									cin >> enteros;
+									if (validarEntero(enteros)) continue;
+								} while (enteros<0 || enteros>lc->getTam() + 1);
+								if (enteros == lc->getTam() + 1) {
+									delete sol;
+									sol = nullptr;
+									cout << "Operacion cancelada." << endl;
+									break; // cancelar
+								}
+								cli = dynamic_cast<Cliente*>(lc->obtenerPersonaPorIndice(enteros));
+								sol->setCliente(cli);
+								do {
+									cout << "Seleccione el colaborador que atiende la solicitud: " << endl;
+									cout << s->getColaboradores()->mostrarPersonas(1);
+									cin >> enteros;
+									if (validarEntero(enteros)) continue;
+								} while (enteros<0 || enteros>lcol->getTam() + 1);
+								if (enteros == lcol->getTam() + 1) {
+									delete sol;
+									sol = nullptr;
+									cout << "Operacion cancelada." << endl;
+									break; // cancelar
+								}
+								colab = dynamic_cast<Colaborador*>(lcol->obtenerPersonaPorIndice(enteros));
+								sol->setColaborador(colab);
+								do {
+									cout << "Seleccione el plantel de donde se alquilara el carro: " << endl;
+									cout << s->getPlanteles()->mostrarListaPlanteles(1);
+									cin >> enteros;
+									if (validarEntero(enteros)) continue;
+								} while (enteros<0 || enteros>s->getPlanteles()->getTam() + 1);
+								if (enteros == s->getPlanteles()->getTam() + 1) {
+									delete sol;
+									sol = nullptr;
+									cout << "Operacion cancelada." << endl;
+									break; // cancelar
+								}
+								p = s->getPlanteles()->buscarPlantel(enteros);
 
-							// Muetra carros, selecciona por placa y si es invalida repite
+								// Muetra carros, selecciona por placa y si es invalida repite
 
-							string placaSeleccionada;
-							do {
-								cout << "Seleccione el carro a alquilar: " << endl;
-								cout << p->mostrarEstacionamiento(1);
-								cout << "Ingrese la placa del carro: ";
-								cin >> placaSeleccionada;
-								Carro* carroSeleccionado = p->getCarroxPlaca(placaSeleccionada);
-								if (carroSeleccionado && carroSeleccionado->getEstadoCarro() == "Disponible") { // Disponible
-									sol->setCarro(carroSeleccionado);
-									// Cambia estado del carro a "Alquilado" HASTA QUE SE APRUEBE LA SOLICITUD
-									break; // Carro valido seleccionado
+								string placaSeleccionada;
+								do {
+									cout << "Seleccione el carro a alquilar: " << endl;
+									cout << p->mostrarEstacionamiento(1);
+									cout << "Ingrese la placa del carro: ";
+									cin >> placaSeleccionada;
+									Carro* carroSeleccionado = p->getCarroxPlaca(placaSeleccionada);
+									if (carroSeleccionado && carroSeleccionado->getEstadoCarro() == "Disponible") { // Disponible
+										sol->setCarro(carroSeleccionado);
+										// Cambia estado del carro a "Alquilado" HASTA QUE SE APRUEBE LA SOLICITUD
+										break; // Carro valido seleccionado
+									}
+									else {
+										cout << "Placa invalida o carro no disponible. Intente de nuevo." << endl;
+									}
+								} while (true);
+								do {
+									cout << "Ingrese el numero de dias a alquilar: ";
+									cin >> enteros;
+								} while (validarEntero(enteros) || enteros < 0);
+								sol->setDiasAlquiler(enteros);
+								do {
+									cout << "Ingrese la fecha de inicio del alquiler (DDMMAAAA): ";
+									cin >> enteros;
+								} while (validarEntero(enteros) || enteros < 1000000 || enteros > 31129999);
+								sol->setFechaInicio(enteros);
+								sol->calcularFechaEntrega();
+
+								double precioDiario;
+								do {
+									cout << "Digite el precio diario del alquiler: ";
+									cin >> precioDiario;
+								} while (validarFlotante(precioDiario) || precioDiario < 0);
+								sol->setPrecioDiario(precioDiario);
+								sol->setPrecioTotal(precioDiario);
+								cout << sol->toString() << endl;
+								cout << "Esta seguro de crear esta solicitud de alquiler? (s/n): ";
+								cin >> sn;
+								if (sn == 's' || sn == 'S') {
+									if (s->getSolicitudes()->insertarFinal(sol)) {
+										cout << "Solicitud de alquiler creada exitosamente." << endl;
+										//mandar a historial del cliente una copia de la solicitud
+										cli->getHistorial()->insertarFinal(new SolicitudPendiente(*sol));
+										//mandar a historial del colaborador una copia de la solicitud
+										colab->getHistorial()->insertarFinal(new SolicitudPendiente(*sol));
+									}
+									else {
+										cout << "Error: No se pudo crear la solicitud de alquiler." << endl;
+										delete sol;
+										sol = nullptr;
+									}
 								}
 								else {
-									cout << "Placa invalida o carro no disponible. Intente de nuevo." << endl;
-								}
-							} while (true);
-							do {
-								cout << "Ingrese el numero de dias a alquilar: ";
-								cin >> enteros;
-							} while (validarEntero(enteros) || enteros < 0);
-							sol->setDiasAlquiler(enteros);
-							do {
-								cout << "Ingrese la fecha de inicio del alquiler (DDMMAAAA): ";
-								cin >> enteros;
-							} while (validarEntero(enteros) || enteros < 1000000 || enteros > 31129999);
-							sol->setFechaInicio(enteros);
-							sol->calcularFechaEntrega();
-
-							double precioDiario;
-							do {
-								cout << "Digite el precio diario del alquiler: ";
-								cin >> precioDiario;
-							} while (validarFlotante(precioDiario) || precioDiario < 0);
-							sol->setPrecioDiario(precioDiario);
-							sol->setPrecioTotal(precioDiario);
-							cout << sol->toString() << endl;
-							cout << "Esta seguro de crear esta solicitud de alquiler? (s/n): ";
-							cin >> sn;
-							if (sn == 's' || sn == 'S') {
-								if (s->getSolicitudes()->insertarFinal(sol)) {
-									cout << "Solicitud de alquiler creada exitosamente." << endl;
-									//mandar a historial del cliente una copia de la solicitud
-									cli->getHistorial()->insertarFinal(new SolicitudPendiente(*sol));
-									//mandar a historial del colaborador una copia de la solicitud
-									colab->getHistorial()->insertarFinal(new SolicitudPendiente(*sol));
-								}
-								else {
-									cout << "Error: No se pudo crear la solicitud de alquiler." << endl;
+									cout << "Creacion de solicitud de alquiler cancelada." << endl;
 									delete sol;
 									sol = nullptr;
 								}
-							}
-							else {
-								cout << "Creacion de solicitud de alquiler cancelada." << endl;
-								delete sol;
-								sol = nullptr;
-							}
-							break;
-						} // <- agregado para evitar caer en case 2
-						case 2: { // Ver Detalle y Gestionar Transaccion
-							system("cls");
-							// Mostrar nuevamente la lista antes de pedir el codigo
-							do {
-								cout << "1. Ver Solicitudes" << endl;
-								cout << "2. Ver Contratos" << endl;
-								cout << "3. Regresar" << endl;
-								cout << "\nDigite la opcion: ";
-								cin >> enteros; // Usar la variable 'textos' para el codigo
-								if (!validarEntero(enteros) && enteros < 0 || enteros>3) {
-									cout << "Opcion invalida. Intente de nuevo." << endl;
-									continue;
+								break;
+							} // <- agregado para evitar caer en case 2
+							case 2: { // Ver Detalle y Gestionar Transaccion
+								system("cls");
+								// Mostrar nuevamente la lista antes de pedir el codigo
+								do {
+									cout << "1. Ver Solicitudes" << endl;
+									cout << "2. Ver Contratos" << endl;
+									cout << "3. Regresar" << endl;
+									cout << "\nDigite la opcion: ";
+									cin >> enteros; // Usar la variable 'textos' para el codigo
+									if (!validarEntero(enteros) && enteros < 0 || enteros>3) {
+										cout << "Opcion invalida. Intente de nuevo." << endl;
+										continue;
+									}
+								} while (validarEntero(enteros));
+								switch (enteros) {
+									case 1: {
+										lsc = s->getSolicitudes();
+										gestionarTransacciones(lsc);
+										break;
+									}
+									case 2: {
+										lsc = s->getContratos();
+										gestionarTransacciones(lsc);
+										break;
+									}
+									default:
+										cout << "Opcion invalida. Intente de nuevo." << endl;
+										break;
 								}
-							} while (validarEntero(enteros));
-							switch (enteros) {
-							case 1: {
-								lsc = s->getSolicitudes();
-								gestionarTransacciones(lsc);
-								break;
-							}
-							case 2: {
-								lsc = s->getContratos();
-								gestionarTransacciones(lsc);
-								break;
-							}
-							default:
-								cout << "Opcion invalida. Intente de nuevo." << endl;
-								break;
-							}
 
-							break;
-						}
-						case 3: // Regresar
-							system("cls");
-							break;
-						default:
-							system("cls");
-							cout << "Opcion invalida. Intente de nuevo.\n";
-							system("pause");
-							break;
+								break;
+							}
+							case 3: // Regresar
+								system("cls");
+								break;
+							default:
+								system("cls");
+								cout << "Opcion invalida. Intente de nuevo.\n";
+								system("pause");
+								break;
 						}
 					} while (enteros != 3);
 					opcion = 0; // Reiniciar 'opcion' para el menu de sucursal
