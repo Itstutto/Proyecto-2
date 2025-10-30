@@ -215,3 +215,86 @@ SolicitudAlquiler* ListaSolicitudesContratos::obtenerTransaccionFiltradaPorIndic
 	}
 	return nullptr;
 }
+
+// Muestra el listado filtrado por Cliente
+string ListaSolicitudesContratos::mostrarTransaccionesPorCliente(string idCliente) {
+	stringstream ss;
+	ss << "Solicitudes Pendientes para Cliente (ID: " << idCliente << "):\n";
+	
+	NodoSolicitud* actual = primero;
+	int num = 1;
+	bool encontrado = false;
+
+	while (actual) {
+		// Filtra por ID de Cliente y Estado 1 (Pendiente)
+		if (actual->getDato()->getIdCliente() == idCliente && actual->getDato()->getEstadoTransaccion() == 1) {
+			ss << num << ") " << actual->getDato()->toResumen() << " (Cod: " << actual->getDato()->getCodigoTransaccion() << ")\n";
+			num++;
+			encontrado = true;
+		}
+		actual = actual->getSig();
+	}
+
+	if (!encontrado) {
+		ss << "(No hay solicitudes pendientes realizadas por este cliente).\n";
+		num = 1; 
+	}
+
+	ss << num << ") Regresar\n"; 
+	
+	return ss.str();
+}
+
+// Obtiene la transacción por índice en el listado filtrado por Cliente
+SolicitudAlquiler* ListaSolicitudesContratos::obtenerTransaccionFiltradaPorIndiceCliente(string idCliente, int indice) {
+	if (indice <= 0) return nullptr;
+
+	NodoSolicitud* actual = primero;
+	int contador = 0;
+
+	while (actual) {
+		// Filtra por ID de Cliente y Estado 1 (Pendiente)
+		if (actual->getDato()->getIdCliente() == idCliente && actual->getDato()->getEstadoTransaccion() == 1) {
+			contador++;
+			if (contador == indice) {
+				return actual->getDato();
+			}
+		}
+		actual = actual->getSig();
+	}
+	return nullptr;
+}
+
+
+// Método de filtrado de historial
+string ListaSolicitudesContratos::mostrarHistorialCompletado() const {
+	stringstream ss;
+	ss << "Historial de Transacciones Finalizadas/Cerradas:\n";
+	ss << "----------------------------------------------------\n";
+
+	if (!primero) {
+		ss << "(No hay transacciones en el historial).\n";
+		return ss.str();
+	}
+
+	NodoSolicitud* actual = primero;
+	bool encontrado = false;
+
+	while (actual) {
+		int estado = actual->getDato()->getEstadoTransaccion();
+		// Filtra por estados 2 (Contrato/Aprobado), 3 (Rechazado), 4 (Anulado)
+		if (estado == 2 || estado == 3 || estado == 4) {
+			ss << actual->getDato()->toResumen() << " (Cod: " << actual->getDato()->getCodigoTransaccion() << ")\n";
+			encontrado = true;
+		}
+		actual = actual->getSig();
+	}
+
+	if (!encontrado) {
+		ss << "(No hay transacciones completadas, rechazadas o anuladas en este historial).\n";
+	}
+
+	ss << "----------------------------------------------------\n";
+
+	return ss.str();
+}

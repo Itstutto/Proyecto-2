@@ -5,6 +5,8 @@
 
 using namespace std;
 
+class ListaSolicitudesContratos; // forward declaration
+
 class Cliente : public Persona {
 protected:
 	string paisResidencia;
@@ -18,4 +20,7 @@ public:
 	string toString() const override; // virtual para ser sobrescrito
 	string mostrarCliente() const;
 	virtual string mostrarModificar() const override;
+
+	// Muestra la lista de solicitudes PENDIENTES realizadas por este cliente.
+	string mostrarSolicitudesPendientesRealizadas(ListaSolicitudesContratos* lsc);
 };

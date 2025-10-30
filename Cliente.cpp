@@ -1,4 +1,5 @@
 #include "Cliente.h"
+#include "ListaSolicitudesContratos.h"
 
 Cliente::Cliente() : Persona(), paisResidencia("") {}
 
@@ -19,6 +20,14 @@ string Cliente::toString() const {
 	return ss.str();
 }
 
+
+string Cliente::mostrarSolicitudesPendientesRealizadas(ListaSolicitudesContratos* lsc) {
+	if (!lsc) return "Error: Lista de solicitudes no proporcionada.";
+	// Delega la tarea de filtrado y visualización a la clase lista.
+	return lsc->mostrarTransaccionesPorCliente(getId()); 
+}
+
+// Modificación de mostrarCliente() para incluir la nueva opción 4
 string Cliente::mostrarCliente() const
 {
 	stringstream s;
@@ -26,8 +35,9 @@ string Cliente::mostrarCliente() const
 		<< "-----------------------------------------" << endl;
 	s<<"1. Modificar Cliente"<<endl
 		<< "2. Informacion del Cliente" << endl
-		<< "3. Historial de Alquileres (funcionalidad no implementada)" << endl
-		<< "4. Salir" << endl;
+		<< "3. Historial de Transacciones (Completadas, Rechazadas y Anuladas)" << endl // Nombre actualizado y funcional
+        << "4. Ver Solicitudes Pendientes (Alquileres Pendientes)" << endl
+		<< "5. Regresar" << endl;
 	return s.str();
 
 }

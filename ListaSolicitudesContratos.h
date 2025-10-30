@@ -31,4 +31,12 @@ public:
 	// NUEVOS METODOS
 	string mostrarTransaccionesPorColaborador(string idColaborador);
 	SolicitudAlquiler* obtenerTransaccionFiltradaPorIndice(string idColaborador, int indice);
+
+	// NUEVOS METODOS (Filtrado por Cliente)
+	// Muestra las transacciones pendientes asociadas a un cliente específico, numeradas.
+	string mostrarTransaccionesPorCliente(string idCliente);
+	
+	// Obtiene una transacción específica de la lista, basándose en el índice numerado del listado FILTRADO por cliente.
+	SolicitudAlquiler* obtenerTransaccionFiltradaPorIndiceCliente(string idCliente, int indice);
+	string mostrarHistorialCompletado() const;
 };

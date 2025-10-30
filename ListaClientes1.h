@@ -7,5 +7,6 @@ public:
 	~ListaClientes1();
 	void eliminarColaboradorHistorial(string id);
 	string mostrarPersonas(int ver) override;
+	string generarReporteClientes(); // Genera un reporte detallado de los clientes de la sucursal.
 };
 
