@@ -18,6 +18,32 @@ ListaSucursales::~ListaSucursales()
 NodoSuc* ListaSucursales::getPrimero() { return primero; }
 NodoSuc* ListaSucursales::getUltimo() { return ultimo; }
 int ListaSucursales::getTam() { return tam; }
+void ListaSucursales::alquilarCarro(Plantel* alquiler, string placa)
+{
+	// busca el carro en todos los planeteles de todas las sucursales, lo mueve del plantel donde esta al plantel de alquiler
+	NodoSuc* actual = primero;
+	while (actual != nullptr) {
+		Carro* carro = actual->getDato()->buscarCarroPorPlaca(placa);
+		if (carro) {
+			// Encontrado el carro, moverlo al plantel de alquiler
+			Plantel* origen = nullptr;
+			NodoPl* nodoPlantel = actual->getDato()->getPlanteles()->getPrimero();
+			while (nodoPlantel != nullptr) {
+				if (nodoPlantel->getDato()->getCarroxPlaca(placa)) {
+					origen = nodoPlantel->getDato();
+					break;
+				}
+				nodoPlantel = nodoPlantel->getSig();
+			}
+			if (origen) {
+				origen->moverCarro(placa, alquiler);
+			}
+			return; // Carro movido, salir de la función
+		}
+		actual = actual->getSig();
+	}
+
+}
 bool ListaSucursales::insertarFinal(Sucursal* s)
 {
 	NodoSuc* nuevo = new NodoSuc(s);
@@ -103,4 +129,32 @@ Sucursal* ListaSucursales::obtenerSucursalPorIndice(int indice)
 		contador++;
 	}
 	return nullptr; // No encontrado
+}
+
+bool ListaSucursales::modificarPrecioCategoria(char categoria, double nuevoPrecio)
+{
+	if (!primero) return false;
+	if (categoria < 'A' || categoria > 'D' || nuevoPrecio < 0) return false;
+	switch (categoria) {
+	case 'A':
+		Carro::precioA = nuevoPrecio;
+		break;
+	case 'B':
+		Carro::precioB = nuevoPrecio;
+		break;
+	case 'C':
+		Carro::precioC = nuevoPrecio;
+		break;
+	case 'D':
+		Carro::precioD = nuevoPrecio;
+		break;
+	default:
+		return false;
+	}
+	NodoSuc* actual = primero;
+	while (actual) {
+		actual->getDato()->getPlanteles()->modificarPrecioCategoria(categoria); // solo categoria porque 
+		actual = actual->getSig();
+	}
+	return true;
 }

@@ -49,6 +49,17 @@ Carro* Plantel::getCarroxPlaca(string placa) {
 	return nullptr;
 }
 
+bool Plantel::moverCarro(string placa, Plantel* destino)
+{
+	// solo se usa para mover carros a plantel de alquiler
+	Carro* carro = getCarroxPlaca(placa);
+	if (!carro) return false; // Carro no encontrado
+	if (!destino->agregarCarro(carro)) return false; // No se pudo agregar al destino
+	carro->setUbicacion("En alquiler");
+	desvincularCarro(placa); // Elimina sin borrar el carro
+	return true;
+}
+
 int Plantel::getCanTotal()
 {
 	return filas * columnas;
@@ -94,6 +105,22 @@ bool Plantel::agregarCarro(Carro* carro, int f, int c) {
 	return true;
 }
 
+bool Plantel::agregarCarro(Carro* carro)
+{
+	for (int i = 0; i < filas; ++i) {
+		for (int j = 0; j < columnas; ++j) {
+			if (!estacionamiento[i][j]) { // Espacio libre
+				estacionamiento[i][j] = carro;
+				stringstream s;
+				s << "Plantel " << identificador << i << j;
+				carro->setUbicacion(s.str());
+				return true;
+			}
+		}
+	}
+	return false; // No hay espacio disponible
+}
+
 bool Plantel::eliminarCarro(int f, int c) {
 	if (f < 0 || f >= filas || c < 0 || c >= columnas) return false;
 	if (!estacionamiento[f][c]) return false; // No hay carro para eliminar
@@ -108,6 +135,19 @@ bool Plantel::eliminarCarro(string placa)
 		for (int j = 0; j < columnas; ++j) {
 			if (estacionamiento[i][j] && estacionamiento[i][j]->getPlaca() == placa) {
 				delete estacionamiento[i][j];
+				estacionamiento[i][j] = nullptr;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool Plantel::desvincularCarro(string placa)
+{
+	for (int i = 0; i < filas; ++i) {
+		for (int j = 0; j < columnas; ++j) {
+			if (estacionamiento[i][j] && estacionamiento[i][j]->getPlaca() == placa) {
 				estacionamiento[i][j] = nullptr;
 				return true;
 			}
@@ -215,4 +255,18 @@ string Plantel::posicionesRecomendadas()
 		}
 	}
 	return s.str();
+}
+
+void Plantel::actualizarPrecioCarros(char cateoria)
+{
+	//revisa si la categoria es valida y actualiza el precio de todos los carros en el plantel con esa categoria
+	if (cateoria != 'A' && cateoria != 'B' && cateoria != 'C' && cateoria != 'D') return;
+	for (int i = 0; i < filas; ++i) {
+		for (int j = 0; j < columnas; ++j) {
+			if (estacionamiento[i][j] && estacionamiento[i][j]->getCategoria() == cateoria) {
+				estacionamiento[i][j]->actualizarPrecioDiario();
+			}
+		}
+	}
+
 }

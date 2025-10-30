@@ -14,6 +14,7 @@ using namespace std;
 
 Menu::Menu() {
 	sucursales = new ListaSucursales();
+	alquilados = new Plantel('X', 40, 40); // Plantel temporal para carros alquilados
 
 }
 
@@ -270,7 +271,7 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 								cout << "Estado Operativo Actual: " << con->getEstadoDetalladoStr() << "\n";
 								cout << "\n----------------------------------------------------\n";
 
-								cout << "1. Registrar Devolucion y Finalizar Contrato\n";
+								cout << (con->getEstadoDetallado()==2 ? "1. Ejecutar Contrato\n" : "1. Registrar Devolucion y Finalizar Contrato (NO USAR INCOMPLETA)\n" );
 								cout << "2. Anular Contrato\n";
 								cout << "3. Ver Historial de Carro (Bitacora)\n";
 								cout << "4. Regresar\n";
@@ -282,20 +283,56 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 
 								switch (opcion) {
 									case 1: {
-										cout << "\nFuncionalidad: Registrar Devolucion (Calculo de Multa/Reintegro y Finalizacion del Contrato). [Pendiente de implementar logica compleja]\n";
-										// Lógica pendiente:
-										// 1. Pedir dias utilizados.
-										// 2. Calcular diferencia de dias vs. diasAlquiler.
-										// 3. Aplicar multa/reintegro (70% del diario por dia anticipado).
-										// 4. Actualizar el Contrato: con->setEstadoDetallado(3, "Finalizado [detalle]");
-										// 5. Actualizar el Carro: Buscar Carro por Placa y carro->setEstadosCarro(3, con->getIdColaborador()); // Devuelto
+										if (con->getEstadoDetallado() == 2) {
+											cout << "Esta seguro que desea ejecutar el contrato? s/n: ";
+											cin >> sn;
+											if (sn == 's' || sn == 'S') {
+
+												con->setEstadoDetallado(1);
+												sucursales->alquilarCarro(alquilados, con->getCarro()->getPlaca());
+												cout << "Contrato ejecutado" << endl;
+
+												
+											}
+											else {
+												cout << "El contrato NO fue ejecutado" << endl;
+											}
+
+											
+										}
+										else {
+											stringstream s;
+
+											cout << "Ingrese la placa del vehiculo: ";
+											cin >> textos;
+											if (textos != con->getCarro()->getPlaca()) {
+												cout << "La placa ingresada no concuerda con la placa del vehiculo ";
+											}
+											else {
+												do {
+													cout << "Digite los dias que se utilizo el vehiculo: ";
+													cin >> enteros;
+													system("cls");
+												} while (validarEntero(enteros) || enteros < 0);
+												s << "Dias utilizado: " << enteros;
+											}
+
+
+											
+											// Lógica pendiente:
+											// 1. Pedir dias utilizados.
+											// 2. Calcular diferencia de dias vs. diasAlquiler.
+											// 3. Aplicar multa/reintegro (70% del diario por dia anticipado).
+											// 4. Actualizar el Contrato: con->setEstadoDetallado(3, "Finalizado [detalle]");
+											// 5. Actualizar el Carro: Buscar Carro por Placa y carro->setEstadosCarro(3, con->getIdColaborador()); // Devuelto
+										}
 										break;
 									}
 									case 2: {
 										// Solo se debería anular si el estado detallado es "Pendiente de Ejecución" (2)
 										if (con->getEstadoDetallado() != 2) {
 											cout << "ADVERTENCIA: Solo los contratos 'Pendiente de Ejecucion' pueden anularse facilmente.\n";
-											cout << "La logica de anulacion para contratos 'En Alquiler' no esta implementada.\n";
+											cout << "NO se puede anular un contrato si esta en ejecucion";
 											break;
 										}
 										cout << "Esta seguro de ANULAR el Contrato " << con->getCodigoTransaccion() << "? (s/n): ";
@@ -384,6 +421,13 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 							sol->setEstadoTransaccion(4);
 							cout << "\nSOLICITUD ANULADA exitosamente.\n";
 							// Nota: Lógica de Carro (si aplica) pendiente de implementar
+							cout << "Nota: En el cliente " << sol->getCliente()->getNombre() << " puede ver la solicitud RECHAZADA\n";
+							Cliente* cli = dynamic_cast<Cliente*>(sol->getCliente());
+							Colaborador* col = dynamic_cast<Colaborador*>(sol->getColaborador());
+							cli->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3); // Actualizar historial cliente
+							col->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3); // Actualizar historial colaborador
+							lsc->eliminarTransaccionPorCodigo(sol->getCodigoTransaccionInt()); // Eliminar de la lista general
+							opcion = 4; //Obliga a salir del menu
 							break;
 						}
 						case 4: // Regresar
@@ -413,9 +457,11 @@ bool Menu::validarEntero(int& opcion) {
 		cin.ignore(10000, '\n');
 		opcion = 0;
 		cout << "Entrada invalida. Intente de nuevo." << endl;
+		system("pause");
 		system("cls");
 		return true;
 	}
+	
 	return false;
 }
 
@@ -438,12 +484,12 @@ void Menu::inicializarDatos() {
 	// Plantel y carros
 	Plantel* plantel = new Plantel('A', 7, 8);
 
-	Carro* carro1 = new Carro("123-ABC", "Corolla", "Toyota", "Madrid", "B1", 'B', 45.00);
-	Carro* carro2 = new Carro("567-DEF", "Civic", "Honda", "Barcelona", "B1", 'B', 40.00);
-	Carro* carro3 = new Carro("901-GHI", "Model S", "Tesla", "Valencia", "B2", 'A', 60.00);
-	Carro* carro4 = new Carro("345-JKL", "F-150", "Ford", "Sevilla", "C1", 'C', 55.00);
-	Carro* carro5 = new Carro("789-MNO", "Tucson", "Hyundai", "Bilbao", "B2", 'B', 50.00);
-	Carro* carro6 = new Carro("234-PQR", "Golf", "Volkswagen", "Granada", "B1", 'B', 45.00);
+	Carro* carro1 = new Carro("123-ABC", "Corolla", "Toyota", "Madrid", "B1", 'B');
+	Carro* carro2 = new Carro("567-DEF", "Civic", "Honda", "Barcelona", "B1", 'B');
+	Carro* carro3 = new Carro("901-GHI", "Model S", "Tesla", "Valencia", "B2", 'A');
+	Carro* carro4 = new Carro("345-JKL", "F-150", "Ford", "Sevilla", "C1", 'C');
+	Carro* carro5 = new Carro("789-MNO", "Tucson", "Hyundai", "Bilbao", "B2", 'B');
+	Carro* carro6 = new Carro("234-PQR", "Golf", "Volkswagen", "Granada", "B1", 'B');
 
 	plantel->agregarCarro(carro1, 0, 0);
 	plantel->agregarCarro(carro2, 1, 2);
@@ -855,7 +901,7 @@ void Menu::menuPrincipal() {
 										break;
 								}
 							} while (enteros != 3);
-
+							opcion = 0; // reinicia para el menu
 							system("cls"); 
 						}
 						else if (opcion == lcol->getTam() + 1) {
@@ -949,6 +995,7 @@ void Menu::menuPrincipal() {
 							cout << "Opcion invalida. Intente de nuevo." << endl << endl;
 						}
 					} while (opcion != lcol->getTam() + 3);
+					opcion = 0; //Reinicia opcion
 					break;// Termina gestionar colaboradores--------------------------------------------------------------------
 
 				case 3:// Inicia gestionar planteles--------------------------------------------------------------------
@@ -960,7 +1007,7 @@ void Menu::menuPrincipal() {
 							cin >> opcion;
 							system("cls");
 						} while (validarEntero(opcion));
-						if (opcion == lp->getTam() + 3); // Salir
+						if (opcion == lp->getTam() + 4); // Salir
 						else if (opcion >= 1 && opcion <= lp->getTam()) {
 							// Inicia Mostrar detalles del plantel seleccionado-----------------------------------------------------------------------------
 
@@ -1008,12 +1055,6 @@ void Menu::menuPrincipal() {
 									cout << "Digite el tipo de licencia requerida (A, B, C): ";
 									cin >> textos;
 									car->setTipoLicencia(textos);
-									double precio;
-									do {
-										cout << "Digite el precio diario de alquiler del carro: ";
-										cin >> precio;
-									} while (validarFlotante(precio) || precio <= 0);
-									car->setPrecioDiario(precio);
 									cout << "Digite la categoria del carro (A, B, C): ";
 									cin >> carac;
 									car->setCategoria(carac);
@@ -1092,13 +1133,14 @@ void Menu::menuPrincipal() {
 									else {
 										cout << "Eliminacion de carro cancelada." << endl;
 									}
-
+								case 5:
+									break; // Regresar
 								default:
 									cout << "Opcion invalida. Intente de nuevo." << endl;
 									break;
 								}
 							} while (opcion != 5);
-							system("pause");
+							opcion = 0; // Reiniciar opcion para el menu de planteles
 						}
 						else if (opcion == lp->getTam() + 1) {
 							p = new Plantel();
@@ -1174,12 +1216,40 @@ void Menu::menuPrincipal() {
 								}
 							} while (opcion != lp->getTam() + 1);
 						}
+						else if (opcion == lp->getTam() + 3) { //modificar precio de categoria especifica de carro (categorias a,b,c,d)
+							char categoria;
+							double nuevoPrecio;
+							do {
+								cout << "Digite la categoria de carro a modificar el precio (A, B, C, D): ";
+								cin >> categoria;
+								categoria = toupper(categoria);
+								if(categoria != 'A' && categoria != 'B' && categoria != 'C' && categoria != 'D') {
+									cout << "Categoria invalida. Intente de nuevo." << endl;
+								}
+							} while (categoria != 'A' && categoria != 'B' && categoria != 'C' && categoria != 'D');
+							do {
+								cout << "Digite el nuevo precio diario para la categoria " << categoria << ": ";
+								cin >> nuevoPrecio;
+							} while (validarFlotante(nuevoPrecio) || nuevoPrecio < 0);
+							if (sucursales->modificarPrecioCategoria(categoria, nuevoPrecio)) {
+								cout << "Precio de categoria " << categoria << " modificado exitosamente a " << nuevoPrecio << "." << endl;
+							}
+							else {
+								cout << "Error: No se pudo modificar el precio de la categoria." << endl;
+							}
+
+							
+
+
+							
+						}
 						else {
 							system("cls");
 							cout << "Opcion invalida. Intente de nuevo." << endl << endl;
 						}
 
-					} while (opcion != lp->getTam() + 3);
+					} while (opcion != lp->getTam() + 4);
+					opcion = 0; //reinicia opcion
 					break;// Termina gestionar planteles--------------------------------------------------------------------
 
 				case 4:// Inicia gestionar contratos/solicitudes --------------------------------------------------------------------
@@ -1253,6 +1323,8 @@ void Menu::menuPrincipal() {
 									Carro* carroSeleccionado = p->getCarroxPlaca(placaSeleccionada);
 									if (carroSeleccionado && carroSeleccionado->getEstadoCarro() == "Disponible") { // Disponible
 										sol->setCarro(carroSeleccionado);
+										sol->setPrecioDiario(carroSeleccionado->getPrecioDiario());
+										sol->setPrecioTotal(carroSeleccionado->getPrecioDiario());
 										// Cambia estado del carro a "Alquilado" HASTA QUE SE APRUEBE LA SOLICITUD
 										break; // Carro valido seleccionado
 									}
@@ -1272,13 +1344,7 @@ void Menu::menuPrincipal() {
 								sol->setFechaInicio(enteros);
 								sol->calcularFechaEntrega();
 
-								double precioDiario;
-								do {
-									cout << "Digite el precio diario del alquiler: ";
-									cin >> precioDiario;
-								} while (validarFlotante(precioDiario) || precioDiario < 0);
-								sol->setPrecioDiario(precioDiario);
-								sol->setPrecioTotal(precioDiario);
+								
 								cout << sol->toString() << endl;
 								cout << "Esta seguro de crear esta solicitud de alquiler? (s/n): ";
 								cin >> sn;

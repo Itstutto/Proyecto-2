@@ -42,6 +42,19 @@ Plantel* ListaPlantel::buscarPlantel(char id)
 	}
 	return nullptr;
 }
+
+bool ListaPlantel::modificarPrecioCategoria(char categoria)
+{
+	if (!primero) return false;
+	if (categoria < 'A' || categoria > 'D') return false;
+	NodoPl* actual = primero;
+	while (actual) {
+		actual->getDato()->actualizarPrecioCarros(categoria);
+		actual = actual->getSig();
+	}
+	return true;
+}
+
 int ListaPlantel::getTam() {
 	return tam;
 }
@@ -113,6 +126,7 @@ string ListaPlantel::mostrarListaPlanteles(int ver)
 	if (ver == 0) {
 		ss << numPlantel++ << ". Crear nuevo plantel\n";
 		ss << numPlantel++ << ". Eliminar plantel\n";
+		ss << numPlantel++ << ". Cambiar precio de alquiler de vehiculo\n";
 	}
 	ss << numPlantel << ". Regresar\n";
 	return ss.str();

@@ -1,5 +1,11 @@
 #include "Carro.h"
 
+double Carro::precioA = 20000;
+double Carro::precioB = 27000;
+double Carro::precioC = 45000;
+double Carro::precioD = 34000;
+
+
 Carro::Carro() {
 	placa = "";
 	modelo = "";
@@ -13,14 +19,30 @@ Carro::Carro() {
 	historialEstados->insertarFinal(new EstadoBitacora(4, 4, "SISTEMA"));
 }
 
-Carro::Carro(string placa, string modelo, string marca, string ubicacion, string tipoLicencia, char catergoria, double precio) {
+Carro::Carro(string placa, string modelo, string marca, string ubicacion, string tipoLicencia, char catergoria) {
 	this->placa = placa;
 	this->modelo = modelo;	
 	this->marca = marca;
 	this->ubicacion = ubicacion;
 	this->tipoLicencia = tipoLicencia;
 	this->categoria = catergoria;
-	this->precioDiario = precio;
+	switch (catergoria) {
+		case 'A':
+			this->precioDiario = precioA;
+			break;
+		case 'B':
+			this->precioDiario = precioB;
+			break;
+		case 'C':
+			this->precioDiario = precioC;
+			break;
+		case 'D':
+			this->precioDiario = precioD;
+			break;
+		default:
+			this->precioDiario = 0.0; // Categoria invalida
+			break;
+	}
 	this->historialEstados = new ListaBitacora();
 	// estado inicial: Revision (4)
 	historialEstados->insertarFinal(new EstadoBitacora(4, 4, "SISTEMA"));
@@ -65,8 +87,31 @@ void Carro::setModelo(string m) { modelo = m; }
 void Carro::setMarca(string ma) { marca = ma; }
 void Carro::setUbicacion(string u) { ubicacion = u; }
 void Carro::setTipoLicencia(string t) { tipoLicencia = t; }
-void Carro::setCategoria(char c) { categoria = c; }
-void Carro::setPrecioDiario(double p) { precioDiario = p; }
+void Carro::setCategoria(char c) { 
+	categoria = c;
+	actualizarPrecioDiario();
+}
+
+void Carro::actualizarPrecioDiario()
+{
+	switch (categoria) {
+	case 'A':
+		this->precioDiario = precioA;
+		break;
+	case 'B':
+		this->precioDiario = precioB;
+		break;
+	case 'C':
+		this->precioDiario = precioC;
+		break;
+	case 'D':
+		this->precioDiario = precioD;
+		break;
+	default:
+		this->precioDiario = 0.0; // Categoria invalida
+		break;
+	}
+}
 
 static bool transicionValida(int actual, int nuevo) {
 	// Matriz corregida

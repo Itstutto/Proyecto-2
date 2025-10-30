@@ -50,6 +50,28 @@ Carro* Sucursal::buscarCarroPorPlaca(const string& placa)
 	}
 	return nullptr; // No se encontró el carro en ningún plantel
 }
+bool Sucursal::modificarPrecioCategoria(char categoria, double nuevoPrecio) {
+	if (categoria < 'A' || categoria > 'D' || nuevoPrecio < 0) {
+		return false; // Categoría inválida o precio negativo
+	}
+	switch (categoria) {
+	case 'A':
+		Carro::precioA = nuevoPrecio;
+		break;
+	case 'B':
+		Carro::precioB = nuevoPrecio;
+		break;
+	case 'C':
+		Carro::precioC = nuevoPrecio;
+		break;
+	case 'D':
+		Carro::precioD = nuevoPrecio;
+		break;
+	default:
+		return false;
+	}
+	planteles->modificarPrecioCategoria(categoria);
+}
 
 //usar "endl" en vez de \n (aplica en todo)
 string Sucursal::mostrarOpciones() {
@@ -62,6 +84,7 @@ string Sucursal::mostrarOpciones() {
 		<< "4. Contratos" << endl
 		<< "5. Regresar al menu principal" << endl;
 	ss << "-------------------------------------------------" << endl;
+	ss << "Seleccione una opcion: ";
 	return ss.str();
 }
 

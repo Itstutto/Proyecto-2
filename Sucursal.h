@@ -29,6 +29,8 @@ public:
 
 	Carro* buscarCarroPorPlaca(const string& placa);
 
+	bool modificarPrecioCategoria(char categoria, double nuevoPrecio);
+
 
 	// Lógica principal para convertir solicitud pendiente a contrato activo
 	bool convertirSolicitudAContrato(int idSolicitud, const string& idColaboradorAprueba,

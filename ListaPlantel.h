@@ -18,6 +18,7 @@ public:
 	NodoPl* getUltimo();
 	Plantel* buscarPlantel(int pos);
 	Plantel* buscarPlantel(char id);
+	bool modificarPrecioCategoria(char categoria);
 	int getTam();
 	// Métodos adicionales
 	bool insertarFinal(Plantel* p);

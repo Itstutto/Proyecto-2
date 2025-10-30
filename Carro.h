@@ -22,7 +22,7 @@ public:
 	static double precioC;
 	static double precioD;
 	Carro();
-	Carro(string placa, string modelo, string marca, string ubicacion, string tipoLicencia, char categoria, double precio);
+	Carro(string placa, string modelo, string marca, string ubicacion, string tipoLicencia, char categoria);
 	~Carro();
 	// Getters
 	string getPlaca();
@@ -42,7 +42,7 @@ public:
 	void setUbicacion(string u);
 	void setTipoLicencia(string t);
 	void setCategoria(char c);
-	void setPrecioDiario(double p);
+	void actualizarPrecioDiario(); // Actualiza el precio diario basado en la categoria
 	int setEstadosCarro(int estado, string idColaborador); // retorna 1 ok, -1 invalido, -2 mismo estado
 
 	string toString();

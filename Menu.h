@@ -6,6 +6,7 @@ class Cliente; // forward declaration
 class Menu {
 private:
 	ListaSucursales* sucursales;
+	Plantel* alquilados; // Plantel temporal para carros alquilados
 	bool validarEntero(int& opcion);
 	bool validarFlotante(double& opcion);
 	void inicializarDatos();

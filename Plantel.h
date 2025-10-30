@@ -24,21 +24,25 @@ public:
 	string getEspacioEstacionamiento(int f, int c);
 	Carro* getCarroxPos(int f, int c);
 	Carro* getCarroxPlaca(string placa);
+	bool moverCarro(string placa, Plantel* destino);
 	int getCanTotal();
 	int getCanDisponibles();
-	
+
 	// Setters
 	void setIdentificador(char id);
 	void setFilas(int f);
 	void setColumnas(int c);
 	// Métodos adicionales
 	bool agregarCarro(Carro* carro, int f, int c);
+	bool agregarCarro(Carro* carro); // agrega en la primera posicion disponible
 	bool eliminarCarro(int f, int c);
 	bool eliminarCarro(string placa);
+	bool desvincularCarro(string placa); // elimina sin borrar el carro
 	bool estaVacio();
 	bool esPosicionValida(int x, int y);
 	string mostrarPlantel();
 	string mostrarEstacionamiento(int ver);
 	string posicionesRecomendadas();
+	void actualizarPrecioCarros(char cateoria);
 };
 

@@ -108,7 +108,7 @@ void ListaSolicitudesContratos::vehiculoEliminado(string placa)
 	while (a) {
 		if (a->getDato()->getPlacaVehiculo() == placa) {
 			Carro* temp = a->getDato()->getCarro();
-			Carro* c = new Carro(temp->getPlaca() + " ELIMINADO", temp->getModelo() + " ELIMINADO",temp->getMarca()+" ELIMINADO", "Basurero", "N/A", '0', '0');
+			Carro* c = new Carro(temp->getPlaca() + " ELIMINADO", temp->getModelo() + " ELIMINADO",temp->getMarca()+" ELIMINADO", "Basurero", "N/A", '0');
 			a->getDato()->setCarro(nullptr); // Desvincula el vehiculo eliminado
 			a->getDato()->setCarro(c); // Asigna un vehiculo por defecto
 		}
