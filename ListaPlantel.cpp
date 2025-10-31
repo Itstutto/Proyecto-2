@@ -127,6 +127,7 @@ string ListaPlantel::mostrarListaPlanteles(int ver)
 		ss << numPlantel++ << ". Crear nuevo plantel\n";
 		ss << numPlantel++ << ". Eliminar plantel\n";
 		ss << numPlantel++ << ". Cambiar precio de alquiler de vehiculo\n";
+		ss << numPlantel++ << ". Reporte de Ocupacion de Planteles\n";
 	}
 	if (ver == 1 || ver == 0) {
 		ss << numPlantel << ". Regresar\n";

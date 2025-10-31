@@ -248,7 +248,7 @@ string Plantel::posicionesRecomendadas()
 				}
 			}
 
-			// Recomendado si todos los vecinos válidos están libres
+			// Recomendado si todos los vecinos validos estan libres
 			if (vecinosValidos > 0 && vecinosVacios == vecinosValidos) {
 				s << getEspacioEstacionamiento(i, j) << " ";
 			}
@@ -269,4 +269,37 @@ void Plantel::actualizarPrecioCarros(char cateoria)
 		}
 	}
 
+}
+
+// --- IMPLEMENTACION DE METODOS DE REPORTE ---
+
+double Plantel::getPorcentajeOcupacion(){
+	int total = getCanTotal();
+	if (total == 0) return 0.0;
+	int ocupados = total - getCanDisponibles();
+	// Se usa 100.0 para asegurar la division de punto flotante
+	return (static_cast<double>(ocupados) / total) * 100.0;
+}
+
+string Plantel::getDatosOcupacionStr(){
+	stringstream ss;
+	int total = getCanTotal();
+	int ocupados = total - getCanDisponibles();
+
+	double porcentaje = getPorcentajeOcupacion();
+
+	// Implementacion basica para mostrar 2 decimales sin <iomanip>
+	// Multiplicar por 100, convertir a entero (trunca), y dividir para obtener partes.
+	long long temp = (long long)(porcentaje * 100);
+	long long parteEntera = temp / 100;
+	long long parteDecimal = temp % 100;
+
+	ss << "Plantel " << identificador << " (" << filas << "x" << columnas << "): ";
+	ss << ocupados << " ocupados / " << total << " total ";
+	ss << "-> " << parteEntera << ".";
+	// Asegurar que el decimal tenga dos digitos (ej. 5.05 en lugar de 5.5)
+	if (parteDecimal < 10) ss << "0";
+	ss << parteDecimal << "% de Ocupacion";
+
+	return ss.str();
 }

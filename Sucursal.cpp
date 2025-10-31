@@ -172,3 +172,27 @@ bool Sucursal::convertirSolicitudAContrato(int idSolicitud, const string& idCola
 }
 
 
+// --- REPORTE DE PORCENTAJE DE OCUPACIÓN DE LOS PLANTELES ---
+string Sucursal::generarReporteOcupacionPlanteles() { 
+	stringstream ss;
+	ss << "\n======= REPORTE DE OCUPACION DE PLANTELES - Sucursal " << numeroSucursal << " =======\n";
+
+	NodoPl* actual = planteles->getPrimero();
+	bool encontrado = false;
+
+	while (actual) {
+		Plantel* p = actual->getDato();
+		if (p) {
+			ss << p->getDatosOcupacionStr() << endl; 
+			encontrado = true;
+		}
+		actual = actual->getSig();
+	}
+
+	if (!encontrado) {
+		ss << "(No hay planteles registrados en esta sucursal)." << endl;
+	}
+
+	ss << "======================================================================\n";
+	return ss.str();
+}

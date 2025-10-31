@@ -1,4 +1,5 @@
 #include "ListaSolicitudesContratos.h"
+#include "ContratoAlquiler.h"
 
 ListaSolicitudesContratos::ListaSolicitudesContratos() : primero(nullptr), ultimo(nullptr), tam(0) {}
 
@@ -265,6 +266,29 @@ SolicitudAlquiler* ListaSolicitudesContratos::obtenerTransaccionFiltradaPorIndic
 	return nullptr;
 }
 
+// Método para obtener reporte de contratos por cliente
+string ListaSolicitudesContratos::obtenerReporteContratosCliente(string idCliente, int& contratosCount) const {
+	stringstream ss;
+	contratosCount = 0;
+
+	NodoSolicitud* actual = primero;
+	while (actual) {
+		SolicitudAlquiler* sol = actual->getDato();
+		// Filtra por ID de Cliente y Estado 2 (Contrato/Aprobado/Finalizado)
+		if (sol->getIdCliente() == idCliente && sol->getEstadoTransaccion() == 2) {
+
+			if (contratosCount > 0) {
+				ss << ", "; // Separador
+			}
+			ss << sol->getCodigoTransaccion();
+			contratosCount++;
+		}
+		actual = actual->getSig();
+	}
+
+	return ss.str();
+}
+
 
 // Método de filtrado de historial
 string ListaSolicitudesContratos::mostrarHistorialCompletado() const {
@@ -295,6 +319,53 @@ string ListaSolicitudesContratos::mostrarHistorialCompletado() const {
 	}
 
 	ss << "----------------------------------------------------\n";
+
+	return ss.str();
+}
+
+
+// --- IMPLEMENTACIÓN DE REPORTE DE CONTRATOS POR VEHÍCULO ESPECÍFICO ---
+
+string ListaSolicitudesContratos::generarReporteContratosPorVehiculo(string placaVehiculo) const {
+	stringstream ss;
+	ss << "\n======= REPORTE DE CONTRATOS PARA VEHÍCULO ESPECÍFICO =======\n" << endl;
+	ss << "Placa Solicitada: " << placaVehiculo << endl;
+	ss << "-----------------------------------------------------------------" << endl;
+
+	NodoSolicitud* actual = primero;
+	bool encontrado = false;
+
+	while (actual) {
+		SolicitudAlquiler* sol = actual->getDato();
+
+		// 1. Filtra por Placa y solo transacciones que sean Contratos (Estado 2)
+		if (sol->getPlacaVehiculo() == placaVehiculo && sol->getEstadoTransaccion() == 2) {
+
+			ContratoAlquiler* contrato = dynamic_cast<ContratoAlquiler*>(sol);
+
+			// 2. Determinar el estado detallado (Asumiendo métodos de fecha y estado)
+			string estadoDetallado = (contrato && contrato->getEstadoDetalladoStr() != "")
+				? contrato->getEstadoDetalladoStr()
+				: "Contrato Activo/Vigente";
+
+			ss << "\n--- Contrato CÓDIGO: " << sol->getCodigoTransaccion() << " ---\n";
+			ss << "ID Cliente: " << sol->getIdCliente() << endl;
+			ss << "Días de Alquiler: " << sol->getDiasAlquiler() << endl;
+
+			// Se asumen estos métodos para fechas en SolicitudAlquiler
+			ss << "Fecha de Inicio: " << sol->getFechaInicio() << endl;
+			ss << "Fecha de Devolución: " << sol->getFechaEntrega() << endl;
+			ss << "Estado de Contrato: " << estadoDetallado << endl;
+
+			encontrado = true;
+		}
+		actual = actual->getSig();
+	}
+
+	if (!encontrado) {
+		ss << "No se encontraron contratos (Estado 2) asociados a la placa " << placaVehiculo << "." << endl;
+	}
+	ss << "======================================================================\n";
 
 	return ss.str();
 }

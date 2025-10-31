@@ -28,15 +28,22 @@ public:
 	string mostrarTransacciones();
 	string toString() const;
 
-	// NUEVOS METODOS
+	
 	string mostrarTransaccionesPorColaborador(string idColaborador);
 	SolicitudAlquiler* obtenerTransaccionFiltradaPorIndice(string idColaborador, int indice);
 
-	// NUEVOS METODOS (Filtrado por Cliente)
+	
 	// Muestra las transacciones pendientes asociadas a un cliente específico, numeradas.
 	string mostrarTransaccionesPorCliente(string idCliente);
 	
 	// Obtiene una transacción específica de la lista, basándose en el índice numerado del listado FILTRADO por cliente.
 	SolicitudAlquiler* obtenerTransaccionFiltradaPorIndiceCliente(string idCliente, int indice);
 	string mostrarHistorialCompletado() const;
+
+	// NUEVOS METODOS (Para Reporte de Clientes - Rúbrica)
+	// Devuelve un string con los códigos de contrato (estado 2) y el conteo por referencia.
+	string obtenerReporteContratosCliente(string idCliente, int& contratosCount) const;
+	
+	// --- NUEVO MÉTODO PARA REPORTE POR VEHÍCULO ESPECÍFICO ---
+	string generarReporteContratosPorVehiculo(string placaVehiculo) const;
 };

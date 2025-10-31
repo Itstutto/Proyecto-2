@@ -44,5 +44,9 @@ public:
 	string mostrarEstacionamiento(int ver);
 	string posicionesRecomendadas();
 	void actualizarPrecioCarros(char cateoria);
+
+	// --- NUEVOS MÉTODOS PARA REPORTE DE OCUPACIÓN ---
+	double getPorcentajeOcupacion();
+	string getDatosOcupacionStr();
 };
 

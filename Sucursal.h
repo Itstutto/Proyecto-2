@@ -39,6 +39,8 @@ public:
 		ListaClientes1* listaClientes,
 		ListaColaboradores1* listaColaboradores);
 
+	// REPORTE DE OCUPACIÓN DE PLANTELES (REPORTE 2)
+	string generarReporteOcupacionPlanteles();
 
 	string mostrarOpciones();
 };

@@ -293,13 +293,13 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 												con->getCarro()->setEstadosCarro(2, con->getIdColaborador()); // En alquiler
 												cout << "Contrato ejecutado" << endl;
 
-												
+												con->getCarro()->setEstadosCarro(4, con->getIdColaborador()); // Alquilado -> En Mantenimiento
+												cout << "Carro enviado a mantenimiento automaticamente al ejecutar contrato." << endl;
 											}
 											else {
 												cout << "El contrato NO fue ejecutado" << endl;
 											}
 
-											
 										}
 										else if (con->getEstadoDetallado() == 1) {
 											stringstream s;
@@ -334,81 +334,80 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 													s << "Reintegro aplicado: " << reintegro << " colones." << endl;
 												}
 
-												do {
-													cout << sucursales->mostrarSucursales(2); // No mostrar opcion salir
-													cout << "Seleccione la sucursal donde se devuelve el carro: ";
-													cin >> enteros;
-													if (!sucursales->buscarSucursal(enteros)) {
-														cout << "Sucursal no valida. Intente de nuevo." << endl;
-													}
-												} while (validarEntero(enteros) || !sucursales->buscarSucursal(enteros));
-												Sucursal* sucDev = sucursales->buscarSucursal(enteros)->getDato();
-												cout << sucDev->getPlanteles()->mostrarListaPlanteles(2); // No mostrar opcion salir
-												cout << "Seleccione el plantel donde se devuelve el carro: ";
+											do {
+												cout << sucursales->mostrarSucursales(2); // No mostrar opcion salir
+												cout << "Seleccione la sucursal donde se devuelve el carro: ";
 												cin >> enteros;
-												Plantel* plantelDev = sucDev->getPlanteles()->buscarPlantel(enteros);
-												cout<<plantelDev->mostrarEstacionamiento(0)<<endl;
-												int fila, columna;
-												cout << "Digite la fila donde se devolvera el carro: ";
-												cin >> fila;
-												cout << "Digite la columna donde se devolvera el carro: ";
-												cin >> columna;
-												plantelDev->agregarCarro(con->getCarro(), fila, columna);
-												alquilados->desvincularCarro(con->getCarro()->getPlaca());
+												if (!sucursales->buscarSucursal(enteros)) {
+													cout << "Sucursal no valida. Intente de nuevo." << endl;
+												}
+											} while (validarEntero(enteros) || !sucursales->buscarSucursal(enteros));
+											Sucursal* sucDev = sucursales->buscarSucursal(enteros)->getDato();
+											cout << sucDev->getPlanteles()->mostrarListaPlanteles(2); // No mostrar opcion salir
+											cout << "Seleccione el plantel donde se devuelve el carro: ";
+								cin >> enteros;
+											Plantel* plantelDev = sucDev->getPlanteles()->buscarPlantel(enteros);
+											cout<<plantelDev->mostrarEstacionamiento(0)<<endl;
+											int fila, columna;
+											cout << "Digite la fila donde se devolvera el carro: ";
+											cin >> fila;
+											cout << "Digite la columna donde se devolvera el carro: ";
+											cin >> columna;
+											plantelDev->agregarCarro(con->getCarro(), fila, columna);
+											alquilados->desvincularCarro(con->getCarro()->getPlaca());
 
-												s << "Sucursal de devolucion: " << sucDev->getNumeroSucursal() << endl;
-												s << "Plantel de devolucion: " << plantelDev->getIdentificador() << endl;
-												s << "Ubicacion de devolucion: Fila " << fila << ", Columna " << columna << endl;
+											s << "Sucursal de devolucion: " << sucDev->getNumeroSucursal() << endl;
+											s << "Plantel de devolucion: " << plantelDev->getIdentificador() << endl;
+											s << "Ubicacion de devolucion: Fila " << fila << ", Columna " << columna << endl;
 
-												con->setEstadoDetallado(3, s.str());
-												cout << "\nContrato finalizado exitosamente.\n"
-													<< "Detalle de finalizacion:\n"
-													<< con->getEstadoDetalladoStr() << endl;
+											con->setEstadoDetallado(3, s.str());
+											cout << "\nContrato finalizado exitosamente.\n"
+												<< "Detalle de finalizacion:\n"
+												<< con->getEstadoDetalladoStr() << endl;
 											}
 			
-										}
-										else {
-											cout << "El contrato ya ha sido finalizado previamente.\n";
-											
-							
+									}
+									else {
+										cout << "El contrato ya ha sido finalizado previamente.\n";
+										
+										
 
 
-											
-											// Lógica pendiente:
-											// 1. Pedir dias utilizados.
-											// 2. Calcular diferencia de dias vs. diasAlquiler.
-											// 3. Aplicar multa/reintegro (70% del diario por dia anticipado).
-											// 4. Actualizar el Contrato: con->setEstadoDetallado(3, "Finalizado [detalle]");
-											// 5. Actualizar el Carro: Buscar Carro por Placa y carro->setEstadosCarro(3, con->getIdColaborador()); // Devuelto
-										}
+												// Lógica pendiente:
+												// 1. Pedir dias utilizados.
+												// 2. Calcular diferencia de dias vs. diasAlquiler.
+												// 3. Aplicar multa/reintegro (70% del diario por dia anticipado).
+												// 4. Actualizar el Contrato: con->setEstadoDetallado(3, "Finalizado [detalle]");
+												// 5. Actualizar el Carro: Buscar Carro por Placa y carro->setEstadosCarro(3, con->getIdColaborador()); // Devuelto
+									}
+									break;
+								}
+								case 2: {
+									// Solo se debería anular si el estado detallado es "Pendiente de Ejecución" (2)
+									if (con->getEstadoDetallado() != 2) {
+										cout << "ADVERTENCIA: Solo los contratos 'Pendiente de Ejecucion' pueden anularse facilmente.\n";
+										cout << "NO se puede anular un contrato si esta en ejecucion";
 										break;
 									}
-									case 2: {
-										// Solo se debería anular si el estado detallado es "Pendiente de Ejecución" (2)
-										if (con->getEstadoDetallado() != 2) {
-											cout << "ADVERTENCIA: Solo los contratos 'Pendiente de Ejecucion' pueden anularse facilmente.\n";
-											cout << "NO se puede anular un contrato si esta en ejecucion";
-											break;
-										}
-										cout << "Esta seguro de ANULAR el Contrato " << con->getCodigoTransaccion() << "? (s/n): ";
-										cin >> sn;
-										if (sn == 's' || sn == 'S') {
-											// Implementación real: cambiar estado base a 4 (Anulada)
-											con->setEstadoTransaccion(4);
-											// Lógica pendiente: actualizar estado del carro si aplica
-											cout << "\nCONTRATO ANULADO. [Logica de Carro Pendiente].\n";
-										}
-										break;
+									cout << "Esta seguro de ANULAR el Contrato " << con->getCodigoTransaccion() << "? (s/n): ";
+									cin >> sn;
+									if (sn == 's' || sn == 'S') {
+										// Implementación real: cambiar estado base a 4 (Anulada)
+										con->setEstadoTransaccion(4);
+										// Lógica pendiente: actualizar estado del carro si aplica
+										cout << "\nCONTRATO ANULADO. [Logica de Carro Pendiente].\n";
 									}
-									case 3: {
-										cout << "\nFuncionalidad: Mostrar Bitacora del Carro (Se necesita buscar el Carro por Placa primero).\n";
-										break;
-									}
-									case 4: // Regresar
-										break;
-									default:
-										cout << "Opcion invalida.\n";
-										break;
+									break;
+								}
+								case 3: {
+									cout << "\nFuncionalidad: Mostrar Bitacora del Carro (Se necesita buscar el Carro por Placa primero).\n";
+									break;
+								}
+								case 4: // Regresar
+									break;
+								default:
+									cout << "Opcion invalida.\n";
+									break;
 								}
 								system("pause");
 							} while (opcion != 4);
@@ -679,10 +678,12 @@ void Menu::menuPrincipal() {
 								cout << "Seleccione una opcion: ";
 								cin >> opcion;
 														
+
 								if (validarEntero(opcion)) continue; // Volver al inicio del do-while si es inválido
 														
 								switch (opcion) {
 								case 1: { // Modificar informacion del cliente-----------------------------------------------------------------------------
+
 									bool tipoCliente = dynamic_cast<ClienteFisico*>(cli) != nullptr; // true si es ClienteFisico, false si es ClienteJuridico
 									int limite = tipoCliente ? 4 : 6; // Numero de opciones segun el tipo de cliente
 									int opcionModificar;
@@ -756,157 +757,157 @@ void Menu::menuPrincipal() {
 									} while (opcionModificar != limite);
 									break;
 								}	
-								case 2:
-									cout << "Informacion del Cliente:" << endl;
-									cout << cli->toString() << endl;
-									system("pause");
-									break;
-								case 3:
-									cout << cli->getHistorial()->mostrarHistorialCompletado() << endl;
-									system("pause");
-									break;
-								case 4: // NUEVA OPCION: Ver Solicitudes Pendientes
-									mostrarTransaccionesCliente(s, cli);
-									break;
-								case 5: // Regresar (Opción anterior era 4)
-									break;
-								default:
-									cout << "Opcion invalida. Intente de nuevo." << endl;
-									system("pause");
-									break;
-
-								}
-							} while (opcion != 5); // Salir con 5
-							opcion = 0; // Reiniciar opcion para el menu de clientes
-							system("cls");
-						}
-						
-						// REPORTE DE CLIENTES 
-						else if (opcion == lc->getTam() + 1) { 
-							cout << lc->generarReporteClientes() << endl; // Llama a la nueva función de reporte
+							case 2:
+							cout << "Informacion del Cliente:" << endl;
+							cout << cli->toString() << endl;
 							system("pause");
-						}
-						
-						// AGREGAR NUEVO CLIENTE 
-						else if (opcion == lc->getTam() + 2) {
-							do {
-								cout << "Elija el tipo de cliente a agregar " << endl
-									<< "1. Cliente Fisico" << endl
-									<< "2. Cliente Juridico" << endl;
-								cin >> tipoCliente;
-								if (!validarEntero(tipoCliente) && (tipoCliente != 1 && tipoCliente != 2)) {
-									cout << "Opcion invalida. Intente de nuevo." << endl;
-									continue;
-								}
-							} while (validarEntero(tipoCliente));
-							if (tipoCliente == 1) {
-								cli = new ClienteFisico();
+							break;
+							case 3:
+							cout << cli->getHistorial()->mostrarHistorialCompletado() << endl;
+							system("pause");
+							break;
+							case 4: // NUEVA OPCION: Ver Solicitudes Pendientes
+							mostrarTransaccionesCliente(s, cli);
+							break;
+							case 5: // Regresar (Opción anterior era 4)
+							break;
+							default:
+							cout << "Opcion invalida. Intente de nuevo." << endl;
+							system("pause");
+							break;
+
 							}
-							else {
-								cli = new ClienteJuridico();
-							}
-							cout << "Digite la cedula " << (tipoCliente == 1 ? "fisica" : "juridica") << " del cliente: ";
-							cin >> textos;
-							if (lc->buscarPersona(textos)) {
-								cout << "Cliente con esa cedula ya existe. Operacion cancelada." << endl;
-								delete cli;
-								cli = nullptr;
+						} while (opcion != 5); // Salir con 5
+						opcion = 0; // Reiniciar opcion para el menu de clientes
+						system("cls");
+					}
+					
+					// REPORTE DE CLIENTES 
+					else if (opcion == lc->getTam() + 1) { 
+						cout << lc->generarReporteClientes() << endl; // Llama a la nueva función de reporte
+						system("pause");
+					}
+					
+					// AGREGAR NUEVO CLIENTE 
+					else if (opcion == lc->getTam() + 2) {
+						do {
+							cout << "Elija el tipo de cliente a agregar " << endl
+								<< "1. Cliente Fisico" << endl
+								<< "2. Cliente Juridico" << endl;
+							cin >> tipoCliente;
+							if (!validarEntero(tipoCliente) && (tipoCliente != 1 && tipoCliente != 2)) {
+								cout << "Opcion invalida. Intente de nuevo." << endl;
 								continue;
 							}
-							cli->setId(textos);
-							cout << "Digite el nombre del cliente: ";
-							cin.ignore();
+						} while (validarEntero(tipoCliente));
+						if (tipoCliente == 1) {
+							cli = new ClienteFisico();
+						}
+						else {
+							cli = new ClienteJuridico();
+						}
+						cout << "Digite la cedula " << (tipoCliente == 1 ? "fisica" : "juridica") << " del cliente: ";
+						cin >> textos;
+						if (lc->buscarPersona(textos)) {
+							cout << "Cliente con esa cedula ya existe. Operacion cancelada." << endl;
+							delete cli;
+							cli = nullptr;
+							continue;
+						}
+						cli->setId(textos);
+						cout << "Digite el nombre del cliente: ";
+						cin.ignore();
+						getline(cin, textos);
+						cli->setNombre(textos);
+						cout << "Digite el pais de residencia del cliente: ";
+						getline(cin, textos);
+						cli->setPaisResidencia(textos);
+						if (tipoCliente == 2) {
+							cjur = dynamic_cast<ClienteJuridico*>(cli);
+							cout << "Digite la actividad economica del cliente juridico: ";
 							getline(cin, textos);
-							cli->setNombre(textos);
-							cout << "Digite el pais de residencia del cliente: ";
-							getline(cin, textos);
-							cli->setPaisResidencia(textos);
-							if (tipoCliente == 2) {
-								cjur = dynamic_cast<ClienteJuridico*>(cli);
-								cout << "Digite la actividad economica del cliente juridico: ";
-								getline(cin, textos);
-								cjur->setActividadEconomica(textos);
-								double pct;
-								do {
-									cout << "Digite el porcentaje de descuento del cliente juridico: ";
-									cin >> pct;
-								} while (validarFlotante(pct));
-								cjur->setPorcentajeDescuento(pct);
+							cjur->setActividadEconomica(textos);
+							double pct;
+							do {
+								cout << "Digite el porcentaje de descuento del cliente juridico: ";
+								cin >> pct;
+							} while (validarFlotante(pct));
+							cjur->setPorcentajeDescuento(pct);
+						}
+						cout << cli->toString() << endl;
+						cout << "Esta seguro de agregar este cliente? (s/n): ";
+						cin >> sn;
+						if (sn == 's' || sn == 'S') {
+							if (lc->insertarFinal(cli)) {
+								cout << "Cliente agregado exitosamente." << endl;
 							}
-							cout << cli->toString() << endl;
-							cout << "Esta seguro de agregar este cliente? (s/n): ";
-							cin >> sn;
-							if (sn == 's' || sn == 'S') {
-								if (lc->insertarFinal(cli)) {
-									cout << "Cliente agregado exitosamente." << endl;
+							else {
+								cout << "Error: No se pudo agregar el cliente. Puede que ya exista un cliente con esa cedula." << endl;
+								//no se elimina cli porque el insertarFinal lo hace en caso de error
+								cli = nullptr;
+							}
+						}
+						else {
+							cout << "Creacion de cliente cancelada." << endl;
+							delete cli; // eliminar cliente creado
+							cli = nullptr;
+						}
+
+
+					}
+					
+					// ELIMINAR CLIENTE 
+					else if (opcion == lc->getTam() + 3) {
+						do {
+
+							do
+							{
+								cout << "Elija el cliente a eliminar: " << endl;
+								cout << lc->mostrarPersonas(1);
+								cin >> opcion;
+								system("cls");
+							} while (validarEntero(opcion));
+
+							if (opcion == lc->getTam() + 1); // Salir
+							else if (opcion >= 1 && opcion <= lc->getTam()) {
+								cli = dynamic_cast<Cliente*>(lc->obtenerPersonaPorIndice(opcion));
+								
+								if (s->getSolicitudes()->transaccionesCliente(cli->getId()) || s->getContratos()->transaccionesCliente(cli->getId())) {
+									system("cls");
+									cout << "No se puede eliminar al cliente " << cli->getNombre() << " con ID " << cli->getId() << " porque tiene solicitudes o contratos asociados." << endl;
+									continue;
+								}
+								
+								cout << "Esta seguro de eliminar al cliente " << cli->getNombre() << " con ID " << cli->getId() << "? (s/n): ";
+								cin >> sn;
+								system("cls");
+								if (sn == 's' || sn == 'S') {
+									// Eliminar cliente de solicitudes, contratos y colaboradores MUY IMPORTANTE
+									s->getSolicitudes()->clienteEliminado(cli->getId());
+									s->getContratos()->clienteEliminado(cli->getId());
+									s->getColaboradores()->eliminarClienteHistorial(cli->getId());
+									if (lc->eliminarPersona(cli->getId())) {
+										cout << "Cliente eliminado exitosamente." << endl;
+
+
+									}
+									else {
+										cout << "Error: No se pudo eliminar el cliente." << endl;
+									}
 								}
 								else {
-									cout << "Error: No se pudo agregar el cliente. Puede que ya exista un cliente con esa cedula." << endl;
-									//no se elimina cli porque el insertarFinal lo hace en caso de error
-									cli = nullptr;
+									cout << "Eliminacion de cliente cancelada." << endl;
 								}
 							}
 							else {
-								cout << "Creacion de cliente cancelada." << endl;
-								delete cli; // eliminar cliente creado
-								cli = nullptr;
+								system("cls");
+								cout << "Opcion invalida. Intente de nuevo." << endl << endl;
 							}
 
+						} while (opcion != lc->getTam() + 1);
 
-						}
-						
-						// ELIMINAR CLIENTE 
-						else if (opcion == lc->getTam() + 3) {
-							do {
-
-								do
-								{
-									cout << "Elija el cliente a eliminar: " << endl;
-									cout << lc->mostrarPersonas(1);
-									cin >> opcion;
-									system("cls");
-								} while (validarEntero(opcion));
-
-								if (opcion == lc->getTam() + 1); // Salir
-								else if (opcion >= 1 && opcion <= lc->getTam()) {
-									cli = dynamic_cast<Cliente*>(lc->obtenerPersonaPorIndice(opcion));
-									
-									if (s->getSolicitudes()->transaccionesCliente(cli->getId()) || s->getContratos()->transaccionesCliente(cli->getId())) {
-										system("cls");
-										cout << "No se puede eliminar al cliente " << cli->getNombre() << " con ID " << cli->getId() << " porque tiene solicitudes o contratos asociados." << endl;
-										continue;
-									}
-									
-									cout << "Esta seguro de eliminar al cliente " << cli->getNombre() << " con ID " << cli->getId() << "? (s/n): ";
-									cin >> sn;
-									system("cls");
-									if (sn == 's' || sn == 'S') {
-										// Eliminar cliente de solicitudes, contratos y colaboradores MUY IMPORTANTE
-										s->getSolicitudes()->clienteEliminado(cli->getId());
-										s->getContratos()->clienteEliminado(cli->getId());
-										s->getColaboradores()->eliminarClienteHistorial(cli->getId());
-										if (lc->eliminarPersona(cli->getId())) {
-											cout << "Cliente eliminado exitosamente." << endl;
-
-
-										}
-										else {
-											cout << "Error: No se pudo eliminar el cliente." << endl;
-										}
-									}
-									else {
-										cout << "Eliminacion de cliente cancelada." << endl;
-									}
-								}
-								else {
-									system("cls");
-									cout << "Opcion invalida. Intente de nuevo." << endl << endl;
-								}
-
-							} while (opcion != lc->getTam() + 1);
-
-						}
-						else if (opcion == lc->getTam() + 4); // Salir
+					}
+					else if (opcion == lc->getTam() + 4); // Salir
                         
                         // Manejo de opción inválida
                         else {
@@ -1000,11 +1001,11 @@ void Menu::menuPrincipal() {
 								delete colab; // eliminar colaborador creado
 								colab = nullptr;
 							}
-
-
+		
 							
 						}
-						else if (opcion == lcol->getTam() + 2) {
+						else if (opcion == lcol->getTam() + 2) { // ELIMINAR COLABORADOR
+							system("cls");
 							do {
 								do {
 									cout << "Elija el colaborador a eliminar: " << endl;
@@ -1013,7 +1014,7 @@ void Menu::menuPrincipal() {
 									system("cls");
 								} while (validarEntero(opcion));
 
-								if (opcion == lcol->getTam() + 1); // Salir
+								if (opcion == lcol->getTam() + 1) system("cls"); // Salir
 								else if (opcion<1 || opcion>lcol->getTam() + 1) {
 									cout << "Opcion invalida. Intente de nuevo." << endl << endl;
 									continue;
@@ -1034,19 +1035,22 @@ void Menu::menuPrincipal() {
 										s->getContratos()->colaboradorEliminado(colab->getId());
 										s->getClientes()->eliminarColaboradorHistorial(colab->getId());
 										if (lcol->eliminarPersona(colab->getId())) {
+											system("cls");
 											cout << "Colaborador eliminado exitosamente." << endl;
 										}
 										else {
+											system("cls");
 											cout << "Error: No se pudo eliminar el colaborador." << endl;
 										}
 									}
 									else {
+										system("cls");
 										cout << "Eliminacion de colaborador cancelada." << endl;
 									}
 								}
 							} while (opcion!= lcol->getTam()+1);
 						}
-						else if (opcion == lcol->getTam() + 3); // Salir
+						else if (opcion == lcol->getTam() + 3) system("cls"); // Salir
 						else {
 							system("cls");
 							cout << "Opcion invalida. Intente de nuevo." << endl << endl;
@@ -1059,12 +1063,13 @@ void Menu::menuPrincipal() {
 					lp = s->getPlanteles();
 					
 					do {
+						
 						do {
 							cout << lp->mostrarListaPlanteles(0);
 							cin >> opcion;
 							system("cls");
 						} while (validarEntero(opcion));
-						if (opcion == lp->getTam() + 4); // Salir
+						if (opcion == lp->getTam() + 5); // Salir
 						else if (opcion >= 1 && opcion <= lp->getTam()) {
 							// Inicia Mostrar detalles del plantel seleccionado-----------------------------------------------------------------------------
 
@@ -1199,7 +1204,7 @@ void Menu::menuPrincipal() {
 							} while (opcion != 5);
 							opcion = 0; // Reiniciar opcion para el menu de planteles
 						}
-						else if (opcion == lp->getTam() + 1) {
+						else if (opcion == lp->getTam() + 1) { // AGREGAR NUEVO PLANTEL
 							p = new Plantel();
 							cout << "Digite el identificador del plantel (A-Z): ";
 							cin >> carac;
@@ -1237,7 +1242,7 @@ void Menu::menuPrincipal() {
 								p = nullptr;
 							}
 						}
-						else if (opcion == lp->getTam() + 2) {
+						else if (opcion == lp->getTam() + 2) { // ELIMINAR PLANTEL
 							do {
 								do {
 									cout << "Elija el plantel a eliminar: " << endl;
@@ -1297,19 +1302,21 @@ void Menu::menuPrincipal() {
 							}
 							else {
 								cout << "Error: No se pudo modificar el precio de la categoria." << endl;
-							}
-
-							
-
-
-							
+							}	
 						}
+						else if (opcion == lp->getTam() + 4) { // <--- NUEVA OPCIÓN
+							system("cls");
+							cout << s->generarReporteOcupacionPlanteles();
+							system("pause");
+							system("cls");
+							opcion = 0;
+							}
 						else {
 							system("cls");
 							cout << "Opcion invalida. Intente de nuevo." << endl << endl;
 						}
 
-					} while (opcion != lp->getTam() + 4);
+					} while (opcion != lp->getTam() + 5);
 					opcion = 0; //reinicia opcion
 					break;// Termina gestionar planteles--------------------------------------------------------------------
 
@@ -1320,7 +1327,8 @@ void Menu::menuPrincipal() {
 						// Mostrar resumen de Solicitudes y Contratos
 						cout << "\n1. Crear Solicitud de Alquiler\n";
 						cout << "\n2. Ver Detalle y Gestionar Transaccion (Aprobar/Rechazar/Anular)\n";
-						cout << "3. Regresar\n";
+						cout << "3. Reporte de Contratos por Vehiculo Especifico\n"; // REPORTE 1: NUEVA OPCION
+						cout << "4. Regresar\n";
 						cout << "Seleccione una opcion: ";
 						cin >> enteros; // Usar la variable 'enteros' para este submenú
 
@@ -1462,8 +1470,22 @@ void Menu::menuPrincipal() {
 
 								break;
 							}
-							case 3: // Regresar
-								//system("cls");
+							case 3: { // REPORTE DE CONTRATOS POR VEHÍCULO ESPECÍFICO
+								system("cls");
+								string placa;
+								cout << "\n--- REPORTE DE CONTRATOS POR VEHICULO ESPECIFICO ---\n";
+								cout << "Ingrese la PLACA del vehiculo a consultar: ";
+								cin >> placa;
+
+								lsc = s->getContratos(); // Obtener la lista de Contratos
+
+								system("cls");
+								cout << lsc->generarReporteContratosPorVehiculo(placa); // LLAMADA
+								system("pause");
+								break;
+							}
+							case 4: 
+								system("cls");
 								break;
 							default:
 								system("cls");
@@ -1471,7 +1493,7 @@ void Menu::menuPrincipal() {
 								system("pause");
 								break;
 						}
-					} while (enteros != 3);
+					} while (enteros != 4);
                     opcion = 0; // Reiniciar 'opcion' para el menu principal
 					// Termina gestionar contratos/solicitudes --------------------------------------------------------------------
                 }
