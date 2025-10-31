@@ -16,7 +16,7 @@ Carro::Carro() {
 	precioDiario = 0.0;
 	historialEstados = new ListaBitacora();
 	// estado inicial: Revision (4)
-	historialEstados->insertarFinal(new EstadoBitacora(4, 4, "SISTEMA"));
+	historialEstados->insertarFinal(new EstadoBitacora(4, 4, "SISTEMA")); 
 }
 
 Carro::Carro(string placa, string modelo, string marca, string ubicacion, string tipoLicencia, char catergoria) {

@@ -288,7 +288,7 @@ string Plantel::getDatosOcupacionStr(){
 
 	double porcentaje = getPorcentajeOcupacion();
 
-	// Implementacion basica para mostrar 2 decimales sin <iomanip>
+	// Implementacion basica para mostrar 2 decimales 
 	// Multiplicar por 100, convertir a entero (trunca), y dividir para obtener partes.
 	long long temp = (long long)(porcentaje * 100);
 	long long parteEntera = temp / 100;
