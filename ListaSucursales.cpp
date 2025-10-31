@@ -111,7 +111,9 @@ string ListaSucursales::mostrarSucursales(int ver)
 		s << num++ << ".) Crear Sucursal\n";
 		s << num++ << ".) Eliminar Sucursal\n";
 	}
-	s << num++ << ".) Salir\n";
+	if (ver == 1 || ver == 0) {
+		s << num++ << ".) Salir\n";
+	}
 	return s.str();
 
 }

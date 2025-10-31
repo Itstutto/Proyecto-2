@@ -128,6 +128,8 @@ string ListaPlantel::mostrarListaPlanteles(int ver)
 		ss << numPlantel++ << ". Eliminar plantel\n";
 		ss << numPlantel++ << ". Cambiar precio de alquiler de vehiculo\n";
 	}
-	ss << numPlantel << ". Regresar\n";
+	if (ver == 1 || ver == 0) {
+		ss << numPlantel << ". Regresar\n";
+	}
 	return ss.str();
 }

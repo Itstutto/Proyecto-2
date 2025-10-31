@@ -290,6 +290,7 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 
 												con->setEstadoDetallado(1);
 												sucursales->alquilarCarro(alquilados, con->getCarro()->getPlaca());
+												con->getCarro()->setEstadosCarro(2, con->getIdColaborador()); // En alquiler
 												cout << "Contrato ejecutado" << endl;
 
 												
@@ -300,7 +301,7 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 
 											
 										}
-										else {
+										else if (con->getEstadoDetallado() == 1) {
 											stringstream s;
 
 											cout << "Ingrese la placa del vehiculo: ";
@@ -309,13 +310,67 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 												cout << "La placa ingresada no concuerda con la placa del vehiculo ";
 											}
 											else {
+												con->getCarro()->setEstadosCarro(1, con->getIdColaborador());
+												con->getCarro()->setEstadosCarro(3, con->getIdColaborador()); // Devuelto
+												cout << "Carro devuelto exitosamente al sistema. (Estado: Devuelto)" << endl;
 												do {
 													cout << "Digite los dias que se utilizo el vehiculo: ";
 													cin >> enteros;
 													system("cls");
 												} while (validarEntero(enteros) || enteros < 0);
-												s << "Dias utilizado: " << enteros;
+												s << "Dias utilizado: " << enteros << endl;
+
+												if (enteros == con->getDiasAlquiler()) {
+													s << "Se entrego el carro a tiempo, no hay multas ni reintegros" << endl;
+												}
+												else if (enteros > con->getDiasAlquiler()) {
+													int multa = (enteros - con->getDiasAlquiler()) * (con->getPrecioDiario() * 0.7); // 70% del precio diario por dia extra
+													s << "Se entrego el carro con retraso de " << (enteros - con->getDiasAlquiler()) << " dias." << endl;
+													s << "Multa aplicada: " << multa << " colones." << endl;
+												}
+												else {
+													int reintegro = (con->getDiasAlquiler() - enteros) * (con->getPrecioDiario() * 0.3); // 30% del precio diario por dia anticipado
+													s << "Se entrego el carro con anticipacion de " << (con->getDiasAlquiler() - enteros) << " dias." << endl;
+													s << "Reintegro aplicado: " << reintegro << " colones." << endl;
+												}
+
+												do {
+													cout << sucursales->mostrarSucursales(2); // No mostrar opcion salir
+													cout << "Seleccione la sucursal donde se devuelve el carro: ";
+													cin >> enteros;
+													if (!sucursales->buscarSucursal(enteros)) {
+														cout << "Sucursal no valida. Intente de nuevo." << endl;
+													}
+												} while (validarEntero(enteros) || !sucursales->buscarSucursal(enteros));
+												Sucursal* sucDev = sucursales->buscarSucursal(enteros)->getDato();
+												cout << sucDev->getPlanteles()->mostrarListaPlanteles(2); // No mostrar opcion salir
+												cout << "Seleccione el plantel donde se devuelve el carro: ";
+												cin >> enteros;
+												Plantel* plantelDev = sucDev->getPlanteles()->buscarPlantel(enteros);
+												cout<<plantelDev->mostrarEstacionamiento(0)<<endl;
+												int fila, columna;
+												cout << "Digite la fila donde se devolvera el carro: ";
+												cin >> fila;
+												cout << "Digite la columna donde se devolvera el carro: ";
+												cin >> columna;
+												plantelDev->agregarCarro(con->getCarro(), fila, columna);
+												alquilados->desvincularCarro(con->getCarro()->getPlaca());
+
+												s << "Sucursal de devolucion: " << sucDev->getNumeroSucursal() << endl;
+												s << "Plantel de devolucion: " << plantelDev->getIdentificador() << endl;
+												s << "Ubicacion de devolucion: Fila " << fila << ", Columna " << columna << endl;
+
+												con->setEstadoDetallado(3, s.str());
+												cout << "\nContrato finalizado exitosamente.\n"
+													<< "Detalle de finalizacion:\n"
+													<< con->getEstadoDetalladoStr() << endl;
 											}
+			
+										}
+										else {
+											cout << "El contrato ya ha sido finalizado previamente.\n";
+											
+							
 
 
 											
@@ -509,6 +564,8 @@ void Menu::inicializarDatos() {
 	carro1->setEstadosCarro(5, "SISTEMA"); // Revision -> Lavado
 	carro1->setEstadosCarro(1, "SISTEMA"); // Lavado -> Disponible
 
+	carro4->setEstadosCarro(5, "SISTEMA"); // Revision -> Lavado
+	carro4->setEstadosCarro(1, "SISTEMA"); // Lavado -> Disponible
 	// Clientes
 	ClienteFisico* cf1 = new ClienteFisico("Juan Perez", "111", "Costa Rica");
 	ClienteJuridico* cj1 = new ClienteJuridico("TechSolutions S.A.", "222", "Panama", "Software", 10.5);
@@ -1220,13 +1277,17 @@ void Menu::menuPrincipal() {
 							char categoria;
 							double nuevoPrecio;
 							do {
-								cout << "Digite la categoria de carro a modificar el precio (A, B, C, D): ";
+								cout << "Digite la categoria de carro a modificar el precio (A, B, C, D) o digite 'X' para cancelar: ";
 								cin >> categoria;
 								categoria = toupper(categoria);
-								if(categoria != 'A' && categoria != 'B' && categoria != 'C' && categoria != 'D') {
+								if(categoria != 'A' && categoria != 'B' && categoria != 'C' && categoria != 'D' && categoria != 'X') {
 									cout << "Categoria invalida. Intente de nuevo." << endl;
 								}
-							} while (categoria != 'A' && categoria != 'B' && categoria != 'C' && categoria != 'D');
+							} while (categoria != 'A' && categoria != 'B' && categoria != 'C' && categoria != 'D' && categoria != 'X');
+							if (categoria == 'X') {
+								cout << "Operacion cancelada." << endl;
+								continue;
+							}
 							do {
 								cout << "Digite el nuevo precio diario para la categoria " << categoria << ": ";
 								cin >> nuevoPrecio;
