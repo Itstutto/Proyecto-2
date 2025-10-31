@@ -5,6 +5,7 @@
 #include "SolicitudAlquiler.h"
 #include "NodoSolicitud.h"
 
+
 class ListaSolicitudesContratos {
 private:
 	NodoSolicitud* primero;
@@ -27,7 +28,7 @@ public:
 	void eliminarTransaccionPorCodigo(const int& codigo);
 	string mostrarTransacciones();
 	string toString() const;
-
+	NodoSolicitud* getPrimero() const { return primero; }
 	
 	string mostrarTransaccionesPorColaborador(string idColaborador);
 	SolicitudAlquiler* obtenerTransaccionFiltradaPorIndice(string idColaborador, int indice);
@@ -46,4 +47,7 @@ public:
 	
 	// --- NUEVO MÉTODO PARA REPORTE POR VEHÍCULO ESPECÍFICO ---
 	string generarReporteContratosPorVehiculo(string placaVehiculo) const;
+
+	// NUEVO METODO: Genera un reporte detallado de los contratos (estado 2) y los ordena por fecha inicio (Mas reciente a mas antiguo)
+	string generarReporteContratosOrdenado() const;
 };

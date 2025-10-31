@@ -26,6 +26,9 @@ public:
 	string infoMenu() const override;
 	string mostrarModificar() const override;
 
+	// NUEVO: Reporte de alquileres realizados por este colaborador (contratos)
+	string generarReporteContratosRealizados() const;
+
 	// Muestra la lista de solicitudes PENDIENTES que este colaborador ha gestionado.
 	string mostrarSolicitudesPendientesGestionadas(ListaSolicitudesContratos* lsc);
 };

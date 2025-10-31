@@ -196,3 +196,13 @@ string Sucursal::generarReporteOcupacionPlanteles() {
 	ss << "======================================================================\n";
 	return ss.str();
 }
+
+// Implementacion del metodo de la sucursal (llama al de la lista)
+string Sucursal::generarReporteContratosPorSucursal() const {
+	stringstream ss;
+	ss << "\n--- Contratos Sucursal " << numeroSucursal << " ---\n";
+	ss << contratos->generarReporteContratosOrdenado() << endl; // Llama al metodo de la lista ordenado
+	ss << "----------------------------------------------------------------------\n";
+	return ss.str();
+}
+

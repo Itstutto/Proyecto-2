@@ -21,5 +21,8 @@ public:
 	string mostrarSucursales(int ver);
 	Sucursal* obtenerSucursalPorIndice(int indice);
 	bool modificarPrecioCategoria(char categoria, double nuevoPrecio);
+
+	// NUEVO: Genera el reporte iterando sobre todas las sucursales
+	string generarReporteGlobalContratos() const;
 };
 

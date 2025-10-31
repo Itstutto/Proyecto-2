@@ -160,3 +160,25 @@ bool ListaSucursales::modificarPrecioCategoria(char categoria, double nuevoPreci
 	}
 	return true;
 }
+
+// Implementacion del Reporte Global (Reporte 1)
+string ListaSucursales::generarReporteGlobalContratos() const {
+	stringstream ss;
+	ss << "\n======= REPORTE GLOBAL: CONTRATOS POR SUCURSAL (Mas Reciente a Antiguo) =======\n";
+
+	NodoSuc* actual = primero;
+	bool encontrado = false;
+
+	while (actual) {
+		ss << actual->getDato()->generarReporteContratosPorSucursal() << endl; // Llama al metodo de Sucursal
+		encontrado = true;
+		actual = actual->getSig();
+	}
+
+	if (!encontrado) {
+		ss << "(No hay sucursales registradas en el sistema)." << endl;
+	}
+
+	ss << "=================================================================================\n";
+	return ss.str();
+}

@@ -1,5 +1,6 @@
 #include "ListaSolicitudesContratos.h"
 #include "ContratoAlquiler.h"
+#include <ctime>
 
 ListaSolicitudesContratos::ListaSolicitudesContratos() : primero(nullptr), ultimo(nullptr), tam(0) {}
 
@@ -140,6 +141,7 @@ void ListaSolicitudesContratos::eliminarTransaccionPorCodigo(const int& codigo)
 		a = a->getSig();
 	}
 }
+
 
 string ListaSolicitudesContratos::mostrarTransacciones() {
 	stringstream ss;
@@ -366,6 +368,86 @@ string ListaSolicitudesContratos::generarReporteContratosPorVehiculo(string plac
 		ss << "No se encontraron contratos (Estado 2) asociados a la placa " << placaVehiculo << "." << endl;
 	}
 	ss << "======================================================================\n";
+
+	return ss.str();
+}
+
+// Funcion auxiliar estatica para comparar fechas tm (tm1 > tm2 significa que tm1 es mas reciente)
+static bool esMasReciente(tm tm1, tm tm2) {
+	// Normalizar la estructura tm para asegurar comparacion correcta
+	mktime(&tm1);
+	mktime(&tm2);
+	// Convertir a time_t para una comparacion simple
+	time_t t1 = mktime(&tm1);
+	time_t t2 = mktime(&tm2);
+	return t1 > t2; // Retorna true si t1 es mas reciente
+}
+
+
+// Implementacion de generarReporteContratosOrdenado
+string ListaSolicitudesContratos::generarReporteContratosOrdenado() const {
+	stringstream ss;
+
+	// 1. Contar y extraer los contratos (Estado 2) en un array dinamico
+	int numContratos = 0;
+	NodoSolicitud* actual = primero;
+	while (actual) {
+		if (actual->getDato()->getEstadoTransaccion() == 2) { // 2 = Contrato Activo
+			numContratos++;
+		}
+		actual = actual->getSig();
+	}
+
+	if (numContratos == 0) {
+		ss << "(No hay contratos activos para reportar)." << endl;
+		return ss.str();
+	}
+
+	// Array dinamico de punteros a SolicitudAlquiler (No STL)
+	SolicitudAlquiler** contratosArray = new SolicitudAlquiler * [numContratos];
+	int indice = 0;
+	actual = primero;
+	while (actual) {
+		if (actual->getDato()->getEstadoTransaccion() == 2) {
+			contratosArray[indice++] = actual->getDato();
+		}
+		actual = actual->getSig();
+	}
+
+	// 2. Ordenar el array (Bubble Sort: mas reciente a mas antiguo)
+	for (int i = 0; i < numContratos - 1; i++) {
+		for (int j = 0; j < numContratos - i - 1; j++) {
+			// Se asume la existencia de SolicitudAlquiler::getFechaInicioTM() que devuelve un tm
+			if (!esMasReciente(contratosArray[j]->getFechaInicioTM(), contratosArray[j + 1]->getFechaInicioTM())) {
+				SolicitudAlquiler* temp = contratosArray[j];
+				contratosArray[j] = contratosArray[j + 1];
+				contratosArray[j + 1] = temp;
+			}
+		}
+	}
+
+	// 3. Generar el reporte (Formato manual sin iomanip)
+	ss << "-----------------------------------------------------------------------------------------------------" << endl;
+	ss << "| Codigo | Estado         | F. Inicio | F. Dev. | ID Cliente | Placa    | P. Diario | P. Total | ID Colab |" << endl;
+	ss << "-----------------------------------------------------------------------------------------------------" << endl;
+
+	for (int i = 0; i < numContratos; i++) {
+		SolicitudAlquiler* sol = contratosArray[i];
+
+		// Formato manual con espaciado
+		ss << "| " << sol->getCodigoTransaccion() << "    ";
+		ss << "| Activo         "; // Asumiendo estado 2 = "Activo"
+		ss << "| " << sol->getFechaInicio() << " ";
+		ss << "| " << sol->getFechaEntrega() << " ";
+		ss << "| " << sol->getIdCliente() << "   ";
+		ss << "| " << sol->getPlacaVehiculo() << " ";
+		ss << "| " << sol->getPrecioDiario() << "     ";
+		ss << "| " << sol->getPrecioTotal() << "    ";
+		ss << "| " << sol->getIdColaborador() << "  |" << endl;
+	}
+	ss << "-----------------------------------------------------------------------------------------------------" << endl;
+
+	delete[] contratosArray;
 
 	return ss.str();
 }

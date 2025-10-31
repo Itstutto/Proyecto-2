@@ -929,13 +929,14 @@ void Menu::menuPrincipal() {
 							// Inicia Mostrar detalles del colaborador seleccionado-----------------------------------------------------------------------------
 							colab = dynamic_cast<Colaborador*>(lcol->obtenerPersonaPorIndice(opcion));
 							
-							do { // Submenu de Detalle de Colaborador (NUEVO BUCLE)
+							do { // Submenu de Detalle de Colaborador 
 								system("cls");
 								cout << "\nColaborador: " << colab->getNombre() << " (ID: " << colab->getId() << ")\n";
 								cout << "----------------------------------------------------\n";
 								cout << "1. Ver Informacion Detallada\n";
 								cout << "2. Ver Solicitudes Pendientes Gestionadas\n"; 
-								cout << "3. Regresar\n";
+								cout << "3. Reporte Contratos Realizados\n"; // NUEVA OPCION
+								cout << "4. Regresar\n";
 								
 
 								cout << "Seleccione una opcion: ";
@@ -951,14 +952,19 @@ void Menu::menuPrincipal() {
 									case 2: // GESTION DE SOLICITUDES DEL COLABORADOR
 										mostrarTransaccionesColaborador(s, colab); // Llamada a la nueva función
 										break;
-									case 3:
-										break; 
+									case 3: // LOGICA PARA REPORTE POR COLABORADOR
+										system("cls");
+										cout << colab->generarReporteContratosRealizados() << endl;
+										system("pause");
+										break;
+									case 4:
+										break;
 									default:
 										cout << "Opcion invalida.\n";
 										system("pause");
 										break;
 								}
-							} while (enteros != 3);
+							} while (enteros != 4);
 							opcion = 0; // reinicia para el menu
 							system("cls"); 
 						}
@@ -1325,11 +1331,14 @@ void Menu::menuPrincipal() {
 						system("cls"); // Limpiar antes de mostrar el menu
 						cout << "\n============= GESTION DE TRANSACCIONES ==============\n";
 						// Mostrar resumen de Solicitudes y Contratos
-						cout << "\n1. Crear Solicitud de Alquiler\n";
-						cout << "\n2. Ver Detalle y Gestionar Transaccion (Aprobar/Rechazar/Anular)\n";
-						cout << "3. Reporte de Contratos por Vehiculo Especifico\n"; // REPORTE 1: NUEVA OPCION
-						cout << "4. Regresar\n";
-						cout << "Seleccione una opcion: ";
+						cout << "\n-------------------------------------------------------------------\n";
+						cout << "1. Crear Solicitud de Alquiler\n";
+						cout << "2. Ver Detalle y Gestionar Transaccion (Aprobar/Rechazar/Anular)\n";
+						cout << "3. Reporte Global: Contratos por Sucursal (Ordenado)\n"; // NUEVA OPCION
+						cout << "4. Reporte de Contratos por Vehiculo Especifico\n"; 
+						cout << "5. Regresar\n"; 
+						cout << "-------------------------------------------------------------------\n";
+						cout << "\nSeleccione una opcion: ";
 						cin >> enteros; // Usar la variable 'enteros' para este submenú
 
 						if (validarEntero(enteros)) continue;
@@ -1470,7 +1479,13 @@ void Menu::menuPrincipal() {
 
 								break;
 							}
-							case 3: { // REPORTE DE CONTRATOS POR VEHÍCULO ESPECÍFICO
+							case 3: { // REPORTE GLOBAL: CONTRATOS POR SUCURSAL
+								system("cls");
+								cout << sucursales->generarReporteGlobalContratos() << endl; // LLAMADA
+								system("pause");
+								break;
+							}
+							case 4: { // REPORTE DE CONTRATOS POR VEHÍCULO ESPECÍFICO
 								system("cls");
 								string placa;
 								cout << "\n--- REPORTE DE CONTRATOS POR VEHICULO ESPECIFICO ---\n";
@@ -1484,7 +1499,7 @@ void Menu::menuPrincipal() {
 								system("pause");
 								break;
 							}
-							case 4: 
+							case 5:
 								system("cls");
 								break;
 							default:
@@ -1493,7 +1508,7 @@ void Menu::menuPrincipal() {
 								system("pause");
 								break;
 						}
-					} while (enteros != 4);
+					} while (enteros != 5);
                     opcion = 0; // Reiniciar 'opcion' para el menu principal
 					// Termina gestionar contratos/solicitudes --------------------------------------------------------------------
                 }

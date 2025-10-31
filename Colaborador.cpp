@@ -111,3 +111,37 @@ string Colaborador::mostrarSolicitudesPendientesGestionadas(ListaSolicitudesCont
 	return lsc->mostrarTransaccionesPorColaborador(getId()); 
 }
 
+// Implementacion del Reporte 2: Contratos realizados por el colaborador
+string Colaborador::generarReporteContratosRealizados() const {
+	stringstream ss;
+	ListaSolicitudesContratos* historial = getHistorial();
+
+	ss << "\n--- REPORTE DE ALQUILERES POR COLABORADOR ESPECIFICO ---\n";
+	ss << "ID Colaborador: " << getId() << ", Nombre: " << getNombre() << endl;
+	ss << "----------------------------------------------------------" << endl;
+	ss << "| Codigo Contrato | Placa Vehiculo | ID Cliente |" << endl;
+	ss << "----------------------------------------------------------" << endl;
+
+	NodoSolicitud* actual = historial->getPrimero();
+	bool encontrado = false;
+
+	while (actual) {
+		SolicitudAlquiler* sol = actual->getDato();
+		// Filtrar por Contratos (Estado 2 = Activo)
+		if (sol->getEstadoTransaccion() == 2) {
+			// Formato manual con espaciado
+			ss << "| " << sol->getCodigoTransaccion() << "           ";
+			ss << "| " << sol->getPlacaVehiculo() << "       ";
+			ss << "| " << sol->getIdCliente() << "   |" << endl;
+			encontrado = true;
+		}
+		actual = actual->getSig();
+	}
+
+	if (!encontrado) {
+		ss << "(No se encontraron contratos activos realizados por este colaborador)." << endl;
+	}
+	ss << "----------------------------------------------------------" << endl;
+
+	return ss.str();
+}
