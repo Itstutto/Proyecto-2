@@ -155,6 +155,7 @@ string Carro::mostrarEstadosCarro()
 	s << "1. Disponible\n";
 	s << "2. Revision\n";
 	s << "3. Lavado\n";
+	s << "4. Salir\n";
 	return s.str();
 }
 
