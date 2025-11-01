@@ -173,11 +173,17 @@ string Plantel::mostrarPlantel() {
 	stringstream ss;
 	ss<<"Plantel " << identificador << " (" << filas << "x" << columnas << "):\n"
 		<< "---------------------------------------------------------\n"
-		<< "1. Mostrar informacion del plantel\n"
-		<< "2. Ver Carro especifico\n"
-		<< "3. Agregar carro\n"
-		<< "4. Eliminar carro\n"
-		<< "5. Salir\n";
+		<< "1). Mostrar informacion del plantel\n"
+		<< "---------------------------------------------------------\n"
+		<< "2). Ver Carro especifico\n"
+		<< "---------------------------------------------------------\n"
+		<< "3). Agregar carro\n"
+		<< "---------------------------------------------------------\n"
+		<< "4). Eliminar carro\n"
+		<< "---------------------------------------------------------\n"
+		<< "5). Salir\n"
+		<< "---------------------------------------------------------\n"
+		<< "Seleccione una opcion: ";
 	return ss.str();
 
 }
@@ -189,9 +195,11 @@ string Plantel::mostrarEstacionamiento(int ver) {
 
 	stringstream ss;
 	if (ver == 0) {
-		ss << "Plantel " << identificador << " (" << filas << "x" << columnas << "):\n"
+		ss << "---------------------------------------------------------\n"
+			<< "Plantel " << identificador << " (" << filas << "x" << columnas << "):\n"
 			<< "Total de espacios: " << getCanTotal() << "\n"
-			<< "Espacios disponibles: " << getCanDisponibles() << "\n\n";
+			<< "Espacios disponibles: " << getCanDisponibles() << "\n\n"
+			<< "---------------------------------------------------------\n";
 
 	}
 	for (int i = 0; i < filas * 14 - 1; i++) ss << "-";
@@ -293,13 +301,14 @@ string Plantel::getDatosOcupacionStr(){
 	long long temp = (long long)(porcentaje * 100);
 	long long parteEntera = temp / 100;
 	long long parteDecimal = temp % 100;
-
+	ss << "--------------------------------------------------------------\n";
 	ss << "Plantel " << identificador << " (" << filas << "x" << columnas << "): ";
 	ss << ocupados << " ocupados / " << total << " total ";
 	ss << "-> " << parteEntera << ".";
 	// Asegurar que el decimal tenga dos digitos (ej. 5.05 en lugar de 5.5)
 	if (parteDecimal < 10) ss << "0";
 	ss << parteDecimal << "% de Ocupacion";
+	ss << "--------------------------------------------------------------\n";
 
 	return ss.str();
 }

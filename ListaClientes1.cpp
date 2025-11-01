@@ -40,7 +40,10 @@ string ListaClientes1::mostrarPersonas(int ver) {
 		ss << opcion++ << "). Eliminar cliente" << endl
 			<< "----------------------------------------------------------" << endl;
 	}
-		ss << opcion << "). Salir" << endl;
+		ss << opcion << "). Salir" << endl
+            << "----------------------------------------------------------" << endl
+            << "Seleccione una opcion: ";
+
 	return ss.str();
 }
 

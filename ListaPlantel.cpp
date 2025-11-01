@@ -113,24 +113,33 @@ string ListaPlantel::mostrarListaPlanteles(int ver)
 {
 	stringstream ss;
 	if (!primero) {
-		ss << "No hay planteles disponibles.\n";
+		ss << "-------------------------------------------------------" << endl
+			<< "No hay planteles disponibles.\n"
+			<< "-------------------------------------------------------" << endl;
 		return ss.str();
 	}
 	NodoPl* actual = primero;
 	int numPlantel = 1;
 	while (actual != nullptr) {
-		ss << numPlantel<<". "<< "Plantel: "<< actual->getDato()->getIdentificador() << ") : \n";
+		ss << numPlantel<<"). "<< "Plantel "<< actual->getDato()->getIdentificador() << "): \n";
 		actual = actual->getSig();
 		numPlantel++;
 	}
 	if (ver == 0) {
-		ss << numPlantel++ << ". Crear nuevo plantel\n";
-		ss << numPlantel++ << ". Eliminar plantel\n";
-		ss << numPlantel++ << ". Cambiar precio de alquiler de vehiculo\n";
-		ss << numPlantel++ << ". Reporte de Ocupacion de Planteles\n";
+		ss << "-------------------------------------------------------" << endl;
+		ss << numPlantel++ << "). Crear nuevo plantel\n";
+		ss << "-------------------------------------------------------" << endl;
+		ss << numPlantel++ << "). Eliminar plantel\n";
+		ss << "-------------------------------------------------------" << endl;
+		ss << numPlantel++ << "). Cambiar precio de alquiler de vehiculo\n";
+		ss << "-------------------------------------------------------" << endl;
+		ss << numPlantel++ << "). Reporte de Ocupacion de Planteles\n";
+		ss << "-------------------------------------------------------" << endl;
 	}
 	if (ver == 1 || ver == 0) {
-		ss << numPlantel << ". Regresar\n";
+		ss << numPlantel << "). Regresar\n";
+		ss << "-------------------------------------------------------" << endl;
+		ss << "Seleccione una opcion: ";
 	}
 	return ss.str();
 }

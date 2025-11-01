@@ -18,15 +18,19 @@ void ClienteJuridico::setPorcentajeDescuento(double pct) { this->porcentajeDescu
 string ClienteJuridico::toString() const {
 	stringstream ss;
 	ss << "Cliente Juridico - " << Cliente::toString()
-	   << ", Actividad economica: " << actividadEconomica
-	   << ", % Descuento: " << porcentajeDescuento;
+	    << "Actividad economica: " << actividadEconomica
+	    << "% Descuento: " << porcentajeDescuento
+		<< "----------------------------------------------" << endl;
 	return ss.str();
 }
 
 string ClienteJuridico::infoMenu() const {
 	stringstream s;
 	//muestra solo el nombre y el id, para el menu
-	s << "Cliente Juridico - Nombre: " << getNombre() << ", ID: " << getId();
+	s << "----------------------------------------------" << endl
+		<< "Cliente Juridico - ID: " << getId() << endl
+		<< "Nombre: " << getNombre() << endl
+		<< "----------------------------------------------" << endl;
 	return s.str();
 }
 

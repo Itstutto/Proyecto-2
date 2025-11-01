@@ -79,16 +79,18 @@ void Colaborador::setFechaIngreso(int fecha) {
 
 string Colaborador::toString() const {
 	stringstream ss;
-	ss << "Colaborador - Nombre: " << getNombre()
-	   << ", ID: " << getId()
-	   << ", Fecha de contratacion: " << getFechaContratacion()
-	   << ", Fecha de ingreso: " << fechaIngreso;
+	ss << "Colaborador - Nombre: " << getNombre()  << " | ID: " << getId() << endl
+	    << "Fecha de contratacion: " << getFechaContratacion()<< " | Fecha de ingreso: " << fechaIngreso;
 	return ss.str();
 }
 string Colaborador::infoMenu() const {
 	stringstream s;
 	//muestra solo el nombre y el id, para el menu
-	s << "Colaborador - Nombre: " << getNombre() << ", ID: " << getId();
+	s << "----------------------------------------------" << endl
+		<< "Colaborador - ID: " << getId() << endl 
+		<< "Nombre: " << getNombre() << endl
+		<< "----------------------------------------------" << endl;
+
 	return s.str();
 }
 
@@ -96,11 +98,17 @@ string Colaborador::mostrarModificar() const
 {
 	stringstream s;
 	//muestra en un menu las opciones que se pueden modificar 
-	s << "1. Nombre: " << nombre << endl
-		<< "2. ID: " << id << endl
-		<< "3. Fecha de contratacion: " << getFechaContratacion() << endl
-		<< "4. Fecha de ingreso: " << fechaIngreso << endl
-		<< "5. Salir" << endl;
+	s << "----------------------------------------------" << endl
+		<< "1). Nombre " << nombre << endl
+		<< "----------------------------------------------" << endl
+		<< "2). ID " << id << endl
+		<< "----------------------------------------------" << endl
+		<< "3). Fecha de contratacion " << getFechaContratacion() << endl
+		<< "----------------------------------------------" << endl
+		<< "4). Fecha de ingreso " << fechaIngreso << endl
+		<< "----------------------------------------------" << endl
+		<< "5). Salir" << endl
+		<< "----------------------------------------------" << endl;
 	return s.str();
 }
 

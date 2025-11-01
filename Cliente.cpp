@@ -14,9 +14,11 @@ void Cliente::setPaisResidencia(string pais) { this->paisResidencia = pais; }
 
 string Cliente::toString() const {
 	stringstream ss;
-	ss << "Cliente - Nombre: " << getNombre()
-	   << ", ID: " << getId()
-	   << ", Pais de residencia: " << paisResidencia;
+	ss << "----------------------------------------------" << endl
+		<< "Cliente - Nombre: " << getNombre() << endl
+	    << ", ID: " << getId() << endl
+	    << ", Pais de residencia: " << paisResidencia << endl
+		<< "----------------------------------------------";
 	return ss.str();
 }
 
@@ -32,12 +34,18 @@ string Cliente::mostrarCliente() const
 {
 	stringstream s;
  	s << nombre<<endl
-		<< "-----------------------------------------" << endl;
-	s<<"1. Modificar Cliente"<<endl
-		<< "2. Informacion del Cliente" << endl
-		<< "3. Historial de Transacciones (Completadas, Rechazadas y Anuladas)" << endl // Nombre actualizado y funcional
-        << "4. Ver Solicitudes Pendientes (Alquileres Pendientes)" << endl
-		<< "5. Regresar" << endl;
+		<< "------------------------------------------------------------------" << endl;
+	s << "1). Modificar Cliente" << endl
+		<< "------------------------------------------------------------------" << endl
+		<< "2). Informacion del Cliente" << endl
+		<< "------------------------------------------------------------------" << endl
+		<< "3). Historial de Transacciones (Completadas, Rechazadas y Anuladas)" << endl 
+		<< "------------------------------------------------------------------" << endl
+		<< "4). Ver Solicitudes Pendientes (Alquileres Pendientes)" << endl
+		<< "------------------------------------------------------------------" << endl
+		<< "5). Regresar" << endl
+		<< "------------------------------------------------------------------" << endl;
+		s << "Seleccione una opcion: ";
 	return s.str();
 
 }
@@ -46,8 +54,11 @@ string Cliente::mostrarModificar() const
 {
 	stringstream s;
 	//muestra en un menu las opciones que se pueden modificar 
-	s << "1. Nombre " << endl
-		<< "2. ID " << endl
-		<< "3. Pais de residencia " << endl;
+	s << "1). Nombre " << endl
+		<< "---------------------" << endl
+		<< "2). ID " << endl
+		<< "---------------------" << endl
+		<< "3). Pais de residencia " << endl
+		<< "---------------------" << endl;
 	return s.str();
 }

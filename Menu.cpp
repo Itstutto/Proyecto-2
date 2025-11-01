@@ -25,7 +25,7 @@ Menu::~Menu()
 
 
 
-// Implementación de la nueva función auxiliar
+
 void Menu::mostrarTransaccionesColaborador(Sucursal* s, Colaborador* colab) {
 	int seleccion = 0;
 	ListaSolicitudesContratos* lsc = s->getSolicitudes();
@@ -36,7 +36,7 @@ void Menu::mostrarTransaccionesColaborador(Sucursal* s, Colaborador* colab) {
 		
 		// 1. Mostrar la lista filtrada
 		cout << colab->mostrarSolicitudesPendientesGestionadas(lsc); 
-
+		cout << "------------------------------------------------------------\n";
 		cout << "Seleccione el numero de la solicitud para gestionar o Regresar: ";
 		cin >> seleccion;
 		
@@ -45,9 +45,7 @@ void Menu::mostrarTransaccionesColaborador(Sucursal* s, Colaborador* colab) {
 		// 2. Obtener la Solicitud seleccionada por el índice FILTRADO
 		SolicitudAlquiler* sol = lsc->obtenerTransaccionFiltradaPorIndice(colab->getId(), seleccion);
 		
-		if (!sol) { 
-			// Lógica para salir si se selecciona "Regresar" o es inválido
-			// Calculamos la opción de Regresar dinámicamente sin acceder a nodos internos:
+		if (!sol) { // Lógica para salir si se selecciona "Regresar" o es inválido
 			int numSolicitudes = 0;
 			while (lsc->obtenerTransaccionFiltradaPorIndice(colab->getId(), numSolicitudes + 1)) {
 				numSolicitudes++;
@@ -59,33 +57,37 @@ void Menu::mostrarTransaccionesColaborador(Sucursal* s, Colaborador* colab) {
 			}
 			
 			cout << "Opcion invalida. Intente de nuevo.\n";
-			system("pause");
+			system("cls");
 			continue;
 		} 
 		
 		if (sol) {
-			// 3. Entrar en el submenú de gestión
+			// Entrar en el submenú de gestión
 			int opcionGestion;
 			string textos; // Para el ID del colaborador que aprueba
 			
 			do {
 				system("cls");
 				cout << "\n========= GESTION DE SOLICITUD #" << sol->getCodigoTransaccion() << " =========\n";
-				cout << sol->toString() << endl;
+				cout << sol->toString();
 				cout << "\n----------------------------------------------------\n";
-
-				cout << "1. Aprobar Solicitud (Convertir a Contrato)\n";
-				cout << "2. Rechazar Solicitud\n";
-				cout << "3. Anular Solicitud\n";
-				cout << "4. Regresar\n";
-
+				cout << "1). Aprobar Solicitud (Convertir a Contrato)\n";
+				cout << "----------------------------------------------------\n";
+				cout << "2). Rechazar Solicitud\n";
+				cout << "----------------------------------------------------\n";
+				cout << "3). Anular Solicitud\n";
+				cout << "----------------------------------------------------\n";
+				cout << "4). Regresar\n";
+				cout << "----------------------------------------------------\n";
 				cout << "Seleccione una opcion: ";
 				cin >> opcionGestion;
 				if (validarEntero(opcionGestion)) continue;
 
 				switch (opcionGestion) {
-					case 1: { // Aprobar y convertir (Lógica CRÍTICA)
+					case 1: { // Aprobar y convertir 
+						cout << "\n----------------------------------------------------\n";
 						cout << colab->toString() << endl;
+						cout << "\n----------------------------------------------------\n";
 						cout << "ID Colaborador que aprueba la conversion (su ID): ";
 						cin >> textos; 
 						
@@ -101,9 +103,10 @@ void Menu::mostrarTransaccionesColaborador(Sucursal* s, Colaborador* colab) {
 								opcionGestion = 4;
 							}
 						}
-						break;
+						continue;
 					}
 					case 2: { // Rechazar
+						system("cls");
 						sol->setEstadoTransaccion(3); 
 						
 						// Actualizar historiales y eliminar de la lista principal
@@ -113,23 +116,25 @@ void Menu::mostrarTransaccionesColaborador(Sucursal* s, Colaborador* colab) {
 						if (col) col->getHistorial()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())->setEstadoTransaccion(3);
 
 						lsc->eliminarTransaccionPorCodigo(sol->getCodigoTransaccionInt());
-						cout << "\nSOLICITUD RECHAZADA Y ELIMINADA exitosamente.\n";
+						cout << "------------------------------------------------\n";
+						cout << "  SOLICITUD RECHAZADA Y ELIMINADA exitosamente\n";
+						cout << "------------------------------------------------\n";
 						seleccion = 0; // Fuerza la actualización de la lista
 						opcionGestion = 4;
-						break;
+						continue;
 					}
 					case 3: { // Anular
 						sol->setEstadoTransaccion(4); // 4 = Anulada
 						cout << "\nSOLICITUD ANULADA exitosamente.\n";
-						break;
+						continue;
 					}
 					case 4: // Regresar
-						break;
+						continue;
 					default:
 						cout << "Opcion invalida.\n";
-						break;
+						continue;
 				}
-				system("pause");
+				system("cls");
 			} while (opcionGestion != 4);
 		}
 
@@ -324,12 +329,12 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 													s << "Se entrego el carro a tiempo, no hay multas ni reintegros" << endl;
 												}
 												else if (enteros > con->getDiasAlquiler()) {
-													int multa = (enteros - con->getDiasAlquiler()) * (con->getPrecioDiario() * 0.7); // 70% del precio diario por dia extra
+													double multa = (enteros - con->getDiasAlquiler()) * (con->getPrecioDiario() * 0.7); // 70% del precio diario por dia extra
 													s << "Se entrego el carro con retraso de " << (enteros - con->getDiasAlquiler()) << " dias." << endl;
 													s << "Multa aplicada: " << multa << " colones." << endl;
 												}
 												else {
-													int reintegro = (con->getDiasAlquiler() - enteros) * (con->getPrecioDiario() * 0.3); // 30% del precio diario por dia anticipado
+													double reintegro = (con->getDiasAlquiler() - enteros) * (con->getPrecioDiario() * 0.3); // 30% del precio diario por dia anticipado
 													s << "Se entrego el carro con anticipacion de " << (con->getDiasAlquiler() - enteros) << " dias." << endl;
 													s << "Reintegro aplicado: " << reintegro << " colones." << endl;
 												}
@@ -600,14 +605,6 @@ void Menu::inicializarDatos() {
 
 	sucursales->insertarFinal(suc1);
 
-	/*Cliente* prueba = dynamic_cast<Cliente*>(sucursales->obtenerSucursalPorIndice(0)->getColaboradores()->getPrimero()->getDato());
-	if (prueba) {
-		cout << prueba->getPaisResidencia() << endl;
-	}
-	else
-	{
-		cout << "No es un cliente" << endl;
-	}*/
 }
 
 void Menu::iniciar() {
@@ -920,6 +917,7 @@ void Menu::menuPrincipal() {
                 case 2:// Inicia gestionar colaboradores--------------------------------------------------------------------
 					lcol = s->getColaboradores();
 					do {
+						system("cls");
 						do {
 							cout << s->getColaboradores()->mostrarPersonas(0);
 							cin >> opcion;
@@ -928,34 +926,44 @@ void Menu::menuPrincipal() {
 							// Inicia Mostrar detalles del colaborador seleccionado-----------------------------------------------------------------------------
 							colab = dynamic_cast<Colaborador*>(lcol->obtenerPersonaPorIndice(opcion));
 							
-							do { // Submenu de Detalle de Colaborador (NUEVO BUCLE)
+							do { // Submenu de Detalle de Colaborador 
 								system("cls");
 								cout << "\nColaborador: " << colab->getNombre() << " (ID: " << colab->getId() << ")\n";
 								cout << "----------------------------------------------------\n";
-								cout << "1. Ver Informacion Detallada\n";
-								cout << "2. Ver Solicitudes Pendientes Gestionadas\n"; 
-								cout << "3. Regresar\n";
-								
-
+								cout << "1). Ver Informacion Detallada\n";
+								cout << "----------------------------------------------------\n";
+								cout << "2). Ver Solicitudes Pendientes Gestionadas\n";
+								cout << "----------------------------------------------------\n";
+								cout << "3). Reporte Contratos Realizados\n"; 
+								cout << "----------------------------------------------------\n";
+								cout << "4). Regresar\n";
+								cout << "----------------------------------------------------\n";
 								cout << "Seleccione una opcion: ";
 								cin >> enteros; 
 								if (validarEntero(enteros)) continue;
 								
 								switch (enteros) {
-									case 1:
+								case 1: // VER INFORMACION DETALLADA DEL COLABORADOR
 										cout << "Informacion del Colaborador:" << endl;
 										cout << colab->toString() << endl;
 										system("pause");
-										break;
-									case 2: // GESTION DE SOLICITUDES DEL COLABORADOR
-										mostrarTransaccionesColaborador(s, colab); // Llamada a la nueva función
-										break;
-									case 3:
-										break; 
-									default:
-										cout << "Opcion invalida.\n";
-										system("pause");
-										break;
+										continue;
+								case 2: // GESTION DE SOLICITUDES DEL COLABORADOR
+									mostrarTransaccionesColaborador(s, colab);
+									system("pause");
+									continue;
+								case 3: // REPORTE DE CONTRATOS REALIZADOS POR EL COLABORADOR
+									system("cls");
+									cout << colab->generarReporteContratosRealizados() << endl;
+									system("pause");
+									continue;
+								case 4: // Regresar
+									system("pause");
+									continue;
+								default:
+									cout << "Opcion invalida.\n";
+									system("pause");
+									continue;
 								}
 							} while (enteros != 3);
 							opcion = 0; // reinicia para el menu
@@ -1046,7 +1054,7 @@ void Menu::menuPrincipal() {
 								}
 							} while (opcion!= lcol->getTam()+1);
 						}
-						else if (opcion == lcol->getTam() + 3); // Salir
+						else if (opcion == lcol->getTam() + 3) system("cls"); // Salir
 						else {
 							system("cls");
 							cout << "Opcion invalida. Intente de nuevo." << endl << endl;
@@ -1059,12 +1067,13 @@ void Menu::menuPrincipal() {
 					lp = s->getPlanteles();
 					
 					do {
+						system("cls");
 						do {
 							cout << lp->mostrarListaPlanteles(0);
 							cin >> opcion;
 							system("cls");
 						} while (validarEntero(opcion));
-						if (opcion == lp->getTam() + 4); // Salir
+						if (opcion == lp->getTam() + 5); // Salir
 						else if (opcion >= 1 && opcion <= lp->getTam()) {
 							// Inicia Mostrar detalles del plantel seleccionado-----------------------------------------------------------------------------
 
@@ -1075,7 +1084,7 @@ void Menu::menuPrincipal() {
 									cin >> opcion;
 								} while (validarEntero(opcion));
 								switch (opcion) {
-								case 1:
+								case 1: // Ver todos los carros
 									cout << p->mostrarEstacionamiento(0);
 									break;
 								case 2: {// Ver carro especifico
@@ -1094,10 +1103,10 @@ void Menu::menuPrincipal() {
 											system("cls");
 										} while (validarEntero(opcion));
 										switch (opcion) {
-										case 1:
+										case 1: // Ver informacion detallada del carro
 											cout << car->toString();
 											break;
-										case 2:
+										case 2: // Cambiar estado del carro
 											cout << "Estado actual del carro: " << car->getEstadoCarro() << endl;
 
 											do {
@@ -1120,17 +1129,17 @@ void Menu::menuPrincipal() {
 											} while (validarEntero(enteros));
 											int resultado;
 											switch (enteros) {
-											case 1:
+											case 1: // Disponible
 												resultado = car->setEstadosCarro(enteros, colab->getId());
 												break;
-											case 2:
+											case 2: // Alquilado
 												resultado = car->setEstadosCarro(4, colab->getId());
 												break;
-											case 3:
+											case 3: // En Mantenimiento
 												resultado = car->setEstadosCarro(5, colab->getId());
 												break;
 											}
-											if (resultado == 1) {
+											if (resultado == 1) { 
 												cout << "Estado del carro actualizado exitosamente." << endl;
 											}
 											else if (resultado == -2) {
@@ -1143,10 +1152,12 @@ void Menu::menuPrincipal() {
 												cout << "Error: No se pudo actualizar el estado del carro." << endl;
 											}
 
-										case 3:
-											break; // Regresar
+										case 3: // Regresar
+											system("cls");
+											break; 
 										default:
 											cout << "Opcion invalida. Intente de nuevo." << endl;
+											system("cls");
 											break;
 										}
 
@@ -1154,7 +1165,7 @@ void Menu::menuPrincipal() {
 									system("pause");
 									break;
 								}
-								case 3:
+								case 3: // Agregar nuevo carro
 									
 									cout << "Digite la placa del carro a agregar: ";
 									cin >> textos;
@@ -1221,7 +1232,7 @@ void Menu::menuPrincipal() {
 										car = nullptr;
 									}
 									break;
-								case 4:
+								case 4: // Eliminar carro
 									do {
 										cout << p->mostrarEstacionamiento(0);
 										cout << "Digite la placa del carro a eliminar: ";
@@ -1252,7 +1263,7 @@ void Menu::menuPrincipal() {
 									else {
 										cout << "Eliminacion de carro cancelada." << endl;
 									}
-								case 5:
+								case 5: 
 									break; // Regresar
 								default:
 									cout << "Opcion invalida. Intente de nuevo." << endl;
@@ -1261,7 +1272,7 @@ void Menu::menuPrincipal() {
 							} while (opcion != 5);
 							opcion = 0; // Reiniciar opcion para el menu de planteles
 						}
-						else if (opcion == lp->getTam() + 1) {
+						else if (opcion == lp->getTam() + 1) { // Agregar nuevo plantel
 							p = new Plantel();
 							cout << "Digite el identificador del plantel (A-Z): ";
 							cin >> carac;
@@ -1299,7 +1310,7 @@ void Menu::menuPrincipal() {
 								p = nullptr;
 							}
 						}
-						else if (opcion == lp->getTam() + 2) {
+						else if (opcion == lp->getTam() + 2) { // Eliminar plantel
 							do {
 								do {
 									cout << "Elija el plantel a eliminar: " << endl;
@@ -1344,10 +1355,12 @@ void Menu::menuPrincipal() {
 								categoria = toupper(categoria);
 								if(categoria != 'A' && categoria != 'B' && categoria != 'C' && categoria != 'D' && categoria != 'X') {
 									cout << "Categoria invalida. Intente de nuevo." << endl;
+									system("cls");
 								}
 							} while (categoria != 'A' && categoria != 'B' && categoria != 'C' && categoria != 'D' && categoria != 'X');
 							if (categoria == 'X') {
 								cout << "Operacion cancelada." << endl;
+								system("cls");
 								continue;
 							} 
 							do {
@@ -1356,22 +1369,26 @@ void Menu::menuPrincipal() {
 							} while (validarFlotante(nuevoPrecio) || nuevoPrecio < 0);
 							if (sucursales->modificarPrecioCategoria(categoria, nuevoPrecio)) {
 								cout << "Precio de categoria " << categoria << " modificado exitosamente a " << nuevoPrecio << "." << endl;
+								system("cls");
 							}
 							else {
 								cout << "Error: No se pudo modificar el precio de la categoria." << endl;
+								system("cls");
 							}
 
 							
-
-
-							
 						}
-						else {
+						else if (opcion == lp->getTam() + 4) { // NUEVO: Reporte de Ocupacion de Planteles
+							system("cls");
+							cout << s->generarReporteOcupacionPlanteles() << endl;
+							system("pause");
+						}
+						else { // Manejo de opcion invalida
 							system("cls");
 							cout << "Opcion invalida. Intente de nuevo." << endl << endl;
 						}
 
-					} while (opcion != lp->getTam() + 4);
+					} while (opcion != lp->getTam() + 5);
 					opcion = 0; //reinicia opcion
 					break;// Termina gestionar planteles--------------------------------------------------------------------
 
@@ -1525,7 +1542,7 @@ void Menu::menuPrincipal() {
 								break;
 							}
 							case 3: // Regresar
-								//system("cls");
+								system("cls");
 								break;
 							default:
 								system("cls");

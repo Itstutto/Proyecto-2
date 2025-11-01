@@ -173,7 +173,7 @@ string ListaSolicitudesContratos::toString() const {
 // Muestra el listado filtrado
 string ListaSolicitudesContratos::mostrarTransaccionesPorColaborador(string idColaborador) {
 	stringstream ss;
-	ss << "Solicitudes Pendientes para Colaborador (ID: " << idColaborador << "):\n";
+	ss << "\nSolicitudes Pendientes para Colaborador (ID: " << idColaborador << "):\n";
 
 	NodoSolicitud* actual = primero;
 	int num = 1;
@@ -182,6 +182,7 @@ string ListaSolicitudesContratos::mostrarTransaccionesPorColaborador(string idCo
 	while (actual) {
 		// Filtra por ID de Colaborador y Estado 1 (Pendiente)
 		if (actual->getDato()->getIdColaborador() == idColaborador && actual->getDato()->getEstadoTransaccion() == 1) {
+			ss << "------------------------------------------------------------\n";
 			ss << num << ") " << actual->getDato()->toResumen() << " (Cod: " << actual->getDato()->getCodigoTransaccion() << ")\n";
 			num++;
 			encontrado = true;
@@ -190,10 +191,11 @@ string ListaSolicitudesContratos::mostrarTransaccionesPorColaborador(string idCo
 	}
 
 	if (!encontrado) {
+		ss << "------------------------------------------------------------\n";
 		ss << "(No hay solicitudes pendientes gestionadas por este colaborador).\n";
 		num = 1;
 	}
-
+	ss << "------------------------------------------------------------\n";
 	ss << num << ") Regresar\n";
 
 	return ss.str();
@@ -349,15 +351,14 @@ string ListaSolicitudesContratos::generarReporteContratosPorVehiculo(string plac
 			string estadoDetallado = (contrato && contrato->getEstadoDetalladoStr() != "")
 				? contrato->getEstadoDetalladoStr()
 				: "Contrato Activo/Vigente";
-
+			ss << "-----------------------------------------------------------------" << endl;
 			ss << "\n--- Contrato CÓDIGO: " << sol->getCodigoTransaccion() << " ---\n";
 			ss << "ID Cliente: " << sol->getIdCliente() << endl;
 			ss << "Días de Alquiler: " << sol->getDiasAlquiler() << endl;
-
-			
 			ss << "Fecha de Inicio: " << sol->getFechaInicio() << endl;
 			ss << "Fecha de Devolución: " << sol->getFechaEntrega() << endl;
 			ss << "Estado de Contrato: " << estadoDetallado << endl;
+			ss << "-----------------------------------------------------------------" << endl;
 
 			encontrado = true;
 		}

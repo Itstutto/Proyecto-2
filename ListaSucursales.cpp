@@ -113,6 +113,8 @@ string ListaSucursales::mostrarSucursales(int ver)
 	}
 	if (ver == 1 || ver == 0) {
 		s << num++ << ".) Salir\n";
+		s << "---------------------------------------------" << endl;
+		s << "Seleccione una opcion: ";
 	}
 	return s.str();
 
