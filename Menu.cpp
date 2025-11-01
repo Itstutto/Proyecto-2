@@ -601,15 +601,8 @@ void Menu::inicializarDatos() {
 	cf1->getHistorial()->insertarFinal(new SolicitudPendiente(*sol1)); 
 	co1->getHistorial()->insertarFinal(new SolicitudPendiente(*sol1));
 	suc1->getContratos()->insertarFinal(sol3);
-	
-
 
 	sucursales->insertarFinal(suc1);
-
-
-
-
-
 
 
 	//Sucursal 2
@@ -724,7 +717,96 @@ void Menu::inicializarDatos() {
 	co6->getHistorial()->insertarFinal(new ContratoAlquiler(*con1));
 	sucursales->insertarFinal(suc2);
 
+	// --- INICIO DE NUEVO BLOQUE DE DATOS QUEMADOS (SUCURSAL 3) ---
 
+	Sucursal* suc3 = new Sucursal(3);
+
+	// Planteles y Carros para Sucursal 3
+	Plantel* plantelE = new Plantel('E', 5, 5); // 25 espacios
+	Plantel* plantelF = new Plantel('F', 4, 4); // 16 espacios
+
+	// Carros para Sucursal 3 (Placas 900-XXX a 999-XXX)
+	Carro* carro15 = new Carro("900-AAA", "Focus", "Ford", "Bergen", "B1", 'A'); // Se usara en contrato antiguo (2023)
+	Carro* carro16 = new Carro("911-BBB", "Escape", "Ford", "Oslo", "C1", 'B'); // Se usara en contrato reciente (2025)
+	Carro* carro17 = new Carro("922-CCC", "Prius", "Toyota", "Trondheim", "A1", 'A'); // Disponible
+	Carro* carro18 = new Carro("933-DDD", "Pilot", "Honda", "Stavanger", "C2", 'C'); // Contrato Alquilado (estado 2)
+	Carro* carro19 = new Carro("944-EEE", "Range Rover", "Land Rover", "Oslo", "D2", 'D'); // Disponible
+
+	// Poner carros en estado Disponible (1) pasando por Lavado (5)
+	carro15->setEstadosCarro(5, "SISTEMA");
+	carro15->setEstadosCarro(1, "SISTEMA");
+	carro16->setEstadosCarro(5, "SISTEMA");
+	carro16->setEstadosCarro(1, "SISTEMA");
+	carro17->setEstadosCarro(5, "SISTEMA");
+	carro17->setEstadosCarro(1, "SISTEMA");
+	carro19->setEstadosCarro(5, "SISTEMA");
+	carro19->setEstadosCarro(1, "SISTEMA");
+
+	// Carro 18 se deja en estado Alquilado (2)
+	carro18->setEstadosCarro(5, "SISTEMA");
+	carro18->setEstadosCarro(1, "SISTEMA");
+	carro18->setEstadosCarro(2, "C8"); // Disponible -> Alquilado
+
+	// Agregar carros a planteles
+	plantelE->agregarCarro(carro15, 0, 0);
+	plantelE->agregarCarro(carro16, 1, 1);
+	plantelE->agregarCarro(carro17, 2, 2);
+	plantelF->agregarCarro(carro18, 0, 0); // Ocupa espacio
+	plantelF->agregarCarro(carro19, 1, 1);
+
+	// Agregar planteles a la sucursal
+	suc3->getPlanteles()->insertarFinal(plantelE);
+	suc3->getPlanteles()->insertarFinal(plantelF);
+
+	// Clientes
+	ClienteFisico* cf8 = new ClienteFisico("Peter Hansen", "1515", "Noruega");
+	ClienteJuridico* cj8 = new ClienteJuridico("Norway Rent A Car", "1616", "Noruega", "Alquiler", 10.0);
+	ClienteFisico* cf9 = new ClienteFisico("Eva Jensen", "1717", "Dinamarca");
+
+	suc3->getClientes()->insertarFinal(cf8);
+	suc3->getClientes()->insertarFinal(cj8);
+	suc3->getClientes()->insertarFinal(cf9);
+
+	// Colaboradores
+	Colaborador* co8 = new Colaborador("Nils Olsen", "C8", string("01/01/2023")); // Sera el colaborador con mas contratos
+	Colaborador* co9 = new Colaborador("Lars Pedersen", "C9", string("10/11/2024"));
+
+	suc3->getColaboradores()->insertarFinal(co8);
+	suc3->getColaboradores()->insertarFinal(co9);
+
+
+	// Solicitudes y Contratos para Sucursal 3
+	// Contrato 1: Antiguo (2023) - Prueba de ordenamiento (mas antiguo)
+	SolicitudAlquiler* sol8_base = new SolicitudPendiente(cf8, co8, carro15, 7, 05112023, 12112023, 40.00, 280.00);
+	SolicitudAlquiler* con2 = new ContratoAlquiler(*sol8_base);
+	suc3->getContratos()->insertarFinal(con2);
+	cf8->getHistorial()->insertarFinal(new ContratoAlquiler(*con2));
+	co8->getHistorial()->insertarFinal(new ContratoAlquiler(*con2)); // Contrato 1 para C8
+
+	// Contrato 2: Alquilado actualmente (carro18) - Prueba de estado Alquilado
+	SolicitudAlquiler* sol9_base = new SolicitudPendiente(cj8, co8, carro18, 5, 28102025, 02112025, 75.00, 375.00);
+	SolicitudAlquiler* con3 = new ContratoAlquiler(*sol9_base);
+	suc3->getContratos()->insertarFinal(con3);
+	cj8->getHistorial()->insertarFinal(new ContratoAlquiler(*con3));
+	co8->getHistorial()->insertarFinal(new ContratoAlquiler(*con3)); // Contrato 2 para C8
+
+	// Contrato 3: Reciente (2025) - Prueba de ordenamiento (mas reciente)
+	SolicitudAlquiler* sol10_base = new SolicitudPendiente(cf9, co9, carro16, 10, 30102025, 9112025, 65.00, 650.00);
+	SolicitudAlquiler* con4 = new ContratoAlquiler(*sol10_base);
+	suc3->getContratos()->insertarFinal(con4);
+	cf9->getHistorial()->insertarFinal(new ContratoAlquiler(*con4));
+	co9->getHistorial()->insertarFinal(new ContratoAlquiler(*con4));
+
+	// Contrato 4: Otro contrato para colaborador C8
+	SolicitudAlquiler* sol11_base = new SolicitudPendiente(cf8, co8, carro19, 2, 01112024, 03112024, 80.00, 160.00);
+	SolicitudAlquiler* con5 = new ContratoAlquiler(*sol11_base);
+	suc3->getContratos()->insertarFinal(con5);
+	cf8->getHistorial()->insertarFinal(new ContratoAlquiler(*con5));
+	co8->getHistorial()->insertarFinal(new ContratoAlquiler(*con5)); // Contrato 3 para C8 (Prueba Reporte Colaborador)
+
+	sucursales->insertarFinal(suc3);
+
+	// --- FIN DE NUEVO BLOQUE DE DATOS QUEMADOS (SUCURSAL 3) ---
 
 
 }
@@ -1780,11 +1862,12 @@ void Menu::menuPrincipal() {
 					cout << "Seleccion invalida. Intente de nuevo." << endl;
 				}
 				else {
-					cout << "Esta seguro de eliminar la sucursal numero " << sel->getNumeroSucursal() << "? (Con esto elimina TODO (Planteles, Carros, Contratos, CLientes, etc)) (s/n): ";
+					cout << "Esta seguro de eliminar la sucursal numero " << sel->getNumeroSucursal() << "? \nCon esto elimina TODO (Planteles, Carros, Contratos, CLientes, etc) (s/n): ";
 					cin >> sn;
 					if (sn == 's' || sn == 'S') {
 						if (sucursales->eliminarSucursal(sel->getNumeroSucursal())) {
 							cout << "Sucursal eliminada exitosamente." << endl;
+							opcion = 0;
 						}
 						else {
 							cout << "Error: No se pudo eliminar la sucursal." << endl;
@@ -1794,6 +1877,8 @@ void Menu::menuPrincipal() {
 						cout << "Eliminacion de sucursal cancelada." << endl;
 					}
 				}
+				system("pause");
+				system("cls");
 			}
 			// si cancelar==true, simplemente volver al menu principal
 		}//Termina eliminar sucursal--------------------------------------------------------------------
