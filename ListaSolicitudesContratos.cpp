@@ -345,7 +345,7 @@ string ListaSolicitudesContratos::generarReporteContratosPorVehiculo(string plac
 
 			ContratoAlquiler* contrato = dynamic_cast<ContratoAlquiler*>(sol);
 
-			// 2. Determinar el estado detallado (Asumiendo métodos de fecha y estado)
+			// 2. Determinar el estado detallado 
 			string estadoDetallado = (contrato && contrato->getEstadoDetalladoStr() != "")
 				? contrato->getEstadoDetalladoStr()
 				: "Contrato Activo/Vigente";
@@ -354,7 +354,7 @@ string ListaSolicitudesContratos::generarReporteContratosPorVehiculo(string plac
 			ss << "ID Cliente: " << sol->getIdCliente() << endl;
 			ss << "Días de Alquiler: " << sol->getDiasAlquiler() << endl;
 
-			// Se asumen estos métodos para fechas en SolicitudAlquiler
+			
 			ss << "Fecha de Inicio: " << sol->getFechaInicio() << endl;
 			ss << "Fecha de Devolución: " << sol->getFechaEntrega() << endl;
 			ss << "Estado de Contrato: " << estadoDetallado << endl;
@@ -403,7 +403,7 @@ string ListaSolicitudesContratos::generarReporteContratosOrdenado() const {
 		return ss.str();
 	}
 
-	// Array dinamico de punteros a SolicitudAlquiler (No STL)
+	// Array dinamico de punteros a SolicitudAlquiler 
 	SolicitudAlquiler** contratosArray = new SolicitudAlquiler * [numContratos];
 	int indice = 0;
 	actual = primero;
@@ -417,7 +417,7 @@ string ListaSolicitudesContratos::generarReporteContratosOrdenado() const {
 	// 2. Ordenar el array (Bubble Sort: mas reciente a mas antiguo)
 	for (int i = 0; i < numContratos - 1; i++) {
 		for (int j = 0; j < numContratos - i - 1; j++) {
-			// Se asume la existencia de SolicitudAlquiler::getFechaInicioTM() que devuelve un tm
+			
 			if (!esMasReciente(contratosArray[j]->getFechaInicioTM(), contratosArray[j + 1]->getFechaInicioTM())) {
 				SolicitudAlquiler* temp = contratosArray[j];
 				contratosArray[j] = contratosArray[j + 1];
@@ -426,7 +426,7 @@ string ListaSolicitudesContratos::generarReporteContratosOrdenado() const {
 		}
 	}
 
-	// 3. Generar el reporte (Formato manual sin iomanip)
+	// 3. Generar el reporte 
 	ss << "-----------------------------------------------------------------------------------------------------" << endl;
 	ss << "| Codigo | Estado         | F. Inicio | F. Dev. | ID Cliente | Placa    | P. Diario | P. Total | ID Colab |" << endl;
 	ss << "-----------------------------------------------------------------------------------------------------" << endl;
@@ -436,7 +436,7 @@ string ListaSolicitudesContratos::generarReporteContratosOrdenado() const {
 
 		// Formato manual con espaciado
 		ss << "| " << sol->getCodigoTransaccion() << "    ";
-		ss << "| Activo         "; // Asumiendo estado 2 = "Activo"
+		ss << "| Activo         "; 
 		ss << "| " << sol->getFechaInicio() << " ";
 		ss << "| " << sol->getFechaEntrega() << " ";
 		ss << "| " << sol->getIdCliente() << "   ";
