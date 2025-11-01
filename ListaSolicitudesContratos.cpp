@@ -150,11 +150,11 @@ string ListaSolicitudesContratos::mostrarTransacciones() {
 	NodoSolicitud* a = primero;
 	while (a) {
 		ss << "-------------------------------------------------\n";
-		ss << num<<") " << a->getDato()->toResumen() << "\n";
+		ss << num++<<") " << a->getDato()->toResumen() << "\n";
 		a = a->getSig();
 	}
 	ss << "-------------------------------------------------\n";
-	ss << ++num << ") Regresar\n";
+	ss << num << ") Regresar\n";
 	ss << "-------------------------------------------------\n";
 	ss << "Seleccione una opcion: ";
 	return ss.str();

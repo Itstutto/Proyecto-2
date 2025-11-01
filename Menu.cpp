@@ -31,7 +31,6 @@ void Menu::mostrarTransaccionesColaborador(Sucursal* s, Colaborador* colab) {
 	ListaSolicitudesContratos* lsc = s->getSolicitudes();
 	
 	do {
-		system("cls");
 		cout << "\n============= SOLICITUDES PENDIENTES GESTIONADAS POR " << colab->getNombre() << " ==============\n";
 		
 		// 1. Mostrar la lista filtrada
@@ -39,7 +38,7 @@ void Menu::mostrarTransaccionesColaborador(Sucursal* s, Colaborador* colab) {
 		cout << "------------------------------------------------------------\n";
 		cout << "Seleccione el numero de la solicitud para gestionar o Regresar: ";
 		cin >> seleccion;
-		
+		system("cls");
 		if (validarEntero(seleccion)) continue;
 		
 		// 2. Obtener la Solicitud seleccionada por el índice FILTRADO
@@ -67,7 +66,7 @@ void Menu::mostrarTransaccionesColaborador(Sucursal* s, Colaborador* colab) {
 			string textos; // Para el ID del colaborador que aprueba
 			
 			do {
-				system("cls");
+				
 				cout << "\n========= GESTION DE SOLICITUD #" << sol->getCodigoTransaccion() << " =========\n";
 				cout << sol->toString();
 				cout << "\n----------------------------------------------------\n";
@@ -81,6 +80,7 @@ void Menu::mostrarTransaccionesColaborador(Sucursal* s, Colaborador* colab) {
 				cout << "----------------------------------------------------\n";
 				cout << "Seleccione una opcion: ";
 				cin >> opcionGestion;
+				system("cls");
 				if (validarEntero(opcionGestion)) continue;
 
 				switch (opcionGestion) {
@@ -101,9 +101,10 @@ void Menu::mostrarTransaccionesColaborador(Sucursal* s, Colaborador* colab) {
 							if (!s->getSolicitudes()->buscarTransaccionPorCodigo(sol->getCodigoTransaccionInt())) {
 								seleccion = 0;
 								opcionGestion = 4;
+								cout << "Transaccion cancelada, solicitud no dispobinble o carro no disponible" << endl;
 							}
 						}
-						continue;
+						break;
 					}
 					case 2: { // Rechazar
 						system("cls");
@@ -121,20 +122,20 @@ void Menu::mostrarTransaccionesColaborador(Sucursal* s, Colaborador* colab) {
 						cout << "------------------------------------------------\n";
 						seleccion = 0; // Fuerza la actualización de la lista
 						opcionGestion = 4;
-						continue;
+						break;
 					}
 					case 3: { // Anular
 						sol->setEstadoTransaccion(4); // 4 = Anulada
 						cout << "\nSOLICITUD ANULADA exitosamente.\n";
-						continue;
+						break;
 					}
 					case 4: // Regresar
-						continue;
+						break;
 					default:
 						cout << "Opcion invalida.\n";
-						continue;
+						break;
 				}
-				system("cls");
+		
 			} while (opcionGestion != 4);
 		}
 
@@ -276,14 +277,14 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 								cout << "Estado Operativo Actual: " << con->getEstadoDetalladoStr() << "\n";
 								cout << "\n----------------------------------------------------\n";
 
-								cout << (con->getEstadoDetallado()==2 ? "1. Ejecutar Contrato\n" : "1. Registrar Devolucion y Finalizar Contrato (NO USAR INCOMPLETA)\n" );
+								cout << (con->getEstadoDetallado()==2 ? "1. Ejecutar Contrato\n" : "1. Registrar Devolucion y Finalizar Contrato\n" );
 								cout << "2. Anular Contrato\n";
 								cout << "3. Ver Historial de Carro (Bitacora)\n";
 								cout << "4. Regresar\n";
 
 								cout << "Seleccione una opcion: ";
 								cin >> opcion;
-
+								system("cls");
 								if (validarEntero(opcion)) continue;
 
 								switch (opcion) {
@@ -406,7 +407,7 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 										break;
 									}
 									case 3: {
-										cout << "\nFuncionalidad: Mostrar Bitacora del Carro (Se necesita buscar el Carro por Placa primero).\n";
+										cout << sol->getCarro()->getHistorialEstados();
 										break;
 									}
 									case 4: // Regresar
@@ -605,6 +606,127 @@ void Menu::inicializarDatos() {
 
 	sucursales->insertarFinal(suc1);
 
+
+
+
+
+
+
+	//Sucursal 2
+
+	Sucursal* suc2 = new Sucursal(2);
+	// Crear 3 planteles
+	Plantel* plantelB = new Plantel('B', 6, 6);
+	Plantel* plantelC = new Plantel('C', 5, 7);
+	Plantel* plantelD = new Plantel('D', 8, 5);
+	
+	// Categorias de los carros: A=Economico, B=Estandar, C= Lujo, D= 4x4
+	//crear algunos carros y ponerlos en estado Disponible (Primero se ponen en lavado y despues en disponible)
+	Carro* carro7 = new Carro("111-AAA", "Mustang", "Ford", "Lyon", "C1", 'A');
+	Carro* carro8 = new Carro("222-BBB", "Camry", "Toyota", "Marseille", "B2", 'B');
+	Carro* carro9 = new Carro("333-CCC", "Accord", "Honda", "Nice", "B1", 'B');
+	Carro* carro10 = new Carro("444-DDD", "Model 3", "Tesla", "Toulouse", "A1", 'A');
+	Carro* carro11 = new Carro("555-EEE", "Ranger", "Ford", "Bordeaux", "C2", 'C');
+	Carro* carro12 = new Carro("666-FFF", "Santa Fe", "Hyundai", "Nantes", "B1", 'B');
+	//agregar carros categoria C Y D y ponerlos en estado Disponible
+	Carro* carro13 = new Carro("777-GGG", "Sprinter", "Mercedes-Benz", "Strasbourg", "1", 'C');
+	Carro* carro14 = new Carro("888-HHH", "Defender", "Land Rover", "Lille", "2", 'D');
+	// Poner carros en estado Disponible (1) pasando por Lavado (5)
+
+
+	carro7->setEstadosCarro(5, "SISTEMA"); // Revision -> Lavado
+	carro7->setEstadosCarro(1, "SISTEMA"); // Lavado -> Disponible
+	carro8->setEstadosCarro(5, "SISTEMA"); // Revision -> Lavado
+	carro8->setEstadosCarro(1, "SISTEMA"); // Lavado -> Disponible
+	carro9->setEstadosCarro(5, "SISTEMA"); // Revision -> Lavado
+	carro9->setEstadosCarro(1, "SISTEMA"); // Lavado -> Disponible
+	carro10->setEstadosCarro(5, "SISTEMA"); // Revision -> Lavado
+	carro10->setEstadosCarro(1, "SISTEMA"); // Lavado -> Disponible
+	carro11->setEstadosCarro(5, "SISTEMA"); // Revision -> Lavado
+	carro11->setEstadosCarro(1, "SISTEMA"); // Lavado -> Disponible
+	carro12->setEstadosCarro(5, "SISTEMA"); // Revision -> Lavado
+	carro12->setEstadosCarro(1, "SISTEMA"); // Lavado -> Disponible
+	carro13->setEstadosCarro(5, "SISTEMA"); // Revision -> Lavado
+	carro13->setEstadosCarro(1, "SISTEMA"); // Lavado -> Disponible
+	carro14->setEstadosCarro(5, "SISTEMA"); // Revision -> Lavado
+	carro14->setEstadosCarro(1, "SISTEMA"); // Lavado -> Disponible
+
+	// Agregar carros a los planteles
+	plantelB->agregarCarro(carro7, 0, 0);
+	plantelB->agregarCarro(carro8, 1, 1);
+	plantelC->agregarCarro(carro9, 2, 2);
+	plantelC->agregarCarro(carro10, 3, 3);
+	plantelD->agregarCarro(carro11, 4, 4);
+	plantelD->agregarCarro(carro12, 5, 0);
+	plantelD->agregarCarro(carro13, 6, 1);
+	plantelD->agregarCarro(carro14, 7, 2);
+
+	// Agregar planteles a la sucursal
+	suc2->getPlanteles()->insertarFinal(plantelB);
+	suc2->getPlanteles()->insertarFinal(plantelC);
+	suc2->getPlanteles()->insertarFinal(plantelD);
+	// Agregar algunos clientes (10 clientes : 5 fisicos y 5 juridicos)
+	ClienteFisico* cf3 = new ClienteFisico("Luis Martinez", "555", "Francia");
+	ClienteJuridico* cj3 = new ClienteJuridico("GlobalTech SARL", "666", "Francia", "Tecnologia", 8.0);
+	ClienteFisico* cf4 = new ClienteFisico("Sophie Dubois", "777", "Belgica");
+	ClienteJuridico* cj4 = new ClienteJuridico("LogiTrans Ltd.", "888", "Francia", "Logistica", 12.0);
+	ClienteFisico* cf5 = new ClienteFisico("Mark Johnson", "999", "Suiza");
+	ClienteJuridico* cj5 = new ClienteJuridico("FinanceCorp AG", "1010", "Alemania", "Finanzas", 15.0);
+	ClienteFisico* cf6 = new ClienteFisico("Emma Wilson", "1111", "Italia");
+	ClienteJuridico* cj6 = new ClienteJuridico("AutoRent SpA", "1212", "Italia", "Alquiler de Vehiculos", 20.0);
+	ClienteFisico* cf7 = new ClienteFisico("Oliver Smith", "1313", "España");
+	ClienteJuridico* cj7 = new ClienteJuridico("TechLogistics SL", "1414", "España", "Tecnologia y Logistica", 18.0);
+	suc2->getClientes()->insertarFinal(cf3);
+	suc2->getClientes()->insertarFinal(cj3);
+	suc2->getClientes()->insertarFinal(cf4);
+	suc2->getClientes()->insertarFinal(cj4);
+	suc2->getClientes()->insertarFinal(cf5);
+	suc2->getClientes()->insertarFinal(cj5);
+	suc2->getClientes()->insertarFinal(cf6);
+	suc2->getClientes()->insertarFinal(cj6);
+	suc2->getClientes()->insertarFinal(cf7);
+	suc2->getClientes()->insertarFinal(cj7);
+	// Agregar algunos colaboradores (5 colaboradores)
+	Colaborador* co3 = new Colaborador("Isabelle Moreau", "C3", string("10/02/2024"));
+	Colaborador* co4 = new Colaborador("Antoine Lefevre", "C4", string("20/03/2023"));
+	Colaborador* co5 = new Colaborador("Elena Rossi", "C5", string("05/06/2022"));
+	Colaborador* co6 = new Colaborador("Miguel Fernandez", "C6", string("15/09/2021"));
+	Colaborador* co7 = new Colaborador("Sofia Garcia", "C7", string("25/12/2020"));
+	suc2->getColaboradores()->insertarFinal(co3);
+	suc2->getColaboradores()->insertarFinal(co4);
+	suc2->getColaboradores()->insertarFinal(co5);
+	suc2->getColaboradores()->insertarFinal(co6);
+	suc2->getColaboradores()->insertarFinal(co7);
+
+
+	// Agregar algunas solicitudes
+	// Solicitudes Pendientes
+	// se agregan tanto a la lista de solicitudes de la sucursal como al historial del cliente y colaborador correspondiente
+	//Precios diarios por categoria:A=20000,B=27000,C=45000,D=34000 (categoria del carro)
+	SolicitudAlquiler* sol4 = new SolicitudPendiente(cf3, co3, carro7, 4, 20062024, 24062024, 50.00, 200.00);
+	SolicitudAlquiler* sol5 = new SolicitudPendiente(cj3, co4, carro9, 2, 21062024, 23062024, 60.00, 120.00);
+	SolicitudAlquiler* sol6 = new SolicitudPendiente(cf4, co5, carro10, 6, 15062024, 21062024, 70.00, 420.00);
+	suc2->getSolicitudes()->insertarFinal(sol4);
+	suc2->getSolicitudes()->insertarFinal(sol5);
+	suc2->getSolicitudes()->insertarFinal(sol6);
+	cf3->getHistorial()->insertarFinal(new SolicitudPendiente(*sol4));
+	co3->getHistorial()->insertarFinal(new SolicitudPendiente(*sol4));
+	cj3->getHistorial()->insertarFinal(new SolicitudPendiente(*sol5));
+	co4->getHistorial()->insertarFinal(new SolicitudPendiente(*sol5));
+	cf4->getHistorial()->insertarFinal(new SolicitudPendiente(*sol6));
+	co5->getHistorial()->insertarFinal(new SolicitudPendiente(*sol6));
+
+	// Agregar contratos aprobados directamente
+	SolicitudAlquiler* sol7 = new SolicitudPendiente(cj4, co6, carro11, 3, 18062024, 21062024, 80.00, 240.00);
+	SolicitudAlquiler* con1 = new ContratoAlquiler(*sol7);
+	suc2->getContratos()->insertarFinal(con1);
+	cj4->getHistorial()->insertarFinal(new ContratoAlquiler(*con1));
+	co6->getHistorial()->insertarFinal(new ContratoAlquiler(*con1));
+	sucursales->insertarFinal(suc2);
+
+
+
+
 }
 
 void Menu::iniciar() {
@@ -667,7 +789,6 @@ void Menu::menuPrincipal() {
 							// Inicia Mostrar detalles del cliente seleccionado-----------------------------------------------------------------------------
 							cli = dynamic_cast<Cliente*>(lc->obtenerPersonaPorIndice(opcion));
 							do {
-								system("cls");
 								cout << "\nCliente: " << cli->getNombre() << " (ID: " << cli->getId() << ")\n";
 								cout << "----------------------------------------------------\n";
 								// Usar el método actualizado de Cliente:
@@ -675,26 +796,29 @@ void Menu::menuPrincipal() {
 								
 								cout << "Seleccione una opcion: ";
 								cin >> opcion;
-														
+								system("cls");
 								if (validarEntero(opcion)) continue; // Volver al inicio del do-while si es inválido
 														
 								switch (opcion) {
 								case 1: { // Modificar informacion del cliente-----------------------------------------------------------------------------
-									system("cls");
+									
 									bool tipoCliente = dynamic_cast<ClienteFisico*>(cli) != nullptr; // true si es ClienteFisico, false si es ClienteJuridico
 									int limite = tipoCliente ? 4 : 6; // Numero de opciones segun el tipo de cliente
 									int opcionModificar;
 									do {
 										do {
-											system("cls");
+											
 											cout << cli->mostrarModificar() << endl;
 											cout << "Seleccione la opcion a modificar (o " << limite << " para regresar): ";
 											cin >> opcionModificar;
+											system("cls");
 										} while (validarEntero(opcionModificar));
 
 										if (opcionModificar > limite) {
+											system("cls");
 											cout << "Opcion invalida. Intente de nuevo." << endl;
 											system("pause");
+											
 											continue;
 										}
 										if (opcionModificar == limite); // Salir del bucle de modificacion
@@ -926,13 +1050,14 @@ void Menu::menuPrincipal() {
 						do {
 							cout << s->getColaboradores()->mostrarPersonas(0);
 							cin >> opcion;
+							system("cls");
 						} while (validarEntero(opcion));
 						if (opcion >= 1 && opcion <= lcol->getTam()) {
 							// Inicia Mostrar detalles del colaborador seleccionado-----------------------------------------------------------------------------
 							colab = dynamic_cast<Colaborador*>(lcol->obtenerPersonaPorIndice(opcion));
 							
 							do { // Submenu de Detalle de Colaborador 
-								system("cls");
+								
 								cout << "\nColaborador: " << colab->getNombre() << " (ID: " << colab->getId() << ")\n";
 								cout << "----------------------------------------------------\n";
 								cout << "1). Ver Informacion Detallada\n";
@@ -946,34 +1071,32 @@ void Menu::menuPrincipal() {
 								cout << "Seleccione una opcion: ";
 								cin >> enteros; 
 								if (validarEntero(enteros)) continue;
-								
+								system("cls");
 								switch (enteros) {
 								case 1: // VER INFORMACION DETALLADA DEL COLABORADOR
 									system("cls");
 									cout << "Informacion del Colaborador:" << endl;
 									cout << colab->toString() << endl;
 									system("pause");
-									continue;
+									break;
 								case 2: // GESTION DE SOLICITUDES DEL COLABORADOR
 									mostrarTransaccionesColaborador(s, colab);
-									system("cls");
-									continue;
+									break;
 								case 3: // REPORTE DE CONTRATOS REALIZADOS POR EL COLABORADOR
-									system("cls");
 									cout << colab->generarReporteContratosRealizados() << endl;
 									system("pause");
-									continue;
+									break;
 								case 4: // Regresar
-									system("cls");
-									continue;
+									break;
 								default:
 									cout << "Opcion invalida.\n";
 									system("pause");
-									continue;
+									break;
 								}
+
 							} while (enteros != 4);
 							opcion = 0; // reinicia para el menu
-							system("cls"); 
+							
 						}
 						else if (opcion == lcol->getTam() + 1) {
 							colab = new Colaborador();
@@ -1088,10 +1211,12 @@ void Menu::menuPrincipal() {
 								do {
 									cout << p->mostrarPlantel();
 									cin >> opcion;
+									system("cls");
 								} while (validarEntero(opcion));
 								switch (opcion) {
 								case 1: // Ver todos los carros
-									cout << p->mostrarEstacionamiento(0);
+									cout << p->mostrarEstacionamiento(0)<<endl;
+									system("pause");
 									break;
 								case 2: {// Ver carro especifico
 									do {
@@ -1191,8 +1316,15 @@ void Menu::menuPrincipal() {
 									cout << "Digite el tipo de licencia requerida (A, B, C): ";
 									cin >> textos;
 									car->setTipoLicencia(textos);
-									cout << "Digite la categoria del carro (A, B, C): ";
-									cin >> carac;
+									do {
+										cout << "Digite la categoria del carro (A, B, C, D): ";
+										cin >> carac;
+										if (carac != 'A' && carac != 'B' && carac != 'C' && carac != 'D') {
+											system("cls");
+											cout << "Elija una categoria valida" << endl
+												<< "-----------------------------------------------------------------";
+										}
+									} while (carac != 'A' && carac != 'B' && carac != 'C' && carac != 'D');
 									car->setCategoria(carac);
 									int fila, columna;
 									do {
