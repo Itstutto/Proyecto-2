@@ -341,7 +341,7 @@ string ListaSolicitudesContratos::generarReporteContratosPorVehiculo(string plac
 		SolicitudAlquiler* sol = actual->getDato();
 
 		// 1. Filtra por Placa y solo transacciones que sean Contratos (Estado 2)
-		if (sol->getPlacaVehiculo() == placaVehiculo && sol->getEstadoTransaccion() == 2) {
+		if (sol && sol->getPlacaVehiculo() == placaVehiculo && sol->getEstadoTransaccion() == 2) {
 
 			ContratoAlquiler* contrato = dynamic_cast<ContratoAlquiler*>(sol);
 
@@ -405,6 +405,9 @@ string ListaSolicitudesContratos::generarReporteContratosOrdenado() const {
 
 	// Array dinamico de punteros a SolicitudAlquiler 
 	SolicitudAlquiler** contratosArray = new SolicitudAlquiler * [numContratos];
+	for (int i = 0; i < numContratos; i++) {
+		contratosArray[i] = nullptr;
+	}
 	int indice = 0;
 	actual = primero;
 	while (actual) {
@@ -434,16 +437,18 @@ string ListaSolicitudesContratos::generarReporteContratosOrdenado() const {
 	for (int i = 0; i < numContratos; i++) {
 		SolicitudAlquiler* sol = contratosArray[i];
 
-		// Formato manual con espaciado
-		ss << "| " << sol->getCodigoTransaccion() << "    ";
-		ss << "| Activo         "; 
-		ss << "| " << sol->getFechaInicio() << " ";
-		ss << "| " << sol->getFechaEntrega() << " ";
-		ss << "| " << sol->getIdCliente() << "   ";
-		ss << "| " << sol->getPlacaVehiculo() << " ";
-		ss << "| " << sol->getPrecioDiario() << "     ";
-		ss << "| " << sol->getPrecioTotal() << "    ";
-		ss << "| " << sol->getIdColaborador() << "  |" << endl;
+		if (sol) {
+			// Formato manual con espaciado
+			ss << "| " << sol->getCodigoTransaccion() << "    ";
+			ss << "| Activo         ";
+			ss << "| " << sol->getFechaInicio() << " ";
+			ss << "| " << sol->getFechaEntrega() << " ";
+			ss << "| " << sol->getIdCliente() << "   ";
+			ss << "| " << sol->getPlacaVehiculo() << " ";
+			ss << "| " << sol->getPrecioDiario() << "     ";
+			ss << "| " << sol->getPrecioTotal() << "    ";
+			ss << "| " << sol->getIdColaborador() << "  |" << endl;
+		}
 	}
 	ss << "-----------------------------------------------------------------------------------------------------" << endl;
 
