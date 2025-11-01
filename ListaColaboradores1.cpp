@@ -18,7 +18,7 @@ void ListaColaboradores1::eliminarClienteHistorial(string id)
 ListaColaboradores1::~ListaColaboradores1() {}
 string ListaColaboradores1::mostrarPersonas(int ver) {
 	stringstream ss;
-	ss << "Colaboradores" << endl << endl;
+	ss << endl << "Colaboradores" << endl;
 	int cant = 1;
 	NodoP* actual = primero;
 	while (actual) {

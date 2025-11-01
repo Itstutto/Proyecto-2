@@ -80,7 +80,7 @@ void Colaborador::setFechaIngreso(int fecha) {
 string Colaborador::toString() const {
 	stringstream ss;
 	ss << "Colaborador - Nombre: " << getNombre()  << " | ID: " << getId() << endl
-	    << "Fecha de contratacion: " << getFechaContratacion()<< " | Fecha de ingreso: " << fechaIngreso;
+	    << "    Fecha de contratacion: " << getFechaContratacion()<< " | Fecha de ingreso: " << fechaIngreso;
 	return ss.str();
 }
 string Colaborador::infoMenu() const {

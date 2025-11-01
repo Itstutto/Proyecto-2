@@ -680,6 +680,7 @@ void Menu::menuPrincipal() {
 														
 								switch (opcion) {
 								case 1: { // Modificar informacion del cliente-----------------------------------------------------------------------------
+									system("cls");
 									bool tipoCliente = dynamic_cast<ClienteFisico*>(cli) != nullptr; // true si es ClienteFisico, false si es ClienteJuridico
 									int limite = tipoCliente ? 4 : 6; // Numero de opciones segun el tipo de cliente
 									int opcionModificar;
@@ -754,20 +755,24 @@ void Menu::menuPrincipal() {
 									break;
 								}	
 								case 2:
+									system("cls");
 									cout << "Informacion del Cliente:" << endl;
 									cout << cli->toString() << endl;
 									system("pause");
 									break;
 								case 3:
+									system("cls");
 									cout << cli->getHistorial()->mostrarHistorialCompletado() << endl;
 									system("pause");
 									break;
 								case 4: // NUEVA OPCION: Ver Solicitudes Pendientes
+									system("cls");
 									mostrarTransaccionesCliente(s, cli);
 									break;
 								case 5: // Regresar (Opción anterior era 4)
 									break;
 								default:
+									system("cls");
 									cout << "Opcion invalida. Intente de nuevo." << endl;
 									system("pause");
 									break;
@@ -944,13 +949,14 @@ void Menu::menuPrincipal() {
 								
 								switch (enteros) {
 								case 1: // VER INFORMACION DETALLADA DEL COLABORADOR
-										cout << "Informacion del Colaborador:" << endl;
-										cout << colab->toString() << endl;
-										system("pause");
-										continue;
+									system("cls");
+									cout << "Informacion del Colaborador:" << endl;
+									cout << colab->toString() << endl;
+									system("pause");
+									continue;
 								case 2: // GESTION DE SOLICITUDES DEL COLABORADOR
 									mostrarTransaccionesColaborador(s, colab);
-									system("pause");
+									system("cls");
 									continue;
 								case 3: // REPORTE DE CONTRATOS REALIZADOS POR EL COLABORADOR
 									system("cls");
@@ -958,14 +964,14 @@ void Menu::menuPrincipal() {
 									system("pause");
 									continue;
 								case 4: // Regresar
-									system("pause");
+									system("cls");
 									continue;
 								default:
 									cout << "Opcion invalida.\n";
 									system("pause");
 									continue;
 								}
-							} while (enteros != 3);
+							} while (enteros != 4);
 							opcion = 0; // reinicia para el menu
 							system("cls"); 
 						}
@@ -1395,11 +1401,15 @@ void Menu::menuPrincipal() {
 				case 4:// Inicia gestionar contratos/solicitudes --------------------------------------------------------------------
 					do {
 						system("cls"); // Limpiar antes de mostrar el menu
-						cout << "\n============= GESTION DE TRANSACCIONES ==============\n";
+						cout << "\n=================== GESTION DE TRANSACCIONES ====================\n";
 						// Mostrar resumen de Solicitudes y Contratos
-						cout << "\n1. Crear Solicitud de Alquiler\n";
-						cout << "\n2. Ver Detalle y Gestionar Transaccion (Aprobar/Rechazar/Anular)\n";
-						cout << "3. Regresar\n";
+						cout << "-----------------------------------------------------------------\n";
+						cout << "1). Crear Solicitud de Alquiler\n";
+						cout << "-----------------------------------------------------------------\n";
+						cout << "2). Ver Detalle y Gestionar Transaccion (Aprobar/Rechazar/Anular)\n";
+						cout << "-----------------------------------------------------------------\n";
+						cout << "3). Regresar\n";
+						cout << "-----------------------------------------------------------------\n";
 						cout << "Seleccione una opcion: ";
 						cin >> enteros; // Usar la variable 'enteros' para este submenú
 
@@ -1508,38 +1518,54 @@ void Menu::menuPrincipal() {
 									sol = nullptr;
 								}
 								break;
-							} // <- agregado para evitar caer en case 2
+							} 
 							case 2: { // Ver Detalle y Gestionar Transaccion
 								system("cls");
 								// Mostrar nuevamente la lista antes de pedir el codigo
 								do {
-									cout << "1. Ver Solicitudes" << endl;
-									cout << "2. Ver Contratos" << endl;
-									cout << "3. Regresar" << endl;
-									cout << "\nDigite la opcion: ";
+									cout << "=======Ver Detalle y Gestionar Transaccion=======" << endl;
+									cout << "-------------------------------------------------\n";
+									cout << "1). Ver Solicitudes" << endl;
+									cout << "-------------------------------------------------\n";
+									cout << "2). Ver Contratos" << endl;
+									cout << "-------------------------------------------------\n";
+									cout << "3). Regresar" << endl;
+									cout << "-------------------------------------------------\n";
+									cout << "Seleccione una opcion: ";
 									cin >> enteros; // Usar la variable 'textos' para el codigo
 									if (!validarEntero(enteros) && enteros < 0 || enteros>3) {
 										cout << "Opcion invalida. Intente de nuevo." << endl;
 										continue;
 									}
-								} while (validarEntero(enteros));
-								switch (enteros) {
-									case 1: {
-										lsc = s->getSolicitudes();
-										gestionarTransacciones(lsc);
+									if (validarEntero(enteros)) continue;
+								
+									switch (enteros) {
+										case 1: { // Ver Solicitudes
+											system("cls");
+											lsc = s->getSolicitudes();
+											gestionarTransacciones(lsc);
+											system("cls");
+											continue;
+										}
+										case 2: { // Ver Contratos
+											system("cls");
+											lsc = s->getContratos();
+											gestionarTransacciones(lsc);
+											system("cls");
+											continue;
+										}
+										case 3: // Regresar
+										system("cls");
 										break;
+										default:
+											system("cls");
+											cout << "Opcion invalida. Intente de nuevo." << endl;
+											system("pause");
+											continue;
 									}
-									case 2: {
-										lsc = s->getContratos();
-										gestionarTransacciones(lsc);
-										break;
-									}
-									default:
-										cout << "Opcion invalida. Intente de nuevo." << endl;
-										break;
-								}
-
-								break;
+									
+								} while (enteros != 3);
+								enteros = 0; // Reiniciar 'enteros' para el menu de gestionar transacciones
 							}
 							case 3: // Regresar
 								system("cls");

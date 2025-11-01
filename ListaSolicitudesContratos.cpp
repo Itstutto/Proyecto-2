@@ -145,14 +145,18 @@ void ListaSolicitudesContratos::eliminarTransaccionPorCodigo(const int& codigo)
 
 string ListaSolicitudesContratos::mostrarTransacciones() {
 	stringstream ss;
-	ss << "Transacciones:" << "\n";
+	ss << "\nTransacciones:" << "\n";
 	int num = 1;
 	NodoSolicitud* a = primero;
 	while (a) {
+		ss << "-------------------------------------------------\n";
 		ss << num<<") " << a->getDato()->toResumen() << "\n";
 		a = a->getSig();
 	}
+	ss << "-------------------------------------------------\n";
 	ss << ++num << ") Regresar\n";
+	ss << "-------------------------------------------------\n";
+	ss << "Seleccione una opcion: ";
 	return ss.str();
 }
 string ListaSolicitudesContratos::toString() const {

@@ -24,16 +24,18 @@ void ListaClientes1::eliminarColaboradorHistorial(string id)
 string ListaClientes1::mostrarPersonas(int ver) {
 	stringstream ss;
 	int opcion = 1;
-	ss << "Clientes" << endl << endl;
+
+	ss << endl << "Clientes" << endl;
 	NodoP* actual = primero;
 	while (actual) {
-		ss << opcion<<"). " << actual->getDato()->infoMenu() << endl
-			<< "---------------------------------------------------------"<<endl;
+		ss << "---------------------------------------------------------" << endl
+            << opcion<<"). " << actual->getDato()->infoMenu() << endl;
 		actual = actual->getSig();
 		opcion++;
 	}
 	if (ver == 0) {
-		ss<<opcion++<<"). Reporte de clientes" << endl
+		ss << "---------------------------------------------------------" << endl
+            <<opcion++<<"). Reporte de clientes" << endl
 			<< "----------------------------------------------------------" << endl;
 		ss << opcion++ << "). Agregar nuevo cliente" << endl
 			<< "----------------------------------------------------------" << endl;
