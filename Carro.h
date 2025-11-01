@@ -44,6 +44,9 @@ public:
 	void setCategoria(char c);
 	void actualizarPrecioDiario(); // Actualiza el precio diario basado en la categoria
 	int setEstadosCarro(int estado, string idColaborador); // retorna 1 ok, -1 invalido, -2 mismo estado
+	string mostrarCarro();
+	string mostrarEstadosCarro();
+
 
 	string toString();
 };

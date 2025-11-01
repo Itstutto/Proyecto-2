@@ -136,6 +136,28 @@ int Carro::setEstadosCarro(int estado, string idColaborador)
 	return 1;
 }
 
+string Carro::mostrarCarro()
+{
+	stringstream s;
+	s << "Carro: " << placa << endl;
+	s << "1. Ver informacion del carro" << endl;
+	s << (getEstadoCarro() != "Alquilado" ? "2. Modificar estado del carro" : "2. Modificar estado del carro (No disponible el carro se encuentra alquilado)") << endl;
+	s << "Elija una opcion: ";
+
+	return s.str();
+}
+
+string Carro::mostrarEstadosCarro()
+{
+	stringstream s;
+	s << "Elija el estado que desea asginar al vehiculo " << placa << ":\n";
+	//solo Disponible, Revision, Lavado si no esta alquilado
+	s << "1. Disponible\n";
+	s << "2. Revision\n";
+	s << "3. Lavado\n";
+	return s.str();
+}
+
 string Carro::toString() {
 	stringstream ss;
 	ss << "---------------------------------------------------------------------------" << endl;
