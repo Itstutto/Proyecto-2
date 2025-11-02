@@ -60,6 +60,16 @@ bool Plantel::moverCarro(string placa, Plantel* destino)
 	return true;
 }
 
+bool Plantel::moverCarro(string placa, Plantel* destino, int f, int c)
+{
+	Carro* carro = getCarroxPlaca(placa);
+	if (!carro) return false; // Carro no encontrado
+	if (!destino->agregarCarro(carro, f, c)) return false; // No se pudo agregar al destino
+	desvincularCarro(placa); // Elimina sin borrar el carro
+	return true;
+	
+}
+
 int Plantel::getCanTotal()
 {
 	return filas * columnas;
@@ -278,6 +288,19 @@ void Plantel::actualizarPrecioCarros(char cateoria)
 	}
 
 }
+
+int Plantel::getCanCarrosDisponibles()
+{
+	int cant = 0;
+	for (int i = 0; i < filas; i++) {
+		for (int j = 0; j < columnas; j++) {
+			if (estacionamiento[i][j] && estacionamiento[i][j]->getEstadoCarro() == "Disponible") cant++;
+		}
+	}
+
+	return cant;
+}
+
 
 // --- IMPLEMENTACION DE METODOS DE REPORTE ---
 

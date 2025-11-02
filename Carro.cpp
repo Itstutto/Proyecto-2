@@ -142,7 +142,8 @@ string Carro::mostrarCarro()
 	s << "Carro: " << placa << endl;
 	s << "1. Ver informacion del carro" << endl;
 	s << (getEstadoCarro() != "Alquilado" ? "2. Modificar estado del carro" : "2. Modificar estado del carro (No disponible el carro se encuentra alquilado)") << endl
-		<< "3. Salir" << endl;
+		<< "3. Reubicar carro" << endl
+		<< "4. Salir" << endl;
 	s << "Elija una opcion: ";
 
 	return s.str();

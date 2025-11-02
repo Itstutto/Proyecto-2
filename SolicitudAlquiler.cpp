@@ -93,7 +93,9 @@ void SolicitudAlquiler::setEstadoTransaccion(int nuevoEstado) {
 
 string SolicitudAlquiler::toResumen() const {
 	stringstream ss;
-	ss << tipoTransaccion << codigoTransaccion << " - " << vehiculo->getPlaca() << " - Cliente: " << cliente->getId() << " - Estado: " << estadoTransaccion;
+	ss << tipoTransaccion << codigoTransaccion << " - " << vehiculo->getPlaca() << " - Cliente: " << cliente->getId() << " - Estado: " << estadoTransaccion << endl
+		<< "Fecha de inicio: " << getFechaInicio() << " - " << "Fecha de entrega: " << getFechaEntrega() << endl
+		<<"- Precio Diario : " << precioDiario << " - Precio Total : " << precioTotal;
 	return ss.str();
 }
 

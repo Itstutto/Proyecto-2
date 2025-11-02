@@ -116,7 +116,6 @@ string ListaPlantel::mostrarListaPlanteles(int ver)
 		ss << "-------------------------------------------------------" << endl
 			<< "No hay planteles disponibles.\n"
 			<< "-------------------------------------------------------" << endl;
-		return ss.str();
 	}
 	NodoPl* actual = primero;
 	int numPlantel = 1;

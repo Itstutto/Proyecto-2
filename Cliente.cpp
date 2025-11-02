@@ -16,8 +16,8 @@ string Cliente::toString() const {
 	stringstream ss;
 	ss << "----------------------------------------------" << endl
 		<< "Cliente - Nombre: " << getNombre() << endl
-	    << ", ID: " << getId() << endl
-	    << ", Pais de residencia: " << paisResidencia << endl
+	    << "ID: " << getId() << endl
+	    << "Pais de residencia: " << paisResidencia << endl
 		<< "----------------------------------------------";
 	return ss.str();
 }

@@ -288,7 +288,7 @@ string ListaSolicitudesContratos::obtenerReporteContratosCliente(string idClient
 			if (contratosCount > 0) {
 				ss << ", "; // Separador
 			}
-			ss << sol->getCodigoTransaccion();
+			ss << sol->getCodigoTransaccion() << "| Placa: "<<sol->getCarro()->getPlaca();
 			contratosCount++;
 		}
 		actual = actual->getSig();

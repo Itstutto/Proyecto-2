@@ -25,6 +25,7 @@ public:
 	Carro* getCarroxPos(int f, int c);
 	Carro* getCarroxPlaca(string placa);
 	bool moverCarro(string placa, Plantel* destino);
+	bool moverCarro(string placa, Plantel* destino, int f, int c);
 	int getCanTotal();
 	int getCanDisponibles();
 
@@ -44,6 +45,7 @@ public:
 	string mostrarEstacionamiento(int ver);
 	string posicionesRecomendadas();
 	void actualizarPrecioCarros(char cateoria);
+	int getCanCarrosDisponibles();
 
 	// --- NUEVOS MÉTODOS PARA REPORTE DE OCUPACIÓN ---
 	double getPorcentajeOcupacion();
