@@ -277,11 +277,11 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 								cout << "Estado Operativo Actual: " << con->getEstadoDetalladoStr() << "\n";
 								cout << "\n----------------------------------------------------\n";
 
-								cout << (con->getEstadoDetallado()==2 ? "1. Ejecutar Contrato\n" : "1. Registrar Devolucion y Finalizar Contrato\n" );
-								cout << "2. Anular Contrato\n";
-								cout << "3. Ver Historial de Carro (Bitacora)\n";
-								cout << "4. Regresar\n";
-
+								cout << (con->getEstadoDetallado()==2 ? "1). Ejecutar Contrato\n" : "1). Registrar Devolucion y Finalizar Contrato\n" );
+								cout << "2). Anular Contrato\n";
+								cout << "3). Ver Historial de Carro (Bitacora)\n";
+								cout << "4). Regresar\n";
+								cout << "\n----------------------------------------------------\n";
 								cout << "Seleccione una opcion: ";
 								cin >> opcion;
 								system("cls");
@@ -399,16 +399,7 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 										else {
 											cout << "El contrato ya ha sido finalizado previamente.\n";
 											
-							
-
-
-											
-											// Lógica pendiente:
-											// 1. Pedir dias utilizados.
-											// 2. Calcular diferencia de dias vs. diasAlquiler.
-											// 3. Aplicar multa/reintegro (70% del diario por dia anticipado).
-											// 4. Actualizar el Contrato: con->setEstadoDetallado(3, "Finalizado [detalle]");
-											// 5. Actualizar el Carro: Buscar Carro por Placa y carro->setEstadosCarro(3, con->getIdColaborador()); // Devuelto
+					
 										}
 										break;
 									}
@@ -513,6 +504,7 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 							break;
 						}
 						case 4: // Regresar
+							system("cls");
 							break;
 						default:
 							cout << "Opcion invalida.\n";
@@ -622,8 +614,15 @@ void Menu::inicializarDatos() {
 	suc1->getColaboradores()->insertarFinal(co2);
 
 	// Solicitudes y Contratos
-	SolicitudAlquiler* sol1 = new SolicitudPendiente(cf1, co1, carro1, 5, 12062024, 17062024, 45.00, 225.00);
-	SolicitudAlquiler* sol2 = new SolicitudPendiente(cj1, co2, carro4, 3, 15062024, 18062024, 55.00, 165.00); // no se agrega a solicitudes porque se aprueba de una vez
+	// Solicitud 1: Pendiente (Carro B: 27000 * 5 dias = 135000)
+	double pd1 = 27000.00;
+	int d1 = 5;
+	SolicitudAlquiler* sol1 = new SolicitudPendiente(cf1, co1, carro1, d1, 12062024, 17062024, pd1, pd1 * d1);
+
+	// Solicitud 2: Contrato (Carro C: 45000 * 3 dias = 135000)
+	double pd2 = 45000.00;
+	int d2 = 3;
+	SolicitudAlquiler* sol2 = new SolicitudPendiente(cj1, co2, carro4, d2, 15062024, 18062024, pd2, pd2 * d2); // no se agrega a solicitudes porque se aprueba de una vez
 	SolicitudAlquiler* sol3 = new ContratoAlquiler(*sol2); // Contrato basado en la solicitud aprobada
 
 	//primero se hace la solicitud, luego se ingresa en la sucursal y se envia una copia al historial del cliente y el colaborador que aprueba
@@ -730,13 +729,30 @@ void Menu::inicializarDatos() {
 	suc2->getColaboradores()->insertarFinal(co7);
 
 
-	// Agregar algunas solicitudes
-	// Solicitudes Pendientes
-	// se agregan tanto a la lista de solicitudes de la sucursal como al historial del cliente y colaborador correspondiente
-	//Precios diarios por categoria:A=20000,B=27000,C=45000,D=34000 (categoria del carro)
-	SolicitudAlquiler* sol4 = new SolicitudPendiente(cf3, co3, carro7, 4, 20062024, 24062024, 50.00, 200.00);
-	SolicitudAlquiler* sol5 = new SolicitudPendiente(cj3, co4, carro9, 2, 21062024, 23062024, 60.00, 120.00);
-	SolicitudAlquiler* sol6 = new SolicitudPendiente(cf4, co5, carro10, 6, 15062024, 21062024, 70.00, 420.00);
+	// Solicitudes y Contratos SUCURSAL 2
+
+	// Solicitud 4: Pendiente (Carro A: 20000 * 4 dias = 80000)
+	double pd4 = 20000.00;
+	int d4 = 4;
+	SolicitudAlquiler* sol4 = new SolicitudPendiente(cf3, co3, carro7, d4, 20062024, 24062024, pd4, pd4 * d4);
+
+	// Solicitud 5: Pendiente (Carro B: 27000 * 2 dias = 54000)
+	double pd5 = 27000.00;
+	int d5 = 2;
+	SolicitudAlquiler* sol5 = new SolicitudPendiente(cj3, co4, carro9, d5, 21062024, 23062024, pd5, pd5 * d5);
+
+	// Solicitud 6: Pendiente (Carro A: 20000 * 6 dias = 120000)
+	double pd6 = 20000.00;
+	int d6 = 6;
+	SolicitudAlquiler* sol6 = new SolicitudPendiente(cf4, co5, carro10, d6, 15062024, 21062024, pd6, pd6 * d6);
+
+	// Solicitud 7: Convertir a Contrato (Carro C: 45000 * 3 dias = 135000)
+	double pd7 = 45000.00;
+	int d7 = 3;
+	SolicitudAlquiler* sol7 = new SolicitudPendiente(cj4, co6, carro11, d7, 18062024, 21062024, pd7, pd7 * d7);
+
+
+	// Proceso Solicitudes Pendientes
 	suc2->getSolicitudes()->insertarFinal(sol4);
 	suc2->getSolicitudes()->insertarFinal(sol5);
 	suc2->getSolicitudes()->insertarFinal(sol6);
@@ -747,12 +763,12 @@ void Menu::inicializarDatos() {
 	cf4->getHistorial()->insertarFinal(new SolicitudPendiente(*sol6));
 	co5->getHistorial()->insertarFinal(new SolicitudPendiente(*sol6));
 
-	// Agregar contratos aprobados directamente
-	SolicitudAlquiler* sol7 = new SolicitudPendiente(cj4, co6, carro11, 3, 18062024, 21062024, 80.00, 240.00);
-	SolicitudAlquiler* con1 = new ContratoAlquiler(*sol7);
-	suc2->getContratos()->insertarFinal(con1);
-	cj4->getHistorial()->insertarFinal(new ContratoAlquiler(*con1));
-	co6->getHistorial()->insertarFinal(new ContratoAlquiler(*con1));
+	// Proceso Solicitud 7 (Convertir a Contrato)
+	suc2->getSolicitudes()->insertarFinal(sol7);
+	cj4->getHistorial()->insertarFinal(new SolicitudPendiente(*sol7));
+	co6->getHistorial()->insertarFinal(new SolicitudPendiente(*sol7));
+	// Llamada a la funcion de conversion (Elimina sol7 de solicitudes y lo pasa a contratos, actualizando el historial)
+	suc2->convertirSolicitudAContrato(sol7->getCodigoTransaccionInt(), co6->getId(), suc2->getSolicitudes(), suc2->getContratos(), suc2->getClientes(), suc2->getColaboradores());
 	sucursales->insertarFinal(suc2);
 
 	// --- INICIO DE NUEVO BLOQUE DE DATOS QUEMADOS (SUCURSAL 3) ---
@@ -813,34 +829,42 @@ void Menu::inicializarDatos() {
 	suc3->getColaboradores()->insertarFinal(co9);
 
 
-	// Solicitudes y Contratos para Sucursal 3
-	// Contrato 1: Antiguo (2023) - Prueba de ordenamiento (mas antiguo)
-	SolicitudAlquiler* sol8_base = new SolicitudPendiente(cf8, co8, carro15, 7, 05112023, 12112023, 40.00, 280.00);
-	SolicitudAlquiler* con2 = new ContratoAlquiler(*sol8_base);
-	suc3->getContratos()->insertarFinal(con2);
-	cf8->getHistorial()->insertarFinal(new ContratoAlquiler(*con2));
-	co8->getHistorial()->insertarFinal(new ContratoAlquiler(*con2)); // Contrato 1 para C8
+	// Solicitudes y Contratos SUCURSAL 3
 
-	// Contrato 2: Alquilado actualmente (carro18) - Prueba de estado Alquilado
-	SolicitudAlquiler* sol9_base = new SolicitudPendiente(cj8, co8, carro18, 5, 28102025, 02112025, 75.00, 375.00);
-	SolicitudAlquiler* con3 = new ContratoAlquiler(*sol9_base);
-	suc3->getContratos()->insertarFinal(con3);
-	cj8->getHistorial()->insertarFinal(new ContratoAlquiler(*con3));
-	co8->getHistorial()->insertarFinal(new ContratoAlquiler(*con3)); // Contrato 2 para C8
+	// Solicitud 8: Convertir a Contrato (Carro A: 20000 * 7 dias = 140000). Contrato Antiguo (05/11/2023)
+	double pd8 = 20000.00;
+	int d8 = 7;
+	SolicitudAlquiler* sol8_base = new SolicitudPendiente(cf8, co8, carro15, d8, 05112023, 12112023, pd8, pd8 * d8);
 
-	// Contrato 3: Reciente (2025) - Prueba de ordenamiento (mas reciente)
-	SolicitudAlquiler* sol10_base = new SolicitudPendiente(cf9, co9, carro16, 10, 30102025, 9112025, 65.00, 650.00);
-	SolicitudAlquiler* con4 = new ContratoAlquiler(*sol10_base);
-	suc3->getContratos()->insertarFinal(con4);
-	cf9->getHistorial()->insertarFinal(new ContratoAlquiler(*con4));
-	co9->getHistorial()->insertarFinal(new ContratoAlquiler(*con4));
+	// Solicitud 9: Convertir a Contrato (Carro C: 45000 * 5 dias = 225000). Contrato Alquilado (28/10/2025)
+	double pd9 = 45000.00;
+	int d9 = 5;
+	SolicitudAlquiler* sol9_base = new SolicitudPendiente(cj8, co8, carro19, d9, 28102025, 02112025, pd9, pd9 * d9);
 
-	// Contrato 4: Otro contrato para colaborador C8
-	SolicitudAlquiler* sol11_base = new SolicitudPendiente(cf8, co8, carro19, 2, 01112024, 03112024, 80.00, 160.00);
-	SolicitudAlquiler* con5 = new ContratoAlquiler(*sol11_base);
-	suc3->getContratos()->insertarFinal(con5);
-	cf8->getHistorial()->insertarFinal(new ContratoAlquiler(*con5));
-	co8->getHistorial()->insertarFinal(new ContratoAlquiler(*con5)); // Contrato 3 para C8 (Prueba Reporte Colaborador)
+	// Solicitud 10: Convertir a Contrato (Carro B: 27000 * 10 dias = 270000). Contrato Reciente (30/10/2025)
+	double pd10 = 27000.00;
+	int d10 = 10;
+	SolicitudAlquiler* sol10_base = new SolicitudPendiente(cf9, co9, carro16, d10, 30102025, 9112025, pd10, pd10 * d10);
+
+	// Proceso Solicitudes a Contrato (Se repite el patron de SUCURSAL 1)
+
+	// Solicitud 8
+	suc3->getSolicitudes()->insertarFinal(sol8_base);
+	cf8->getHistorial()->insertarFinal(new SolicitudPendiente(*sol8_base));
+	co8->getHistorial()->insertarFinal(new SolicitudPendiente(*sol8_base));
+	suc3->convertirSolicitudAContrato(sol8_base->getCodigoTransaccionInt(), co8->getId(), suc3->getSolicitudes(), suc3->getContratos(), suc3->getClientes(), suc3->getColaboradores());
+
+	// Solicitud 9
+	suc3->getSolicitudes()->insertarFinal(sol9_base);
+	cj8->getHistorial()->insertarFinal(new SolicitudPendiente(*sol9_base));
+	co8->getHistorial()->insertarFinal(new SolicitudPendiente(*sol9_base));
+	suc3->convertirSolicitudAContrato(sol9_base->getCodigoTransaccionInt(), co8->getId(), suc3->getSolicitudes(), suc3->getContratos(), suc3->getClientes(), suc3->getColaboradores());
+
+	// Solicitud 10
+	suc3->getSolicitudes()->insertarFinal(sol10_base);
+	cf9->getHistorial()->insertarFinal(new SolicitudPendiente(*sol10_base));
+	co9->getHistorial()->insertarFinal(new SolicitudPendiente(*sol10_base));
+	suc3->convertirSolicitudAContrato(sol10_base->getCodigoTransaccionInt(), co9->getId(), suc3->getSolicitudes(), suc3->getContratos(), suc3->getClientes(), suc3->getColaboradores());
 
 	sucursales->insertarFinal(suc3);
 
@@ -854,6 +878,7 @@ void Menu::iniciar() {
 }
 
 void Menu::menuPrincipal() {
+	system("cls");
 	int opcion = 0; //se usa en TODOS los menus
 	Sucursal* s = nullptr; // Sucursal seleccionada
 	Plantel* p = nullptr; // Plantel seleccionado
@@ -1035,12 +1060,18 @@ void Menu::menuPrincipal() {
 						// AGREGAR NUEVO CLIENTE 
 						else if (opcion == lc->getTam() + 2) {
 							do {
-								cout << "Elija el tipo de cliente a agregar " << endl
-									<< "1. Cliente Fisico" << endl
-									<< "2. Cliente Juridico" << endl;
+								cout << "Elija el tipo de cliente a agregar: " << endl
+									<< "-------------------------------------------" << endl
+									<< "1). Cliente Fisico" << endl
+									<< "-------------------------------------------" << endl
+									<< "2). Cliente Juridico" << endl
+									<< "-------------------------------------------" << endl
+									<< "seleccione una opcion: ";
 								cin >> tipoCliente;
 								if (!validarEntero(tipoCliente) && (tipoCliente != 1 && tipoCliente != 2)) {
 									cout << "Opcion invalida. Intente de nuevo." << endl;
+									system("pause");
+									system("cls");
 									continue;
 								}
 							} while (validarEntero(tipoCliente));
@@ -1056,6 +1087,8 @@ void Menu::menuPrincipal() {
 								cout << "Cliente con esa cedula ya existe. Operacion cancelada." << endl;
 								delete cli;
 								cli = nullptr;
+								system("pause");	
+								system("cls");
 								continue;
 							}
 							cli->setId(textos);
@@ -1085,11 +1118,14 @@ void Menu::menuPrincipal() {
 							if (sn == 's' || sn == 'S') {
 								if (lc->insertarFinal(cli)) {
 									cout << "Cliente agregado exitosamente." << endl;
+									system("pause");
+									system("cls");
 								}
 								else {
 									cout << "Error: No se pudo agregar el cliente. Puede que ya exista un cliente con esa cedula." << endl;
 									//no se elimina cli porque el insertarFinal lo hace en caso de error
 									cli = nullptr;
+
 								}
 							}
 							else {
@@ -1120,6 +1156,8 @@ void Menu::menuPrincipal() {
 									if (s->getSolicitudes()->transaccionesCliente(cli->getId()) || s->getContratos()->transaccionesCliente(cli->getId())) {
 										system("cls");
 										cout << "No se puede eliminar al cliente " << cli->getNombre() << " con ID " << cli->getId() << " porque tiene solicitudes o contratos asociados." << endl;
+										system("pause");
+										system("cls");
 										continue;
 									}
 									
@@ -1133,20 +1171,27 @@ void Menu::menuPrincipal() {
 										s->getColaboradores()->eliminarClienteHistorial(cli->getId());
 										if (lc->eliminarPersona(cli->getId())) {
 											cout << "Cliente eliminado exitosamente." << endl;
-
+											system("pause");
+											system("cls");
 
 										}
 										else {
 											cout << "Error: No se pudo eliminar el cliente." << endl;
+											system("pause");
+											system("cls");
 										}
 									}
 									else {
 										cout << "Eliminacion de cliente cancelada." << endl;
+										system("pause");
+										system("cls");
 									}
 								}
 								else {
 									system("cls");
 									cout << "Opcion invalida. Intente de nuevo." << endl << endl;
+									system("pause");
+									system("cls");
 								}
 
 							} while (opcion != lc->getTam() + 1);
@@ -1158,6 +1203,8 @@ void Menu::menuPrincipal() {
                         else {
                             system("cls");
                             cout << "Opcion invalida. Intente de nuevo." << endl << endl;
+							system("pause");
+							system("cls");
                         }
 					} while (opcion != lc->getTam() + 4);
 					opcion = 0; // Reiniciar opcion para el menu de sucursal
@@ -1337,6 +1384,7 @@ void Menu::menuPrincipal() {
 								case 1: // Ver todos los carros
 									cout << p->mostrarEstacionamiento(0)<<endl;
 									system("pause");
+									system("cls");
 									break;
 								case 2: {// Ver carro especifico
 									do {
@@ -1401,15 +1449,19 @@ void Menu::menuPrincipal() {
 											}
 											if (resultado == 1) { 
 												cout << "Estado del carro actualizado exitosamente." << endl;
+												system("pause");
 											}
 											else if (resultado == -2) {
 												cout << "Error: El carro ya se encuentra en ese estado." << endl;
+												system("pause");
 											}
 											else if (resultado == -1) {
 												cout << "Error: No se puede cambiar al estado desde el estado actual." << endl;
+												system("pause");
 											}
 											else {
 												cout << "Error: No se pudo actualizar el estado del carro." << endl;
+												system("pause");
 											}
 										case 3: { // Mover carro a otro plantel
 											if (car->getEstadoCarro() == "Alquilado") {
@@ -1515,10 +1567,11 @@ void Menu::menuPrincipal() {
 									car->setCategoria(carac);
 									int fila, columna;
 									do {
-										cout << p->mostrarEstacionamiento(0);
+										
 										do {
-											
-											cout << "Digite la posicion donde desea agregar el carro ";
+											system("cls");
+											cout << p->mostrarEstacionamiento(0);
+											cout << "Digite la posicion donde desea agregar el carro " << endl;
 											cout << "Ubicaciones recomendadas: " << p->posicionesRecomendadas() << endl;
 											cout << "Fila: ";
 											cin >> fila;
@@ -1526,6 +1579,8 @@ void Menu::menuPrincipal() {
 										} while (validarEntero(fila));
 										
 										do {
+											system("cls");
+											cout << p->mostrarEstacionamiento(0);
 											cout << "Columna: ";
 											cin >> columna;
 										} while (validarEntero(columna));
@@ -1533,6 +1588,8 @@ void Menu::menuPrincipal() {
 										if (!p->esPosicionValida(fila, columna)) {
 											system("cls");
 											cout << "Posicion invalida o ya ocupada. Intente de nuevo." << endl;
+											system("pause");
+											system("cls");
 										}
 
 									} while (!p->esPosicionValida(fila, columna));
@@ -1544,15 +1601,21 @@ void Menu::menuPrincipal() {
 										system("cls");
 										if (p->agregarCarro(car, fila, columna)) {
 											cout << "Carro agregado exitosamente." << endl;
+											system("pause");
+											system("cls");
 										}
 										else {
 											cout << "Error: No se pudo agregar el carro. Puede que ya exista un carro con esa placa." << endl;
+											system("pause");
+											system("cls");
 											//no se elimina car porque el agregarCarro lo hace en caso de error
 											car = nullptr;
 										}
 									}
 									else {
 										cout << "Creacion de carro cancelada." << endl;
+										system("pause");
+										system("cls");
 										delete car; // eliminar carro creado
 										car = nullptr;
 									}
@@ -1566,6 +1629,8 @@ void Menu::menuPrincipal() {
 									} while (!car);
 									if(car->getEstadoCarro() == "Alquilado") {
 										cout << "No se puede eliminar el carro porque esta alquilado. Operacion cancelada." << endl;
+										system("pause");
+										system("cls");
 										continue;
 									}
 									cout << "Esta seguro de eliminar el carro con placa " << car->getPlaca() << "? (s/n): ";
@@ -1580,18 +1645,26 @@ void Menu::menuPrincipal() {
 
 										if (p->eliminarCarro(car->getPlaca())) {
 											cout << "Carro eliminado exitosamente." << endl;
+											system("pause");
+											system("cls");
 										}
 										else {
 											cout << "Error: No se pudo eliminar el carro." << endl;
+											system("pause");
+											system("cls");
 										}
 									}
 									else {
 										cout << "Eliminacion de carro cancelada." << endl;
+										system("pause");
+										system("cls");
 									}
 								case 5: 
 									break; // Regresar
 								default:
 									cout << "Opcion invalida. Intente de nuevo." << endl;
+									system("pause");
+									system("cls");
 									break;
 								}
 							} while (opcion != 5);
@@ -1603,6 +1676,8 @@ void Menu::menuPrincipal() {
 							cin >> carac;
 							if (lp->buscarPlantel(carac)) {
 								cout << "Plantel con ese identificador ya existe. Operacion cancelada." << endl;
+								system("pause");
+								system("cls");
 								continue;
 							}
 							int filas, columnas;
@@ -1622,15 +1697,21 @@ void Menu::menuPrincipal() {
 								system("cls");
 								if (lp->insertarFinal(p)) {
 									cout << "Plantel agregado exitosamente." << endl;
+									system("pause");
+									system("cls");
 								}
 								else {
 									cout << "Error: No se pudo agregar el plantel. Puede que ya exista un plantel con ese identificador." << endl;
+									system("pause");
+									system("cls");
 									//no se elimina p porque el insertarFinal lo hace en caso de error
 									p = nullptr;
 								}
 							}
 							else {
 								cout << "Creacion de plantel cancelada." << endl;
+								system("pause");
+								system("cls");
 								delete p; // eliminar plantel creado
 								p = nullptr;
 							}
@@ -1736,6 +1817,7 @@ void Menu::menuPrincipal() {
 
 						switch (enteros) {
 							case 1: { // Crear Solicitud de Alquiler
+								system("cls");	
 								lc = s->getClientes();
 								lcol = s->getColaboradores();
 								sol = new SolicitudPendiente();
@@ -1748,12 +1830,16 @@ void Menu::menuPrincipal() {
 								if (enteros == lc->getTam() + 1) {
 									delete sol;
 									sol = nullptr;
+									system("cls");
 									cout << "Operacion cancelada." << endl;
+									system("pause");
+									system("cls");
 									break; // cancelar
 								}
 								cli = dynamic_cast<Cliente*>(lc->obtenerPersonaPorIndice(enteros));
 								sol->setCliente(cli);
 								do {
+									system("cls");
 									cout << "Seleccione el colaborador que atiende la solicitud: " << endl;
 									cout << s->getColaboradores()->mostrarPersonas(1);
 									cin >> enteros;
@@ -1762,7 +1848,10 @@ void Menu::menuPrincipal() {
 								if (enteros == lcol->getTam() + 1) {
 									delete sol;
 									sol = nullptr;
+									system("cls");
 									cout << "Operacion cancelada." << endl;
+									system("pause");
+									system("cls");
 									break; // cancelar
 								}
 								colab = dynamic_cast<Colaborador*>(lcol->obtenerPersonaPorIndice(enteros));
@@ -1776,14 +1865,20 @@ void Menu::menuPrincipal() {
 								if (enteros == s->getPlanteles()->getTam() + 1) {
 									delete sol;
 									sol = nullptr;
+									system("cls");
 									cout << "Operacion cancelada." << endl;
+									system("pause");
+									system("cls");
 									break; // cancelar
 								}
 								p = s->getPlanteles()->buscarPlantel(enteros);
 
 								if (p->getCanCarrosDisponibles() == 0) {
+									system("cls");
 									cout << "No hay carros disponibles en el plantel seleccionado"<<endl
 										<<"Operacion cancelada" << endl;
+									system("pause");
+									system("cls");
 									delete sol;
 									sol = nullptr;
 									break;
@@ -1805,7 +1900,10 @@ void Menu::menuPrincipal() {
 										break; // Carro valido seleccionado
 									}
 									else {
+										system("cls");
 										cout << "Placa invalida o carro no disponible. Intente de nuevo." << endl;
+										system("pause");
+										system("cls");
 									}
 								} while (true);
 								do {
@@ -1828,20 +1926,29 @@ void Menu::menuPrincipal() {
 								cin >> sn;
 								if (sn == 's' || sn == 'S') {
 									if (s->getSolicitudes()->insertarFinal(sol)) {
+										system("cls");
 										cout << "Solicitud de alquiler creada exitosamente." << endl;
+										system("pause");
+										system("cls");
 										//mandar a historial del cliente una copia de la solicitud
 										cli->getHistorial()->insertarFinal(new SolicitudPendiente(*sol));
 										//mandar a historial del colaborador una copia de la solicitud
 										colab->getHistorial()->insertarFinal(new SolicitudPendiente(*sol));
 									}
 									else {
+										system("cls");
 										cout << "Error: No se pudo crear la solicitud de alquiler." << endl;
+										system("pause");
+										system("cls");
 										delete sol;
 										sol = nullptr;
 									}
 								}
 								else {
+									system("cls");
 									cout << "Creacion de solicitud de alquiler cancelada." << endl;
+									system("pause");
+									system("cls");
 									delete sol;
 									sol = nullptr;
 								}
@@ -1931,16 +2038,25 @@ void Menu::menuPrincipal() {
 				cin >> sn;
 				if (sn == 's' || sn == 'S') {
 					if (sucursales->insertarFinal(nuevaSuc)) {
+						system("cls");
 						cout << "Sucursal creada exitosamente." << endl;
+						system("pause");
+						system("cls");
 					}
 					else {
+						system("cls");	
 						cout << "Error: No se pudo crear la sucursal. Puede que ya exista una sucursal con ese numero." << endl;
+						system("pause");
+						system("cls");
 						delete nuevaSuc;
 						nuevaSuc = nullptr;
 					}
 				}
 				else {
+					system("cls");
 					cout << "Creacion de sucursal cancelada." << endl;
+					system("pause");
+					system("cls");
 					delete nuevaSuc;
 					nuevaSuc = nullptr;
 				}
@@ -1965,6 +2081,8 @@ void Menu::menuPrincipal() {
 				}
 				if (enteros < 1 || enteros > sucursales->getTam()) {
 					cout << "Opcion invalida. Intente de nuevo." << endl;
+					system("pause");
+					system("cls");
 					continue; // reintentar si esta fuera de rango
 				}
 				break; // valido
@@ -1973,22 +2091,34 @@ void Menu::menuPrincipal() {
 			if (!cancelar) {
 				Sucursal* sel = sucursales->obtenerSucursalPorIndice(enteros);
 				if (!sel) {
+					system("cls");
 					cout << "Seleccion invalida. Intente de nuevo." << endl;
+					system("pause");
+					system("cls");
 				}
 				else {
 					cout << "Esta seguro de eliminar la sucursal numero " << sel->getNumeroSucursal() << "? \nCon esto elimina TODO (Planteles, Carros, Contratos, CLientes, etc) (s/n): ";
 					cin >> sn;
 					if (sn == 's' || sn == 'S') {
 						if (sucursales->eliminarSucursal(sel->getNumeroSucursal())) {
+							system("cls");
 							cout << "Sucursal eliminada exitosamente." << endl;
+							system("pause");
+							system("cls");
 							opcion = 0;
 						}
 						else {
+							system("cls");	
 							cout << "Error: No se pudo eliminar la sucursal." << endl;
+							system("pause");
+							system("cls");
 						}
 					}
 					else {
+						system("cls");
 						cout << "Eliminacion de sucursal cancelada." << endl;
+						system("pause");
+						system("cls");
 					}
 				}
 				system("pause");

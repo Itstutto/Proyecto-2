@@ -170,11 +170,14 @@ string Carro::mostrarEstadosCarro()
 
 string Carro::toString() {
 	stringstream ss;
-	ss << "---------------------------------------------------------------------------" << endl;
-	ss << "Carro [Placa: " << placa << ", Modelo: " << modelo << ", Marca: " << marca
-		<< ", Ubicacion: " << ubicacion << ", Tipo Licencia: " << tipoLicencia
-		<< ", Categoria: " << categoria << ", Precio Diario: " << precioDiario << "]"<<endl
+	ss << endl << "------------------------------------------------------------------------------------------" << endl;
+	ss << "Carro: " << endl
+		<< "------------------------------------------------------------------------------------------" << endl;
+	ss << " Placa: " << placa << " | Modelo: " << modelo << " | Marca: " << marca << " | Ubicacion: " << ubicacion << endl
+		<< "------------------------------------------------------------------------------------------" << endl
+		<< " Tipo Licencia: " << tipoLicencia << " | Categoria: " << categoria << " | Precio Diario: " << precioDiario <<endl
+		<< "------------------------------------------------------------------------------------------" << endl
 		<< getHistorialEstados();
-	ss << "---------------------------------------------------------------------------" << endl;
+	ss << "------------------------------------------------------------------------------------------" << endl;
 	return ss.str();
 }

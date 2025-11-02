@@ -39,10 +39,10 @@ string ListaClientes1::mostrarPersonas(int ver) {
 			<< "----------------------------------------------------------" << endl;
 		ss << opcion++ << "). Agregar nuevo cliente" << endl
 			<< "----------------------------------------------------------" << endl;
-		ss << opcion++ << "). Eliminar cliente" << endl
-			<< "----------------------------------------------------------" << endl;
+		ss << opcion++ << "). Eliminar cliente";
 	}
-		ss << opcion << "). Salir" << endl
+         ss << "----------------------------------------------------------" << endl;
+		 ss << opcion << "). Salir" << endl
             << "----------------------------------------------------------" << endl
             << "Seleccione una opcion: ";
 

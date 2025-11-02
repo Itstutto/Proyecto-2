@@ -31,7 +31,7 @@ string EstadoBitacora::getIdColaborador() const { return idColaborador; }
 string EstadoBitacora::toString() const {
 	stringstream ss;
 	if (estadoAnterior == estadoActual) {
-		ss << "Primer estado registrado: "<< estadoActual << "| Fecha: " << fechaCambio << " (ID colaborador: " << idColaborador << ")";
+		ss << " Primer estado registrado: "<< estadoActual << "| Fecha: " << fechaCambio << " (ID colaborador: " << idColaborador << ")";
 	}
 	else {
 		ss << fechaCambio << "| De: " << estadoAnterior << "| ->  |A:" << estadoActual << "| "

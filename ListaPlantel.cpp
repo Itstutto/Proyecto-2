@@ -121,11 +121,12 @@ string ListaPlantel::mostrarListaPlanteles(int ver)
 	int numPlantel = 1;
 	while (actual != nullptr) {
 		ss << numPlantel<<"). "<< "Plantel "<< actual->getDato()->getIdentificador() << "): \n";
+		ss << "-------------------------------------------------------" << endl;
 		actual = actual->getSig();
 		numPlantel++;
 	}
 	if (ver == 0) {
-		ss << "-------------------------------------------------------" << endl;
+		
 		ss << numPlantel++ << "). Crear nuevo plantel\n";
 		ss << "-------------------------------------------------------" << endl;
 		ss << numPlantel++ << "). Eliminar plantel\n";
