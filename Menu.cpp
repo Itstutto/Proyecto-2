@@ -369,7 +369,7 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 												Plantel* plantelDev = sucDev->getPlanteles()->buscarPlantel(enteros);
 												do {
 													cout << plantelDev->mostrarEstacionamiento(0) << endl;
-													cout << plantelDev->posicionesRecomendadas();
+													cout << plantelDev->posicionesRecomendadas() << endl;
 													
 													cout << "Digite la fila donde se devolvera el carro: ";
 													cin >> fila;
@@ -381,6 +381,8 @@ void Menu::gestionarTransacciones(ListaSolicitudesContratos* lsc)
 													if (!agregado) {
 														system("cls");
 														cout << "Lugar de estacionamiento no disponible o invalido, intentelo nuevamente" << endl;
+														system("pause");
+														system("cls");
 													}
 													
 												}while(!agregado);
@@ -1213,7 +1215,6 @@ void Menu::menuPrincipal() {
                 case 2:// Inicia gestionar colaboradores--------------------------------------------------------------------
 					lcol = s->getColaboradores();
 					do {
-						system("cls");
 						do {
 							cout << s->getColaboradores()->mostrarPersonas(0);
 							cin >> opcion;
@@ -1298,13 +1299,15 @@ void Menu::menuPrincipal() {
 									//no se elimina colab porque el insertarFinal lo hace en caso de error
 									colab = nullptr;
 								}
+								
 							}
 							else {
 								cout << "Creacion de colaborador cancelada." << endl;
 								delete colab; // eliminar colaborador creado
 								colab = nullptr;
 							}
-
+							system("pause");
+							system("cls");
 
 							
 						}
@@ -1843,6 +1846,7 @@ void Menu::menuPrincipal() {
 									cout << "Seleccione el colaborador que atiende la solicitud: " << endl;
 									cout << s->getColaboradores()->mostrarPersonas(1);
 									cin >> enteros;
+									system("cls");
 									if (validarEntero(enteros)) continue;
 								} while (enteros<0 || enteros>lcol->getTam() + 1);
 								if (enteros == lcol->getTam() + 1) {

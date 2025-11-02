@@ -39,7 +39,7 @@ string ListaClientes1::mostrarPersonas(int ver) {
 			<< "----------------------------------------------------------" << endl;
 		ss << opcion++ << "). Agregar nuevo cliente" << endl
 			<< "----------------------------------------------------------" << endl;
-		ss << opcion++ << "). Eliminar cliente";
+		ss << opcion++ << "). Eliminar cliente"<<endl;
 	}
          ss << "----------------------------------------------------------" << endl;
 		 ss << opcion << "). Salir" << endl
@@ -146,7 +146,7 @@ string ListaClientes1::generarReporteClientes() {
                 ss << rank++ << "). Cliente: " << c->getNombre() << endl;
                 ss << "   -> ID: " << c->getId() << endl;
                 ss << "   -> Cantidad de Contratos (Estado 2): " << contratosCount << endl;
-                ss << "   -> Códigos de Contratos: [" << (contratosCodes.empty() ? "Ninguno" : contratosCodes) << "]" << endl;
+                ss << "   -> Codigos de Contratos: [" << (contratosCodes.empty() ? "Ninguno" : contratosCodes) << "]" << endl;
                 ss << "-----------------------------------------------------------------" << endl;
             }
         }

@@ -336,7 +336,7 @@ string ListaSolicitudesContratos::mostrarHistorialCompletado() const {
 
 string ListaSolicitudesContratos::generarReporteContratosPorVehiculo(string placaVehiculo) const {
 	stringstream ss;
-	ss << "\n======= REPORTE DE CONTRATOS PARA VEHÍCULO ESPECÍFICO =======\n" << endl;
+	ss << "\n======= REPORTE DE CONTRATOS PARA VEHICULO ESPECIFICO =======\n" << endl;
 	ss << "Placa Solicitada: " << placaVehiculo << endl;
 	ss << "-----------------------------------------------------------------" << endl;
 
@@ -356,11 +356,11 @@ string ListaSolicitudesContratos::generarReporteContratosPorVehiculo(string plac
 				? contrato->getEstadoDetalladoStr()
 				: "Contrato Activo/Vigente";
 			ss << "-----------------------------------------------------------------" << endl;
-			ss << "\n--- Contrato CÓDIGO: " << sol->getCodigoTransaccion() << " ---\n";
+			ss << "\n--- Contrato CODIGO: " << sol->getCodigoTransaccion() << " ---\n";
 			ss << "ID Cliente: " << sol->getIdCliente() << endl;
 			ss << "Días de Alquiler: " << sol->getDiasAlquiler() << endl;
 			ss << "Fecha de Inicio: " << sol->getFechaInicio() << endl;
-			ss << "Fecha de Devolución: " << sol->getFechaEntrega() << endl;
+			ss << "Fecha de Devolucion: " << sol->getFechaEntrega() << endl;
 			ss << "Estado de Contrato: " << estadoDetallado << endl;
 			ss << "-----------------------------------------------------------------" << endl;
 
