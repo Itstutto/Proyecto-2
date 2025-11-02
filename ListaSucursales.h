@@ -22,7 +22,11 @@ public:
 	Sucursal* obtenerSucursalPorIndice(int indice);
 	bool modificarPrecioCategoria(char categoria, double nuevoPrecio);
 
-	// NUEVO: Genera el reporte iterando sobre todas las sucursales
+	// Genera el reporte iterando sobre todas las sucursales
 	string generarReporteGlobalContratos() const;
+
+	// Genera el reporte iterando sobre todas las sucursales y busca por placa
+	string generarReporteGlobalContratosPorVehiculo(const string& placa) const;
 };
+
 

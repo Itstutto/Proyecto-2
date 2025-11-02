@@ -559,6 +559,13 @@ bool Menu::validarFlotante(double& opcion) {
 	return false;
 }
 
+void Menu::mostrarReporteContratosPorVehiculo(const string& placa) {
+	system("cls");
+	cout << sucursales->generarReporteGlobalContratosPorVehiculo(placa) << endl;
+	system("pause");
+}
+
+
 void Menu::inicializarDatos() {
 	Sucursal* suc1 = new Sucursal(1);
 
@@ -841,7 +848,6 @@ void Menu::inicializarDatos() {
 
 
 }
-
 void Menu::iniciar() {
 	inicializarDatos();
 	menuPrincipal();
@@ -1405,7 +1411,7 @@ void Menu::menuPrincipal() {
 											else {
 												cout << "Error: No se pudo actualizar el estado del carro." << endl;
 											}
-										case 3: {
+										case 3: { // Mover carro a otro plantel
 											if (car->getEstadoCarro() == "Alquilado") {
 												cout << "No se puede mover el carro porque esta alquilado. Operacion cancelada." << endl;
 												break;
@@ -1460,7 +1466,11 @@ void Menu::menuPrincipal() {
 											}
 
 										}
-										case 4: // Regresar
+										case 4: { // Reporte de contratos para vehiculo especifico (10 pts)
+											mostrarReporteContratosPorVehiculo(car->getPlaca());
+											break;
+										}
+										case 5: // Regresar
 											system("cls");
 											break; 
 										default:
@@ -1469,7 +1479,7 @@ void Menu::menuPrincipal() {
 											break;
 										}
 
-									} while (opcion != 4); // Regresar
+									} while (opcion != 5); // Regresar
 									system("pause");
 									break;
 								}

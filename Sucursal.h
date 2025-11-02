@@ -39,11 +39,12 @@ public:
 		ListaClientes1* listaClientes,
 		ListaColaboradores1* listaColaboradores);
 
-	// REPORTE DE OCUPACIÓN DE PLANTELES (REPORTE 2)
+	// Genera un reporte de ocupacion de planteles en la sucursal
 	string generarReporteOcupacionPlanteles();
-
-	// NUEVO: REPORTE DE CONTRATOS POR SUCURSAL
+	// Genera un reporte de contratos ordenados por fecha de inicio (mas reciente a mas antiguo)
 	string generarReporteContratosPorSucursal() const;
-
+	// Muestra las opciones del menú de la sucursal
 	string mostrarOpciones();
+	// Genera un reporte detallado de los contratos asociados a un vehículo específico
+	string generarReporteContratosVehiculo(const string& placa) const;
 };

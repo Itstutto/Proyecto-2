@@ -19,7 +19,7 @@ public:
 	~Menu();
 
 	void gestionarTransacciones(ListaSolicitudesContratos* lsc);
-
+	void mostrarReporteContratosPorVehiculo(const string& placa);
 
 	void iniciar();
 	void menuPrincipal();

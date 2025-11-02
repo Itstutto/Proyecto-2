@@ -140,10 +140,17 @@ string Carro::mostrarCarro()
 {
 	stringstream s;
 	s << "Carro: " << placa << endl;
+	s << "-------------------------------------------------------------------------------" << endl;
 	s << "1. Ver informacion del carro" << endl;
+	s << "-------------------------------------------------------------------------------" << endl;
 	s << (getEstadoCarro() != "Alquilado" ? "2. Modificar estado del carro" : "2. Modificar estado del carro (No disponible el carro se encuentra alquilado)") << endl
+		<< "-------------------------------------------------------------------------------" << endl
 		<< "3. Reubicar carro" << endl
-		<< "4. Salir" << endl;
+		<< "-------------------------------------------------------------------------------" << endl
+		<< "4. Reporte de contratos para vehiculo especifico" << endl
+		<< "-------------------------------------------------------------------------------" << endl
+		<< "5. Salir" << endl
+		<< "-------------------------------------------------------------------------------" << endl;
 	s << "Elija una opcion: ";
 
 	return s.str();

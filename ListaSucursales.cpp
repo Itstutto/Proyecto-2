@@ -38,7 +38,7 @@ void ListaSucursales::alquilarCarro(Plantel* alquiler, string placa)
 			if (origen) {
 				origen->moverCarro(placa, alquiler);
 			}
-			return; // Carro movido, salir de la función
+			return; // Carro movido, salir de la funcion
 		}
 		actual = actual->getSig();
 	}
@@ -182,5 +182,48 @@ string ListaSucursales::generarReporteGlobalContratos() const {
 	}
 
 	ss << "=================================================================================\n";
+	return ss.str();
+}
+
+// Implementacion del Reporte Global por Vehiculo Especifico
+string ListaSucursales::generarReporteGlobalContratosPorVehiculo(const string& placa) const {
+	stringstream ss;
+	ss << "\n======= REPORTE GLOBAL: CONTRATOS PARA PLACA " << placa << " =======\n";
+
+	
+
+	stringstream ssVacio;
+	// 1. Construccion del mensaje de no encontrado
+	// Este es el formato estandar de reporte vacio
+	ssVacio << "\n======= REPORTE DE CONTRATOS PARA VEHICULO ESPECIFICO =======\n" << endl;
+	ssVacio << "Placa Solicitada: " << placa << endl;
+	ssVacio << "-----------------------------------------------------------------" << endl;
+	// Mensaje de no encontrado
+	ssVacio << "No se encontraron contratos (Estado 2) asociados a la placa " << placa << "." << endl;
+	// Cierre del reporte
+	ssVacio << "======================================================================\n";
+	string reporteVacioEsperado = ssVacio.str();
+
+	NodoSuc* actual = primero;
+	bool encontradoGlobal = false;
+
+	while (actual) {
+		string reporteSucursal = actual->getDato()->generarReporteContratosVehiculo(placa);
+
+		// 2. Verificacion de contenido: si el reporte NO es IGUAL a la cadena vacia, tiene contratos.
+		if (reporteSucursal != reporteVacioEsperado) {
+			ss << "\n--- Resultados en Sucursal " << actual->getDato()->getNumeroSucursal() << " ---\n";
+			// Se imprime el reporte completo (que ya incluye el formato de ListaSolicitudesContratos)
+			ss << reporteSucursal;
+			encontradoGlobal = true;
+		}
+		actual = actual->getSig();
+	}
+
+	if (!encontradoGlobal) {
+		ss << "No se encontraron contratos (Estado 2) para el vehiculo con placa " << placa << " en ninguna sucursal." << endl;
+	}
+
+	ss << "======================================================================\n";
 	return ss.str();
 }

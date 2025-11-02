@@ -48,11 +48,11 @@ Carro* Sucursal::buscarCarroPorPlaca(const string& placa)
 		}
 		actual = actual->getSig();
 	}
-	return nullptr; // No se encontró el carro en ningún plantel
+	return nullptr; // No se encontro el carro en ningun plantel
 }
 bool Sucursal::modificarPrecioCategoria(char categoria, double nuevoPrecio) {
 	if (categoria < 'A' || categoria > 'D' || nuevoPrecio < 0) {
-		return false; // Categoría inválida o precio negativo
+		return false; // Categoria invalida o precio negativo
 	}
 	switch (categoria) {
 	case 'A':
@@ -88,7 +88,7 @@ string Sucursal::mostrarOpciones() {
 	return ss.str();
 }
 
-// Implementación 2: Método de Conversión Crítico
+// Implementacion 2: Metodo de Conversion Critico
 bool Sucursal::convertirSolicitudAContrato(int idSolicitud, const string& idColaboradorAprueba,
 	ListaSolicitudesContratos* listaSolicitudes,
 	ListaSolicitudesContratos* listaContratos,
@@ -110,19 +110,19 @@ bool Sucursal::convertirSolicitudAContrato(int idSolicitud, const string& idCola
 		return false;
 	}
 
-	// 3. Validar Carro y Disponibilidad (CRÍTICO)
+	// 3. Validar Carro y Disponibilidad (CRITICO)
 	string placaCarro = solicitud->getPlacaVehiculo();
 	Carro* carro = buscarCarroPorPlaca(placaCarro);
 
 	if (!carro) {
 		cout << "ERROR: El carro con placa " << placaCarro << " no existe en la sucursal. Solicitud cancelada." << endl;
-		// La solicitud debe ser eliminada/rechazada si el carro ya no está.
+		// La solicitud debe ser eliminada/rechazada si el carro ya no esta.
 		solicitud->setEstadoTransaccion(3); // Estado 3: Rechazada
 		listaSolicitudes->eliminarTransaccionPorCodigo(idSolicitud);
 		return false;
 	}
 	
-	// VALIDACIÓN DE ESTADO: Impedir conversión si el carro NO está "Disponible"
+	// VALIDACION DE ESTADO: Impedir conversion si el carro NO esta "Disponible"
 	if (carro->getEstadoCarro() != "Disponible") {
 		cout << "AVISO: El carro " << placaCarro << " NO esta disponible (Estado: " << carro->getEstadoCarro() << ")." << endl;
 		cout << "Solicitud " << solicitud->getCodigoTransaccion() << " cancelada y marcada como RECHAZADA." << endl;
@@ -137,7 +137,7 @@ bool Sucursal::convertirSolicitudAContrato(int idSolicitud, const string& idCola
 		return false;
 	}
 	
-	// --- CONVERSIÓN EXITOSA ---
+	// --- CONVERSION EXITOSA ---
 
 	// 4. Crear el Contrato (Requiere el constructor copia)
 	ContratoAlquiler* nuevoContrato = new ContratoAlquiler(*solicitud);
@@ -146,19 +146,19 @@ bool Sucursal::convertirSolicitudAContrato(int idSolicitud, const string& idCola
 	nuevoContrato->setColaborador(colabAprobador);
 	const int ESTADO_CONTRATO_ACTIVO = 2; 
 	nuevoContrato->setEstadoTransaccion(ESTADO_CONTRATO_ACTIVO); 
-	// EstadoDetallado por defecto podría ser 'Pendiente de Ejecución' (2)
+	// EstadoDetallado por defecto podria ser 'Pendiente de Ejecucion' (2)
 	nuevoContrato->setEstadoDetallado(2, "Pendiente de Ejecucion");
 
 	// 5. Marcar el Carro como "Alquilado" (Estado 2) y registrar el colaborador
 	const int ESTADO_CARRO_ALQUILADO = 2;
-	carro->setEstadosCarro(ESTADO_CARRO_ALQUILADO, idColaboradorAprueba); // Este método actualiza la Bitácora del carro.
+	carro->setEstadosCarro(ESTADO_CARRO_ALQUILADO, idColaboradorAprueba); // Este metodo actualiza la Bitacora del carro.
 
 	// 6. Insertar el nuevo Contrato en la lista de Contratos de la sucursal
 	listaContratos->insertarFinal(nuevoContrato);
 
 	// 7. Actualizar historiales a Contrato Activo (Estado 2)
 	Cliente* cli = dynamic_cast<Cliente*>(listaClientes->buscarPersona(solicitud->getIdCliente()));
-	Colaborador* col = dynamic_cast<Colaborador*>(listaColaboradores->buscarPersona(solicitud->getIdColaborador())); // Colaborador que la registró
+	Colaborador* col = dynamic_cast<Colaborador*>(listaColaboradores->buscarPersona(solicitud->getIdColaborador())); // Colaborador que la registro
 	
 	if (cli) cli->getHistorial()->buscarTransaccionPorCodigo(idSolicitud)->setEstadoTransaccion(ESTADO_CONTRATO_ACTIVO);
 	if (col) col->getHistorial()->buscarTransaccionPorCodigo(idSolicitud)->setEstadoTransaccion(ESTADO_CONTRATO_ACTIVO);
@@ -172,7 +172,6 @@ bool Sucursal::convertirSolicitudAContrato(int idSolicitud, const string& idCola
 }
 
 
-// --- REPORTE DE PORCENTAJE DE OCUPACIÓN DE LOS PLANTELES ---
 string Sucursal::generarReporteOcupacionPlanteles() { 
 	stringstream ss;
 	ss << "\n======= REPORTE DE OCUPACION DE PLANTELES - Sucursal " << numeroSucursal << " =======\n";
@@ -197,6 +196,12 @@ string Sucursal::generarReporteOcupacionPlanteles() {
 	return ss.str();
 }
 
+// Implementacion del reporte de contratos por vehiculo
+string Sucursal::generarReporteContratosVehiculo(const string& placa) const {
+	// Llama al metodo de la lista de contratos de la sucursal, que ya se encarga de filtrar por estado 2.
+	return contratos->generarReporteContratosPorVehiculo(placa);
+}
+
 // Implementacion del metodo de la sucursal (llama al de la lista)
 string Sucursal::generarReporteContratosPorSucursal() const {
 	stringstream ss;
@@ -205,4 +210,3 @@ string Sucursal::generarReporteContratosPorSucursal() const {
 	ss << "----------------------------------------------------------------------\n";
 	return ss.str();
 }
-
